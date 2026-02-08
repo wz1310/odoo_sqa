@@ -1,0 +1,21 @@
+<odoo>
+    <data>
+        <!-- module category Purhcase Settlement Request -->
+        <record model="ir.module.category" id="module_category_purchase_settlement_request">
+            <field name="name">Purchase Settlement Request</field>
+            <field name="parent_id" ref="invoice_collection.module_category_collection_activity"/>
+        </record>
+
+        <record id="group_purchase_settlement_user" model="res.groups">
+            <field name="name">User</field>
+            <field name="category_id" ref="module_category_purchase_settlement_request"/>
+        </record>
+
+        <record id="group_purchase_settlement_approver" model="res.groups">
+            <field name="name">Approver</field>
+            <field name="category_id" ref="module_category_purchase_settlement_request"/>
+            <field name="implied_ids" eval="[(4, ref('settlement_request_purchase.group_purchase_settlement_user'))]"/>
+        </record>
+
+    </data>
+</odoo>

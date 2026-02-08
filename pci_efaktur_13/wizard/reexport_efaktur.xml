@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="view_reexport_efaktur" model="ir.ui.view">
+            <field name="name">view.reexport.efaktur</field>
+            <field name="model">reexport.efaktur</field>
+            <field name="arch" type="xml">
+                <form string="e-Faktur" version="7">
+                	<field invisible="1" name="state_x"/>
+                	Choose Delimiter:
+                	<field name="delimiter"/>
+                    <newline/>
+                    <group col="4" fill="0" attrs="{'invisible':[('state_x','!=','get')]}">
+                        <separator colspan="4" string="Generate to Excel done. Download by click link below" attrs="{'invisible':[('state_x','=','choose')]}"/>
+                        <field name="name" invisible="1" width="100" attrs="{'invisible':[('state_x','=','choose')]}"/>
+                        <field name="data_x" nolabel="1" readonly="0" width="100" filename="name" attrs="{'invisible':[('state_x','=','choose')]}"/>
+                    </group>
+                    <group>
+                    	<field name="npwp_o" string="SET NPWP 000000000000000"/>
+                    </group>
+                    <footer>
+                        <button icon="fa-print" string='Reexport' name="reexport_efaktur" type="object" attrs="{'invisible':[('state_x','=','get')]}"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+               </form>
+            </field>
+        </record>
+        
+        <act_window
+            name="Download e-Faktur"
+            id="action_reexport_efaktur_etax_invoice"
+            res_model="reexport.efaktur"
+            binding_model="etax.invoice"
+            binding_views="list"
+            view_mode="form"
+            target="new"/>
+
+        <act_window
+            name="Download e-Faktur"
+            id="action_reexport_efaktur_account_move"
+            res_model="reexport.efaktur"
+            binding_model="account.move"
+            binding_views="list"
+            view_mode="form"
+            target="new"/>
+
+	</data>
+</odoo>

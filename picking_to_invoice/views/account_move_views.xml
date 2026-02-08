@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="account_move_form_inherit">
+            <field name="name">account.move.form.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <field name="ref" position="replace">
+                </field>
+                <xpath expr="//field[@name='invoice_vendor_bill_id']" position="after">
+                    <field name="picking_ids" attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('type', '!=', 'in_invoice')]}" widget="many2many_tags" options="{'no_open': True, 'no_create': True}"/>
+                    <field name="picking_ids" attrs="{'invisible': ['|', ('state', '!=', 'draft'), ('type', '!=', 'out_invoice')]}" widget="many2many_tags" options="{'no_open': True, 'no_create': True}" string="Delivery Order"/>
+                    <field name="ref"/>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="cek_user" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="after">
+                    <field name="no_sj_wim" attrs="{'invisible':[('parent.type','not in',['out_invoice'])]}"/>
+                    <field name="no_sj_plan" attrs="{'invisible':[('parent.type','not in',['out_invoice'])]}"/>
+                    <field name="stock_move_id" optional="hide" force_save="1" readonly="1"/>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/tree/field[@name='name']" position="after">
+                    <field name="no_sj_wim" attrs="{'invisible':[('parent.type','not in',['out_invoice'])]}"/>
+                    <field name="no_sj_plan" attrs="{'invisible':[('parent.type','not in',['out_invoice'])]}"/>
+                    <field name="stock_move_id" optional="hide" force_save="1" readonly="1"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='quantity']" position="attributes">
+                    <attribute name="attrs">{'readonly': [('parent.cek_user', '=', False)]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_origin']" position="after">
+                    <field name="interco_ref_picking_ids" widget="many2many_tags"/>
+                </xpath>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_account_move_filter_inherit">
+            <field name="name">account.invoice.select.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date']" position="after">
+                    <field name="interco_ref_picking_ids" />
+                    <field name="invoice_origin" />
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_invoice_tree_inherit">
+            <field name="name">account.invoice.select.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_date']" position="before">
+                    <field name="ref" optional="show"/>
+                </xpath>
+                <xpath expr="//field[@name='state']" position="before">
+                    <field name="interco_ref_picking_ids" widget="many2many_tags" optional="hide"/>
+                </xpath>
+            </field>
+        </record>
+        
+    <record id="group_acess_qty_pfi" model="res.groups">
+        <field name="name">Access Qty PFI</field>
+    </record>
+
+    </data>
+</odoo>

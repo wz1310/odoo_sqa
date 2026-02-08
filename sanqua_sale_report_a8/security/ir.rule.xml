@@ -1,0 +1,6 @@
+<odoo>
+    
+    <record id="group_yearly_sale_ratio_report" model="res.groups">
+        <field name="name">A8 - Yearly Sale Ratio Report</field>
+    </record>
+</odoo>

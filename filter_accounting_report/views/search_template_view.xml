@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	
+    <template id="search_template_operating_unit">
+        <a type="button" class="dropdown-toggle" data-toggle="dropdown">
+            <span class="fa fa-book"/>
+            Operating Units:
+            <t t-set="selected_operating_units" t-value="', '.join(op.get('name') for op in options['operating_units'] if op.get('selected'))"/>
+            <t t-if="selected_operating_units">
+                <t t-esc="selected_operating_units"/>
+            </t>
+            <t t-else="">
+                All
+            </t>
+        </a>
+        <div class="dropdown-menu o_filters_menu" role="menu">
+            <t t-foreach="options['operating_units']" t-as="op">
+                <t t-if="op.get('id') == 'divider'">
+                    <div role="separator" class="dropdown-divider"/>
+                    <b role="menuitem" class="ml4 dropdown-item-text"><t t-esc="op.get('name')"/></b>
+                    <div role="separator" class="dropdown-divider"/>
+                </t>
+                <t t-if="op.get('id') != 'divider'">
+                    <a role="menuitem" class="dropdown-item js_account_report_choice_filter" t-att-title="op.get('name')" t-att-data-id="op.get('id')" data-filter="operating_units"><t t-esc="op.get('name')"/></a>
+                </t>
+            </t>
+        </div>
+    </template>
+
+	<template id="search_template" name="web_kanban_gauge assets" inherit_id="account_reports.search_template">
+		<xpath expr="." position="inside">
+	        <div class="btn-group o_dropdown o_account_reports_filter_operating_unit" t-if="options.get('operating_units') != None">
+                <t t-call="filter_accounting_report.search_template_operating_unit"/>
+            </div>
+		</xpath>
+	</template>
+
+    <!-- ///////////////////////WAREHOUSE////////////////////////////////////////// -->
+    
+    <template id="search_template_warehouse">
+        <a type="button" class="dropdown-toggle" data-toggle="dropdown">
+            <span class="fa fa-book"/>
+            Warehouse:
+            <t t-set="selected_warehouse" t-value="', '.join(op.get('name') for op in options['warehouse'] if op.get('selected'))"/>
+            <t t-if="selected_warehouse">
+                <t t-esc="selected_warehouse"/>
+            </t>
+            <t t-else="">
+                All
+            </t>
+        </a>
+        <div class="dropdown-menu o_filters_menu" role="menu">
+            <t t-foreach="options['warehouse']" t-as="op">
+                <t t-if="op.get('id') == 'divider'">
+                    <div role="separator" class="dropdown-divider"/>
+                    <b role="menuitem" class="ml4 dropdown-item-text"><t t-esc="op.get('name')"/></b>
+                    <div role="separator" class="dropdown-divider"/>
+                </t>
+                <t t-if="op.get('id') != 'divider'">
+                    <a role="menuitem" class="dropdown-item js_account_report_choice_filter" t-att-title="op.get('name')" t-att-data-id="op.get('id')" data-filter="warehouse"><t t-esc="op.get('name')"/></a>
+                </t>
+            </t>
+        </div>
+    </template>
+
+    <template id="search_template" name="web_kanban_gauge assets" inherit_id="account_reports.search_template">
+        <xpath expr="." position="inside">
+            <div class="btn-group o_dropdown o_account_reports_filter_warehouse" t-if="options.get('warehouse') != None">
+                <t t-call="filter_accounting_report.search_template_warehouse"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>

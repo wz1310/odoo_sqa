@@ -1,0 +1,28 @@
+<odoo>
+    <data noupdate="1">
+        <record id="bahanbaku_1" model="master.classification.product">
+            <field name="name">Bahan Baku</field>
+            <field name="code">bahanbaku</field>
+        </record>
+        <record id="barangsetengahjadi_1" model="master.classification.product">
+            <field name="name">Barang 1/2 Jadi</field>
+            <field name="code">barangsetengahjadi</field>
+        </record>
+        <record id="barangjadi_1" model="master.classification.product">
+            <field name="name">Barang Jadi</field>
+            <field name="code">barangjadi</field>
+        </record>
+        <record id="sparepart_1" model="master.classification.product">
+            <field name="name">Sparepart</field>
+            <field name="code">sparepart</field>
+        </record>
+        <record id="bahankimia_1" model="master.classification.product">
+            <field name="name">Bahan Kimia</field>
+            <field name="code">bahankimia</field>
+        </record>
+        <record id="lainlain_1" model="master.classification.product">
+            <field name="name">Lain-Lain</field>
+            <field name="code">lainlain</field>
+        </record>
+    </data>
+</odoo>

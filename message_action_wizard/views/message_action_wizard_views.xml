@@ -1,0 +1,25 @@
+<odoo>
+    <record model="ir.ui.view" id="message_action_wizard_form_view">
+        <field name="name">Message Action Wizard Form</field>
+        <field name="model">message.action.wizard</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <header></header>
+                <sheet>
+                    <group>
+                        <field name="res_model_id" invisible="1"/>
+                        <field name="res_model" invisible="1"/>
+                        <field name="res_id" invisible="1"/>
+                        <field name="messages" nolabel="1" readonly="1" widget="html"/>
+                        <field name="action_confirm" invisible="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="btn_confirmed" class="oe_highlight" attrs="{'invisible':[('action_confirm','=',False)]}"/>
+                    <button string="OK" special="cancel" class="oe_highlight" attrs="{'invisible':[('action_confirm','!=',False)]}"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

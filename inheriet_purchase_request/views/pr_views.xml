@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_purchase_request_form" model="ir.ui.view">
+        <field name="name">purchase.request.form</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_request.view_purchase_request_form" />
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='description']" position="after">
+                <field name="akses_admin" invisible="1"/>
+                <field name="man_state" invisible="1"/>
+                <field name="dekan_state" invisible="1"/>
+                <field name="warek_state" invisible="1"/>
+                <field name="rektor_state" invisible="1"/>
+                <field name="cek_id_man" invisible="1"/>
+                <field name="cek_id_dekan" invisible="1"/>
+                <field name="cek_id_warek" invisible="1"/>
+                <field name="cek_id_rektor" invisible="1"/>
+                <field name="cek_id_m_budget" invisible="1"/>
+                <field name="cek_id_corporate" invisible="1"/>
+                <field name="cek_id_ypk" invisible="1"/>
+                <field name="login_id" invisible="1"/>
+                <field name="manager_apv" invisible="1"/>
+                <field name="dekan_apv" invisible="1"/>
+                <field name="warek_apv" invisible="1"/>
+                <field name="rektor_apv" invisible="1"/>
+                <field name="m_budget_apv" invisible="1"/>
+                <field name="corporate_apv" invisible="1"/>
+                <field name="ypk_apv" invisible="1"/>
+                <field name="man_id" invisible="1"/>
+                <field name="dekan_id" invisible="1"/>
+                <field name="warek_id" invisible="1"/>
+                <field name="rektor_id" invisible="1"/>
+                <field name="m_budget_id" invisible="1"/>
+                <field name="corporate_id" invisible="1"/>
+                <field name="ypk_id" invisible="1"/>
+                <field name="tot_amount_pr" string="Total Amount" invisible="1"/>
+            </xpath>
+
+            <xpath expr="//field[@name='assigned_to']" position="replace">
+                <field name="assigned_to" attrs= "{'readonly':[('akses_admin', '=', False)]}"/>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_get_attachment_view" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                <field name="attachment_number" widget="statinfo" string="File"/>
+            </button>
+            </xpath>
+
+            <xpath expr="//button[@name='button_approved']" position="replace">
+                <button name="button_approved"
+                        states="to_approve"
+                        string="Approve"
+                        type="object"
+                        class="oe_highlight"
+                        groups="purchase_request.group_purchase_request_manager"
+                        invisible = "1"/>/>
+            </xpath>
+            <xpath expr="//button[@name='button_done']" position="replace">
+                <button name="button_done"
+                        string="Done"
+                        type="object"
+                        class="oe_highlight"
+                        groups="purchase_request.group_purchase_request_manager"
+                        attrs="{'invisible': [('state' ,'=','rejected')]}"/>
+            </xpath>
+            <xpath expr="//button[@name='button_done']" position="after">
+                <button name="button_manager"
+                        string="Manager Approve"
+                        type="object"
+                        class="oe_highlight"
+                        groups=""
+                        attrs="{'invisible': ['|','|',('manager_apv' ,'=', False),('cek_id_man' ,'!=',True),('state' ,'=','rejected')]}"/>
+                <button name="button_dekan"
+                        string="Dekan Approve"
+                        type="object"
+                        class="oe_highlight"
+                        groups=""
+                        attrs="{'invisible': ['|','|',('dekan_apv' ,'=', False),('cek_id_dekan' ,'!=',True),('state' ,'=','rejected')]}"/>
+                <button name="button_warek"
+                        string="Warek Approve"
+                        type="object"
+                        class="oe_highlight"
+                        groups=""
+                        attrs="{'invisible': ['|','|',('warek_apv' ,'=', False),('cek_id_warek' ,'!=',True),('state' ,'=','rejected')]}"/>
+                <button name="button_rektor"
+                        string="Rektor Approve"
+                        type="object"
+                        class="oe_highlight"
+                        groups=""
+                        attrs="{'invisible': ['|','|',('rektor_apv' ,'=', False),('cek_id_rektor' ,'!=',True),('state' ,'=','rejected')]}"/>
+                <button name="button_m_budget"
+                        string="Manager Budget Approve"
+                        type="object"
+                        class="oe_highlight"
+                        groups=""
+                        attrs="{'invisible': ['|','|',('m_budget_apv' ,'=', False),('cek_id_m_budget' ,'!=',True),('state' ,'=','rejected')]}"/>
+                <button name="button_corporate"
+                        string="Corporate Approve"
+                        type="object"
+                        class="oe_highlight"
+                        groups=""
+                        attrs="{'invisible': ['|','|',('corporate_apv' ,'=', False),('cek_id_corporate' ,'!=',True),('state' ,'=','rejected')]}"/>
+                <button name="button_ypk"
+                        string="Bendahara YPK Approve"
+                        type="object"
+                        class="oe_highlight"
+                        groups=""
+                        attrs="{'invisible': ['|','|',('ypk_apv' ,'=', False),('cek_id_ypk' ,'!=',True),('state' ,'=','rejected')]}"/>
+            </xpath>
+                <xpath expr="//notebook/page/field[@name='line_ids']/tree/field[@name='product_qty']" position="after" >
+                    <field name="department_name" />
+                    <field name="analytic_account_group" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,'no_create': True, 'no_create_edit':True}"/>
+                    <field name="department_id" invisible="1"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='line_ids']/tree/field[@name='analytic_account_id']" position="replace">
+                    <field name="analytic_account_id" 
+                        groups="analytic.group_analytic_accounting"
+                        options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,'no_create': True, 'no_create_edit':True}"/>
+                </xpath>
+                <xpath expr="//notebook/page/field[@name='line_ids']/tree/field[@name='analytic_account_id']" position="after" >
+                    <field name="planned_amount" />
+                    <field name="practicals_amount" />
+                    <field name="outstanding_amount" string="Total Outstanding" />
+                    <field name="sisa_budget" />                    
+                </xpath>
+
+
+
+            <!-- 
+            <xpath expr="//field[@name='line_ids']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|',('akses_admin','=', False),('purchase_count','!=', 0)]}</attribute>
+            </xpath> -->
+            <xpath expr="//field[@name='line_ids']" position="attributes">
+                <attribute name="attrs">{'readonly': [('purchase_count','!=', 0)]}</attribute>
+            </xpath>
+            <xpath expr="//tree" position="attributes">
+                <attribute name="editable">bottom</attribute>
+            </xpath>
+            <!-- 
+            <xpath expr="//field[@name='requested_by']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='assigned_to']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_start']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='picking_type_id']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='group_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']" position="attributes">
+                <attribute name="attrs">{'readonly': [('is_editable','=', False)]}</attribute>
+            </xpath> -->
+
+        </field>
+    </record>
+
+    <record id="view_purchase_request_tree" model="ir.ui.view">
+        <field name="name">purchase.request.tree</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_request.view_purchase_request_tree" />
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='state']" position="after"><!-- 
+                <field name="val_budget" invisible="1"/> -->
+                <field name="purchase_state"/>
+            </xpath>
+
+            <xpath expr="//field[@name='name']" position="after"><!-- 
+                <field name="val_budget" invisible="1"/> -->
+                <field name="product_id"/>
+            </xpath>
+
+            <xpath expr="//field[@name='origin']" position="attributes"><!-- 
+                <field name="val_budget" invisible="1"/> -->
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='company_id']" position="attributes"><!-- 
+                <field name="val_budget" invisible="1"/> -->
+                <attribute name="invisible">True</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- <record model="ir.ui.view" id="view_purchase_request_tree">
+        <field name="name">purchase.request.tree.inherit</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_request.view_purchase_request_tree"/>
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="purchase_count" widget="statinfo" string="Purchase Orders"/>
+            </field>
+      </field>
+    </record> -->
+
+    <record id="view_purchase_request_form_department" model="ir.ui.view">
+        <field name="name">purchase.request.form</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_request_department.view_purchase_request_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='department_id']" position="replace">
+                <field name="department_id" attrs= "{'readonly':[('akses_admin', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>

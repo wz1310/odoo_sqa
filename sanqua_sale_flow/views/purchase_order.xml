@@ -1,0 +1,33 @@
+<odoo>
+	<record model="ir.ui.view" id="purchase_order_form_inherited_interco_sale">
+		<field name="name">Purchase Order Form Inherited Intercompany Sale</field>
+		<field name="model">purchase.order</field>
+		<field name="inherit_id" ref="purchase.purchase_order_form" />
+		<field name="arch" type="xml">
+			<field name="date_order" position="before">
+				<field name="interco_sale_id" attrs="{'invisible':[('interco_sale_id','=',False)]}" readonly="1" />
+				<field name="interco_picking_id" readonly="1" attrs="{'invisible':[('interco_picking_id','=',False)]}" />
+				<!-- <field name="interco_ref_picking_ids" attrs="{'invisible':[('interco_sale_id','=',False)]}" readonly="1" widget="many2many_tags"/> -->
+				<field name="interco_sale_agreement_id" attrs="{'invisible':[('interco_sale_id','=',False)]}" readonly="1" />
+				<field name="auto_sale_order_id" readonly="1" attrs="{'invisible':[('auto_sale_order_id','=',False)]}" />
+				<field name="validity_so_date" attrs="{'invisible':[('interco_sale_id','!=',False)],'required':[('interco_sale_id','=',False),('state','=','draft')]}"/>
+
+				<!-- <field name="validity_date" readonly="1" attrs="{'invisible':[('interco_sale_id','=',False)]}" /> -->
+				
+			</field>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="view_purchase_order_filter">
+		<field name="name">View Purchase Order Filter</field>
+		<field name="model">purchase.order</field>
+		<field name="inherit_id" ref="purchase.view_purchase_order_filter" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[2]" position="after">
+				<field name="interco_ref_picking_ids"/>
+			</xpath>
+		</field>
+	</record>
+
+	
+</odoo>

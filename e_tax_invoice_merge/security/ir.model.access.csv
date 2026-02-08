@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_e_tax_invoice_merge_user,access_e_tax_invoice_merge_user,model_etax_invoice_merge,pci_efaktur_13.group_e_tax_user,1,1,1,1
+access_e_tax_invoice_merge_line_user,access_e_tax_invoice_merge_line_user,model_etax_invoice_merge_line,pci_efaktur_13.group_e_tax_user,1,1,1,1

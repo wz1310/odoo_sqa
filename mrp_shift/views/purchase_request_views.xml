@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="purchase_request_view_form" model="ir.ui.view">
+        <field name="name">purchase.request.view.form</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_request.purchase_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@id='page_approval']" position="before">
+            	<page name="other_information" string="Other Information">
+                    <group>
+                        <field name="rpm_id" invisible="0" readonly="1" force_save="1" options="{'no_quick_create':True, 'no_create_edit':True, 'no_create': True}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

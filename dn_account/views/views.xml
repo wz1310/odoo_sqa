@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="dn_account.list">
+      <field name="name">dn_account list</field>
+      <field name="model">dn_account.dn_account</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="dn_account.action_window">
+      <field name="name">dn_account window</field>
+      <field name="res_model">dn_account.dn_account</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="dn_account.action_server">
+      <field name="name">dn_account server</field>
+      <field name="model_id" ref="model_dn_account_dn_account"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="dn_account" id="dn_account.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="dn_account.menu_1" parent="dn_account.menu_root"/>
+    <menuitem name="Menu 2" id="dn_account.menu_2" parent="dn_account.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="dn_account.menu_1_list" parent="dn_account.menu_1"
+              action="dn_account.action_window"/>
+    <menuitem name="Server to list" id="dn_account" parent="dn_account.menu_2"
+              action="dn_account.action_server"/>
+-->
+  </data>
+</odoo>

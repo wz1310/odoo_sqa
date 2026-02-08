@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+        <record id="crm_team_view_form_inherit" model="ir.ui.view">
+            <field name="name">crm.team.view.form</field>
+            <field name="model">crm.team</field>
+            <field name="inherit_id" ref="sales_team.crm_team_view_form" />
+            <field name="arch" type="xml">
+            	<field name="user_id" position="after">
+            		<field name="payment_term_id" options="{'no_create': True}"/>
+            	</field>
+                <xpath expr="//page[@name='members']" position="after">
+                    <page string="Allowed Categories" name="product_category">
+                        <group name="cateogory">
+                            <field nolabel="1" name="product_category_ids"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+	</data>
+</odoo>

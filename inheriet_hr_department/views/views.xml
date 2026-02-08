@@ -1,0 +1,41 @@
+<odoo>
+  <data>
+
+        <record model="ir.ui.view" id="view_inheriet_deparment">
+            <field name="name">inherit.form.department</field>
+            <field name="model">hr.department</field>
+            <field name="inherit_id" ref="hr.view_department_form"/>
+            <field name="priority" eval="50"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="after" >
+                    <notebook>
+                        <page string="Approvals" >
+                            <group>
+                            <field name="dekan" string="Dekan"/>
+                            <field name="warek" string="Warek"/>
+                            <field name="rektor" string="Rektor"/>
+                            <field name="m_budget" string="Manager Budget"/>
+                            <field name="corporate" string="Corporate"/>
+                            <field name="ypk" string="Bendahara YPK"/>
+                        </group>
+                        </page>
+                        <page string="Approvals Level" >
+                            <field name="approvals_line" nolabel="1" widget="section_and_note_one2many">
+                                <tree editable="botttom" create="1">
+                                    <field name="amount_ap" string="Amount"/>
+                                    <field name="manager_ap" string="Manager"/>
+                                    <field name="dekan_ap" string="Dekan"/>
+                                    <field name="warek_ap" string="Warek"/>
+                                    <field name="rektor_ap" string="Rektor"/>
+                                    <field name="m_budget_ap" string="Budget Manager"/>
+                                    <field name="corporate_ap" string="Corporate"/>
+                                    <field name="ypk_ap" string="Bendahara YPK"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+  </data>
+</odoo>

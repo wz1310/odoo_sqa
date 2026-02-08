@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_view_form" model="ir.ui.view">
+        <field name="name">res.partner.view.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="contact_competitor" string="Competitor">
+                    <field name="competitor_ids">
+                        <tree editable="bottom">
+                            <field name="brand"/>
+                            <field name="product_volume"/>
+                            <field name="qty"/>
+                            <field name="base_price"/>
+                            <field name="double_price"/>
+                            <field name="medium_truck_price"/>
+                            <field name="retail_price"/>
+                            <field name="description"/>
+                            <field name="warehouse_capacity"/>
+                            <field name="date"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

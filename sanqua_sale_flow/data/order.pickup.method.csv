@@ -1,0 +1,3 @@
+id,name,description,active,price_unit_discount_agreement
+order_pickup_method_deliver,Deliver,Deliver to Customer,1,0
+order_pickup_method_take_in_plan,Take in Plant,Take IN Plan,1,1,

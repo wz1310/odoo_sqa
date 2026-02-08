@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_payment_receipt_vendor">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div class="row">
+                        <table style="width: 100%;border-bottom: solid 2px black;">
+                            <tr>
+                                <td rowspan="2" style="width: 10%;">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                                </td>
+                                <td rowspan="2" style="font-size: 12px; width: 60%;">
+                                    <span style="font-size: 14px;" t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["adress", "name", "phone"], "no_marker": true}'/>
+                                    <span t-field="o.company_id.partner_id.street"/><br/>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Telp. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Fax. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.vat">
+                                        NPWP. <span t-field="o.company_id.partner_id.vat"/> 
+                                    </t>
+                                </td>
+                                <td style="width: 30%;">
+                                    <t t-if="o.company_id.iso_supplier_payment">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            Doc. No. : <t t-esc="o.company_id.iso_supplier_payment"/><br/>
+                                        </span>
+                                    </t>
+                                    <t t-if="o.state not in ['posted','sent','reconciled']">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            <t t-esc="dict(o._fields['state'].selection).get(o.state)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4  class="text-right" >
+                                    Purchase Payment</h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="page" style="font-size: 11px;">
+                    <style>
+                        .table th,
+                        .table td {
+                            padding: 5px;
+                        }
+                        .th-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            text-align:center;
+                        }
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <div class="row">
+                        <div style="width:40%">
+                            Vendor : <span t-field="o.partner_id.name"/>
+                        </div>
+                        <div style="width:60%">
+                            <table class="table" style="width:100%;">
+                                <tr>
+                                    <td class="td-1" style="width:20%;">Payment Date</td>
+                                    <td class="td-2" style="width:1%;">:</td>
+                                    <td class="td-3" style="width:29%;"><span t-field="o.payment_date"/></td>
+                                    <td class="td-2" style="width:15%;">Form No.</td>
+                                    <td class="td-2" style="width:1%;">:</td>
+                                    <td class="td-3" style="width:34%;"><span t-field="o.company_id.iso_supplier_invoice"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">Cheque Date</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3">
+                                        <t t-if="o.journal_id.type != 'cash'">
+                                            <span t-field="o.payment_date"/>
+                                        </t>
+                                    </td>
+                                    <td class="td-2">Cheque No.</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">Bank</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-field="o.journal_id"/></td>
+                                    <td class="td-2">Ch. Amount</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">Currency</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-field="o.currency_id"/></td>
+                                    <td class="td-2">Rate</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-field="o.currency_id.rate"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <table class="table" style="width: 100%; border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 20%;">
+                                        Invoice No.
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Date
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Due
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Amount
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Owing
+                                    </th>
+                                    <th class="th-0" style="width: 20%;">
+                                        Pay. Amount
+                                    </th>
+                                    <th class="th-0" style="width: 20%;">
+                                        Disc. Amount
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-foreach="o.invoice_ids" t-as="line">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.name"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.invoice_date"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.invoice_date_due"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.amount_total)"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.amount_residual)"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.amount_total - line.amount_residual)"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.total_discount_amount)"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="footer-report" style="font-size: 11px;">
+                        <style>
+                            .td-1 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: 1px solid black;
+                            }
+                            .td-2 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: none !important;
+                                border-right: none !important;
+                            }
+                            .td-3 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: none !important;
+                                border-right: 1px solid black;
+                            }
+
+                            .td-4 {
+                                border-top: none !important;
+                                border-bottom: none !important;
+                                border-left: 1px solid black;
+                                border-right: 1px solid black;
+                            }
+                            .no-border {
+                                border: none !important;
+                            }
+                            tr { 
+                                page-break-inside:avoid; 
+                                page-break-after:auto 
+                                }
+                        </style>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width:60%" colspan="3" rowspan="4">
+                                Terbilang  : <span t-esc="o.terbilang(o.amount)"/> Rupiah<br/><br/><br/>
+                                Memo : <span t-field="o.communication"/></td>
+                                <td class="text-right">Total Owing :</td>
+                                <td class="text-right"><span t-esc="o.get_format_currency(sum([x.amount_residual for x in o.invoice_ids]),total=True)"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Total Discount :</td>
+                                <td class="text-right"><span t-esc="o.get_format_currency(sum([x.total_discount_amount for x in o.invoice_ids]),total=True)"/></td>
+                            </tr>
+                            <tr>
+                                <td class="td-1 text-right" style="padding:2px;"><h6>Total Payment :</h6></td>
+                                <td class="td-3 text-right" style="padding:2px;"><h6><span t-esc="o.get_format_currency(o.amount,total=True)"/></h6></td>
+                            </tr>
+                            <tr/>
+                            <tr>
+                                <td class="text-center">Prepared by,</td>
+                                <td class="text-center">Reviewd by,</td>
+                                <td class="text-center"></td>
+                                <td class="text-right"></td>
+                                <td class="text-right"></td>
+                            </tr>
+                            <tr style="height: 40px;">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center"> (.................................) </td>
+                                <td class="text-center"> (.................................) </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="footer" style="font-size: 11px;">
+                    <div style="float:left;">
+                        Page: <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_payment_receipt_customer">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div class="row">
+                        <table style="width: 100%;border-bottom: solid 2px black;">
+                            <tr>
+                                <td rowspan="2" style="width: 10%;">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                                </td>
+                                <td rowspan="2" style="font-size: 12px; width: 60%;">
+                                    <span style="font-size: 14px;" t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["adress", "name", "phone"], "no_marker": true}'/>
+                                    <span t-field="o.company_id.partner_id.street"/><br/>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Telp. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Fax. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.vat">
+                                        NPWP. <span t-field="o.company_id.partner_id.vat"/> 
+                                    </t>
+                                </td>
+                                <td style="width: 30%;">
+                                    <t t-if="o.company_id.iso_customer_payment">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            Doc. No. : <t t-esc="o.company_id.iso_customer_payment"/><br/>
+                                        </span>
+                                    </t>
+                                    <t t-if="o.state not in ['posted','sent','reconciled']">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            <t t-esc="dict(o._fields['state'].selection).get(o.state)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4  class="text-right" >
+                                    Cust. Receipt</h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="page" style="font-size: 11px;">
+                    <style>
+                        .table th,
+                        .table td {
+                            padding: 5px;
+                        }
+                        .th-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            text-align:center;
+                        }
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <div class="row">
+                        <div style="width:100%">
+                            <table class="table" style="width:100%;">
+                                <tr>
+                                    <td class="td-1" style="width:15%">Received Date</td>
+                                    <td class="td-2" style="width:1%">:</td>
+                                    <td class="td-3" style="width:34%"><span t-field="o.payment_date"/></td>
+                                    <td class="td-2" style="width:10%">Form No.</td>
+                                    <td class="td-2" style="width:1%">:</td>
+                                    <td class="td-3" style="width:39%"><span t-field="o.company_id.iso_customer_payment"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">Cheque Date</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3">
+                                        <t t-if="o.journal_id.type != 'cash'">
+                                            <span t-field="o.payment_date"/>
+                                        </t>
+                                    </td>
+                                    <td class="td-2">Cheque No.</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">Bank</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-field="o.journal_id"/></td>
+                                    <td class="td-2">Ch. Amount</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">Currency</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-field="o.currency_id"/></td>
+                                    <td class="td-2">Rate</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-field="o.currency_id.rate"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        Received From : <span t-field="o.partner_id.name"/>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <table class="table" style="width: 100%; border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 20%;">
+                                        Invoice No.
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Date
+                                    </th>
+                                    <th class="th-0" style="width: 20%;">
+                                        Amount
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Owing
+                                    </th>
+                                    <th class="th-0" style="width: 20%;">
+                                        Pay. Amount
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Disc. Amount
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-foreach="o.invoice_ids" t-as="line">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.name"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.invoice_date"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.amount_total)"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.amount_residual)"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.amount_total - line.amount_residual)"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.total_discount_amount)"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="footer-report" style="font-size: 11px;">
+                        <style>
+                            .td-1 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: 1px solid black;
+                            }
+                            .td-2 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: none !important;
+                                border-right: none !important;
+                            }
+                            .td-3 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: none !important;
+                                border-right: 1px solid black;
+                            }
+
+                            .td-4 {
+                                border-top: none !important;
+                                border-bottom: none !important;
+                                border-left: 1px solid black;
+                                border-right: 1px solid black;
+                            }
+                            .no-border {
+                                border: none !important;
+                            }
+                            tr { 
+                                page-break-inside:avoid; 
+                                page-break-after:auto 
+                                }
+                        </style>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width:60%" colspan="3" rowspan="4">
+                                Terbilang  : <span t-esc="o.terbilang(o.amount)"/> Rupiah<br/><br/><br/>
+                                Memo : <span t-field="o.communication"/></td>
+                                <td class="text-right">Total Owing :</td>
+                                <td class="text-right"><span t-esc="o.get_format_currency(sum([x.amount_residual for x in o.invoice_ids]),total=True)"/></td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Total Discount :</td>
+                                <td class="text-right"><span t-esc="o.get_format_currency(sum([x.total_discount_amount for x in o.invoice_ids]),total=True)"/></td>
+                            </tr>
+                            <tr>
+                                <td class="td-1 text-right" style="padding:2px;"><h6>Total Payment :</h6></td>
+                                <td class="td-3 text-right" style="padding:2px;"><h6><span t-esc="o.get_format_currency(o.amount,total=True)"/></h6></td>
+                            </tr>
+                            <tr>
+                                <td class="td-1 text-right" style="padding:2px;"><h6>Overpay :</h6></td>
+                                <td class="td-3 text-right" style="padding:2px;"><h7></h7></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">Prepared by,</td>
+                                <td class="text-center">Reviewd by,</td>
+                                <td class="text-center"></td>
+                                <td class="text-right"></td>
+                                <td class="text-right"></td>
+                            </tr>
+                            <tr style="height: 40px;">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center"> (.................................) </td>
+                                <td class="text-center"> (.................................) </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="footer" style="font-size: 11px;">
+                    <div style="float:left;">
+                        Page: <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_payment_receipt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="lang" t-value="o.partner_id.lang"/>
+                <t t-if="o.partner_type == 'supplier' and o.payment_type == 'outbound'">
+                    <t t-call="sanqua_print.report_payment_receipt_vendor" t-lang="lang"/>
+                </t>
+                <t t-elif="o.partner_type == 'customer' and o.payment_type == 'inbound'">
+                    <t t-call="sanqua_print.report_payment_receipt_customer" t-lang="lang"/>
+                </t>
+                <!-- <t t-else="">
+                    <t t-call="account.report_payment_receipt_document" t-lang="lang"/>
+                </t> -->
+            </t>
+        </t>
+    </template>
+
+</odoo>

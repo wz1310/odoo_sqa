@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="return_sale_order_report_wizard_form_view">
+        <field name="name">Wizard Sale Order Return Report</field>
+        <field name="model">wizard.sale.order.return.report</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="start_date" />
+                            <field name="end_date" />
+                            <field name="product_ids" widget="many2many_tags"/>
+                            
+                            <field name="customer_ids" widget="many2many_tags" />  
+                            <field name="company_id" options="{'no_open': True, 'no_create': True}"/>
+                            <!-- <field name="group_by" /> -->
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Generate Excel" type="object" name="button_print" class="oe_highlight" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_return_sale_order_report" model="ir.actions.act_window">
+        <field name="name">Sale Order Return Report</field>
+        <field name="res_model">wizard.sale.order.return.report</field>
+        <field name="view_mode">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="return_sale_order_report_wizard_form_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="return_sale_order_report_menu" name="Laporan Return Penjualan" action="action_return_sale_order_report" parent="sale.menu_sale_report" sequence="201"/>
+
+</odoo>

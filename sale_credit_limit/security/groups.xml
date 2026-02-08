@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<record model="ir.module.category" id="module_category_credit_limit">
+			<field name="name">Credit Limit</field>
+		</record>
+
+		<record model="ir.module.category" id="module_category_customer_group">
+			<field name="name">Customer Group</field>
+			<field name="parent_id" ref="sale_credit_limit.module_category_credit_limit"/>
+		</record>
+
+		
+		
+		<record id="group_customer_group_user" model="res.groups">
+			<field name="name">User</field>
+			<field name="category_id" ref="sale_credit_limit.module_category_customer_group"/>
+		</record>
+		<record id="group_customer_group_manager" model="res.groups">
+			<field name="name">Manager</field>
+			<field name="category_id" ref="sale_credit_limit.module_category_customer_group"/>
+			<field name="implied_ids" eval="[(4, ref('sale_credit_limit.group_customer_group_user'))]"/>
+		</record>
+		<function model="res.groups" name="_init_user_sale_credit_limit" />
+
+	</data>
+</odoo>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_purchase_request_form" model="ir.ui.view">
+        <field name="name">purchase.request.form</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_request.view_purchase_request_form" />
+        <field name="arch" type="xml">
+
+            <xpath expr="//button[@name='button_draft']" position="replace">
+                <button name="button_draft"
+                        states="to_approve,rejected"
+                        string="Reset"
+                        type="object"
+                        groups="purchase_request.group_purchase_request_manager"/>
+            </xpath>
+
+            <xpath expr="//header//button[4]" position="replace">
+                <button name="%(purchase_request.action_purchase_request_line_make_purchase_order)d"
+                        states="approved"
+                        string="Create RFQ"
+                        type="action"
+                        groups="purchase.group_purchase_user"
+                        />
+            </xpath>
+
+            <xpath expr="//button[@name='button_done']" position="replace">
+                <button name="button_done"
+                        states="approved"
+                        string="Done"
+                        type="object"
+                        class="oe_highlight"
+                        groups="purchase.group_purchase_user"/>
+            </xpath>
+
+            <xpath expr="//button[@name='button_rejected']" position="replace">
+                <button name="button_rejected"
+                        states="to_approve"
+                        string="Reject"
+                        type="object"
+                        groups="purchase_request.group_purchase_request_manager"/>
+            </xpath>
+
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='requested_by']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='assigned_to']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_start']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='picking_type_id']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='group_id']" position="attributes">
+                <attribute name="invisible">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']" position="attributes">
+                <attribute name="attrs">{'readonly': [('is_editable','=', False)]}</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- <record model="ir.ui.view" id="view_purchase_request_tree">
+        <field name="name">purchase.request.tree.inherit</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_request.view_purchase_request_tree"/>
+        <field name="arch" type="xml">
+            <field name="state" position="after">
+                <field name="purchase_count" widget="statinfo" string="Purchase Orders"/>
+            </field>
+      </field>
+    </record> -->
+
+    <record id="view_purchase_request_form_department" model="ir.ui.view">
+        <field name="name">purchase.request.form</field>
+        <field name="model">purchase.request</field>
+        <field name="inherit_id" ref="purchase_request_department.view_purchase_request_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='department_id']" position="attributes">
+                <attribute name="readonly">True</attribute>
+                <attribute name="force_save">True</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

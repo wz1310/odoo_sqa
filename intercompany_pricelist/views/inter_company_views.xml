@@ -1,0 +1,31 @@
+<odoo>
+    <record model="ir.ui.view" id="inter_company_pricelist_tree_view">
+        <field name="name">Inter Company Pricelist Tree</field>
+        <field name="model">inter.company.pricelist</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <tree string="Tree" editable="bottom">
+                <field name="company_id"/>
+                <field name="partner_company_id"/>
+                <field name="partner_id"/>
+                <field name="pricelist_id" domain="[('company_id','=',company_id)]"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_inter_company_pricelist">
+        <field name="name">Inter Company Pricelist</field>
+        <field name="res_model">inter.company.pricelist</field>
+        <!-- IF ODOO Version <= 12.0 REQUIRE view_type (UNCOMMENT THIS) -->
+        <!-- <field name="view_type">form</field> -->
+        <field name='view_mode'>tree</field>
+        <!-- <field name='view_id' ref='ref_view_id'/> -->
+        <!-- <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('module.kanban_ref_id'), 'sequence':1}),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('module.tree_ref_id'), 'sequence':2}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('module.form_ref_id'), 'sequence':3})
+                ]"/> -->
+    </record>
+    <menuitem action="action_inter_company_pricelist" id="inter_company_pricelist_menu" name="Inter Company Pricelist" sequence="4" groups="intercompany_pricelist.group_inter_company_pricelist_manager" parent="sale.product_menu_catalog" />
+</odoo>

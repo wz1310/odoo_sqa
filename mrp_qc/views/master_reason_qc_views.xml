@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--List View-->
+    <record id="view_master_reason_qc_tree" model="ir.ui.view">
+        <field name="name">view.master.reason.qc.tree</field>
+        <field name="model">master.reason.qc</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+                <field name="name"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--Form View-->
+    <record id="view_master_reason_qc_form_view" model="ir.ui.view">
+        <field name="name">master.reason.qc.form.view</field>
+        <field name="model">master.reason.qc</field>
+        <field name="arch" type="xml">
+           <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="master_reason_qc_search_view" model="ir.ui.view">
+		<field name="name">master.reason.qc.search.view</field>
+		<field name="model">master.reason.qc</field>
+		<field name="arch" type="xml">
+			<search>
+				<field name="name" filter_domain="[('name','ilike',self)]" string="Reason"/>
+				<filter string="All" name="all" domain="['|', ('active', '=', False), ('active', '=', True)]"/>
+				<separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+				<filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+			</search>
+		</field>
+	</record>
+    
+    <!--Menu-->
+    <record id="action_master_reason_qc_view" model="ir.actions.act_window">
+        <field name="name">Master Reason QC</field>
+        <field name="res_model">master.reason.qc</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_master_reason_qc_tree"/>
+        <field name="domain">['|', ('active', '=', False), ('active', '=', True)]</field>
+        <field name="search_view_id" ref="master_reason_qc_search_view"/>
+		<field name="help" type="html">
+			<p class="oe_view_nocontent_create">
+				Click here to create a new Master Reason QC.
+			</p>
+		</field>
+    </record>
+    
+    <menuitem id="menu_master_reason_qc"
+        name="Master Reason QC"
+        parent="mrp.menu_mrp_bom"
+        action="action_master_reason_qc_view"
+        sequence="200"/>
+</odoo>

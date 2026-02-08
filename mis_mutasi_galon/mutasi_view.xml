@@ -1,0 +1,649 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="mis_inher_picking_mutasi_galon">
+        <field name="name">Mutasi Galon MIS</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">                
+                <button name="open_mutasi" class="oe_stat_button" icon="fa-arrows-v" type="object"
+                    attrs="{'invisible': [('state', '!=', 'done')]}">
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_text">Mutasi Galon</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+        <record id="mutasi_form_view" model="ir.ui.view">
+            <field name="name">mutasi.form.view</field>
+            <field name="model">mutasi.request</field>
+            <field name="arch" type="xml">
+                <form string="Mutasi Request" >
+                <header>
+                      <field name="state_mutasi" widget="statusbar"/>
+                      <button name="submit_" string="Submit" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state_mutasi', 'in', ('wait','approved','rejected'))]}"/>
+                      <button name="approved_" string="Approve" type="object" class="btn btn-primary"
+                        attrs="{'invisible': ['|',('user_can_approve','=',False),('state_mutasi', 'not in', ('wait'))]}"/>
+                      <button name="rejected_" string="Reject" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state_mutasi', 'not in', ('wait','approved'))]}"
+                        groups="mis_mutasi_galon.group_acess_reject_mutasi"/>
+                      <button name="draft_" string="Set to draft" type="object" class="btn btn-primary" attrs="{'invisible': [('state_mutasi', 'not in', ('rejected'))]}"/>
+                </header>
+                    <sheet string="Mutasi Request">
+                        <group>
+                            <group>
+                                <field name="name" string="No.Mutasi"/>
+                                <field name="done_qty" string="Done Qty"/>
+                                <field name="lot_id" string="No. Lot" invisible="0"/>
+                                <field name="no_sj" string="No.SJ"/>
+                                <field name="partner_id" string="Customer"/>
+                                <field name="company_id" invisible="0"/>
+                                <!-- <field name="gln_kosong"/> -->
+                            </group>
+                            <group>
+                                <field name="gln_sqa" string="Galon Sanqua"/>
+                                <field name="gln_lain" string="Galon lain"/>
+                                <field name="gln_rusak" string="Galon Rusak"/>
+                                <field name="qty_pinjam" string="Quantity Pinjam"/>
+                                <field name="qty_deposit" string="Quantity Deposit"/>
+                                <!-- <field name="qty_switch"/> -->
+                            </group>
+                        </group>
+                        <!-- <group>
+                            <field name="reject_note"></field>
+                        </group> -->
+                        <notebook>
+                            <page id="page_note" string="Note">
+                                <field name="note"/>
+                            </page>
+                            <page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" invisible="1"/>
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved" groups="base.group_system"/></group>
+
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="mutasi_request_tree_view" model="ir.ui.view">
+            <field name="name">mutasi.request.tree.view</field>
+            <field name="model">mutasi.request</field>
+            <field name="arch" type="xml">
+                <tree string="Mutasi Galon">
+                    <field name="name"/>
+                    <field name="no_sj"/>
+                    <field name="gln_sqa"/>
+                    <field name="gln_lain"/>
+                    <field name="gln_rusak"/>
+                    <field name="qty_pinjam"/>
+                    <field name="qty_deposit"/>
+                    <field name="state_mutasi"/>
+                    <!-- <field name="qty_switch"/> -->
+                    <field name="company_id" invisible="0"/>          
+                </tree>
+            </field>
+        </record>
+        
+        <record id='mutasi_request_action' model='ir.actions.act_window'>
+            <field name="name">Mutasi Galon Request</field>
+            <field name="res_model">mutasi.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="mutasi_request_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Mutasi Galon Request
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_mutasi_request_action"
+            name="Mutasi Galon Request"
+            parent="stock.menu_stock_inventory_control"
+            action="mutasi_request_action"
+            sequence="112"
+            groups="base.group_user"/>
+
+            <!-- /////////////////////////////////////mastermutasi/////////////////////////////////////// -->
+
+        <record id="master_mutasi_form_view" model="ir.ui.view">
+            <field name="name">master.mutasi.form.view</field>
+            <field name="model">master.mutasi</field>
+            <field name="arch" type="xml">
+                <form string="Master Mutasi Customer">
+                <!-- <header>
+                      <field name="state_mutasi" widget="statusbar"/>
+                      <button name="submit_" string="Submit" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state_mutasi', 'in', ('wait','approved','rejected'))]}"/>
+                      <button name="approved_" string="Approve" type="object" class="btn btn-primary"
+                        attrs="{'invisible': ['|',('user_can_approve','=',False),('state_mutasi', 'not in', ('wait'))]}"/>
+                      <button name="rejected_" string="Reject" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state_mutasi', 'not in', ('wait','approved'))]}"/>
+                      <button name="draft_" string="Set to draft" type="object" class="btn btn-primary" attrs="{'invisible': [('state_mutasi', 'not in', ('rejected'))]}"/>
+                </header> -->
+                    <sheet string="Detail Mutasi">
+                        <!-- <group>
+                            <field name="partner_id" string="Customer"/>
+                        </group> -->
+                        <field name="name" force_save="1" invisible="1"/>
+                        <!-- <group> -->
+                        <!-- <div> -->
+                            <p style="font-weight:bold">Customer : <field name="code" readonly="1" force_save="1"/>
+                        <span> - <field name="partner_id"/></span></p>
+                        <!-- </div> -->
+                        <!-- <div style="float:right;">
+                            <button name="adjust_mts" string="ADJUSTMENT" type="object" class="btn btn-warning"/>
+                        </div> -->
+                        <!-- </group> -->
+                        <table style="width:100%">
+                            <!-- <tr>
+                                <th style="width:14%">Customer :
+                                    <field name="partner_id" string="Customer"/>
+                                </th>
+                            </tr> -->
+                            <tr>
+                                <th style="width:14%">Saldo Awal :
+                                <field name="sum_s_awal" string="Saldo Awal"/>
+                                </th>
+                                <th style="width:14%">Deposit :
+                                <field name="sum_deposit" string="Deposit"/>
+                                </th>
+                                <th style="width:14%">Qty Pinjam :
+                                <field name="sum_qty_pinjam" string="Qty Pinjam"/>
+                                </th>
+                                <th style="width:14%">Qty Switch :
+                                <field name="sum_qty_switch" string="Qty Switch"/>
+                                </th>
+                                <th style="width:14%">Galon Rusak :
+                                <field name="sum_gln_rusak" string="Galon Rusak"/>
+                                </th>
+                                <th style="width:14%">Saldo Akhir :
+                                <field name="sum_s_akhir" string="Saldo Akhir"/>
+                                </th>
+                            </tr>
+                        </table>
+
+
+                        <!-- <group>
+                            <group>                            
+                                <field name="partner_id" string="Customer"/>
+                                <field name="sum_s_awal" string="Saldo Awal"/>
+                                <field name="sum_deposit" string="Deposit"/>
+                                <field name="sum_qty_pinjam" string="Qty Pinjam"/>
+                            </group>
+                            <group>
+                                <field name="sum_qty_switch" string="Qty Switch"/>
+                                <field name="sum_gln_rusak" string="Galon Rusak"/>
+                                <field name="sum_s_akhir" string="Saldo Akhir"/>
+                            </group>
+                        </group> -->
+
+
+
+                            <group>
+                            <field name="mutasi_line_ids" nolabel="1">
+                            <tree editable="bottom" delete="0" decoration-muted="(state_detail_mutasi=='rejected')" >
+                                <field name="info_mutasi" string="Info Mutasi" required="1"/>
+                                <field name="tgl_mutasi" string="Tanggal Mutasi" readonly="1" force_save="1"/>
+                                <field name="mts_id" string="No. Mutasi" readonly="1" force_save="1"/>
+                                <!-- update -->
+                                <field name="no_sj" string="No. SJ" readonly="1" force_save="1"/>
+                                <field name="s_awal" string="Saldo Awal"/>
+                                <field name="deposit" string="Deposit"/>
+                                <field name="qty_pinjam" string="Qty Pinjam"/>
+                                <field name="qty_switch" string="Qty Switch"/>
+                                <field name="gln_rusak" string="Galon Rusak"/>
+                                <field name="s_akhir" string="Saldo Akhir"/>
+                                <field name="partner_id" string="Customer" invisible="1"/>
+                                <field name="mutasi_id" string="ID Mutasi" invisible="1"/>
+                                <field name="state_detail_mutasi" string="Status Mutasi" readonly="1" force_save="1"/>
+                                <field name="note" string="Note" optional="hide"/>
+                            </tree>
+                            </field>
+                            </group>
+                        <!-- <group>
+                            <field name="reject_note"></field>
+                        </group> -->
+                        <!-- <notebook>
+                            <page id="page_mutasi" string="Detail">
+                                <field name="note"/>
+                            </page>
+                            <page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" invisible="1"/>
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved" groups="base.group_system"/></group>
+
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                            </page>
+                        </notebook> -->
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="master_mutasi_tree_view" model="ir.ui.view">
+            <field name="name">master.mutasi.tree.view</field>
+            <field name="model">master.mutasi</field>
+            <field name="arch" type="xml">
+                <tree string="Mutasi Galon">
+                    <field name="code" string="Code"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="sum_s_awal" string="Saldo Awal"/>
+                    <field name="sum_deposit" string="Deposit"/>
+                    <field name="sum_qty_pinjam" string="Qty Pinjam"/>
+                    <field name="sum_qty_switch" string="Qty Switch"/>
+                    <field name="sum_gln_rusak" string="Galon Rusak"/>
+                    <field name="sum_s_akhir" string="Saldo Akhir"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id='master_mutasi_action' model='ir.actions.act_window'>
+            <field name="name">Master Mutasi Customer</field>
+            <field name="res_model">master.mutasi</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="master_mutasi_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Master Mutasi
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_master_mutasi_action"
+            name="Mutasi Galon Customer"
+            parent="stock.menu_stock_inventory_control"
+            action="master_mutasi_action"
+            sequence="112"
+            groups="base.group_user"/>
+
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!-- /////////////////////////////////////DETAILMASTERMUTASI/////////////////////////////////////// -->
+
+        <record id="detail_master_mutasi_form_view" model="ir.ui.view">
+            <field name="name">detail.master.mutasi.form.view</field>
+            <field name="model">detail.master.mutasi</field>
+            <field name="arch" type="xml">
+                <form string="Detail Master Mutasi Customer">
+                    <header>
+                        <field name="state_detail_mutasi" widget="statusbar"/>
+                    </header>
+                    <sheet string="Detail Mutasi">
+                        <group>
+                            <group>
+                                <field name="info_mutasi" string="Info Mutasi"/>
+                                <field name="tgl_mutasi" string="Tanggal Mutasi"/>
+                                <field name="mts_id" string="No. Mutasi"/>
+                                <field name="no_sj" string="No.SJ"/>
+                                <field name="partner_id" string="Customer"/>
+                                <field name="s_awal" string="Saldo Awal"/>
+                            </group>
+                            <group>
+                                <field name="deposit" string="Deposit"/>
+                                <field name="qty_pinjam" string="Qty Pinjam"/>
+                                <field name="qty_switch" string="Qty Switch"/>
+                                <field name="s_akhir" string="Saldo Akhir"/>
+                                <field name="gln_rusak" string="Galon Rusak"/>
+                                <field name="mutasi_id" string="ID Master Mutasi"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page id="page_note" string="Note">
+                                <field name="note"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="detail_master_mutasi_tree_view" model="ir.ui.view">
+            <field name="name">detail.master.mutasi.tree.view</field>
+            <field name="model">detail.master.mutasi</field>
+            <field name="arch" type="xml">
+                <tree string="Detail Mutasi Galon">
+                    <field name="info_mutasi" string="Info Mutasi" required="1"/>
+                    <field name="mts_id" string="No. Mutasi" readonly="1" force_save="1"/>
+                    <field name="tgl_mutasi" string="Tanggal Mutasi" readonly="1" force_save="1"/>
+                    <field name="partner_id" string="Customer"/>
+                    <field name="s_awal" string="Saldo Awal"/>
+                    <field name="deposit" string="Deposit"/>
+                    <field name="qty_pinjam" string="Qty Pinjam"/>
+                    <!-- <field name="qty_switch" string="Qty Switch"/> -->
+                    <field name="s_akhir" string="Saldo Akhir"/>
+                    <field name="gln_rusak" string="Galon Rusak"/>
+                    <field name="mutasi_id" string="ID Master Mutasi" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id='detail_master_mutasi_action' model='ir.actions.act_window'>
+            <field name="name">Detail Master Mutasi Customer</field>
+            <field name="res_model">detail.master.mutasi</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="detail_master_mutasi_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Detail Master Mutasi
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_detail_master_mutasi_action"
+            name="Detail Mutasi Galon Customer"
+            parent="stock.menu_stock_inventory_control"
+            action="detail_master_mutasi_action"
+            sequence="112"
+            groups="base.group_user"/>
+
+
+<!-- /////////////////////////////////////////////////////////////////////////////////////////// -->
+
+
+<!-- //////////////////////////////////WIZARD//////////////////////////////////////////////////// -->
+
+
+    <record model="ir.ui.view" id="open_mutasi_wizard">
+        <field name="name">Mutasi Wizard</field>
+        <field name="model">show.mutasi.wizard</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <header>
+                      <field name="state_mutasi" widget="statusbar"/>
+                      <button name="submit_" string="Submit" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state_mutasi', 'in', ('wait','approved','rejected'))]}"/>
+                      <button name="approved_" string="Approve" type="object" class="btn btn-primary"
+                        attrs="{'invisible': ['|',('user_can_approve','=',False),('state_mutasi', 'not in', ('wait'))]}"/>
+                      <button name="rejected_" string="Reject" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state_mutasi', 'not in', ('wait','approved'))]}"
+                        groups="mis_mutasi_galon.group_acess_reject_mutasi"/>
+                      <button name="draft_" string="Set to draft" type="object" class="btn btn-primary" attrs="{'invisible': [('state_mutasi', 'not in', ('rejected'))]}"/>
+                </header>
+                <sheet>
+                <!-- <group>
+                <notebook>
+                    <page string="Components">
+                    <field name="bom_line_ids" readonly="False">
+                                <tree string="Components" editable="bottom">
+                                    <field name="boms_id" invisible="1"/>
+                                    <field name="product_id"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="product_qty"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+                                    <field name="parent_product_tmpl_id" invisible="1"/>
+                                </tree>
+                    </field>
+                </page>
+                </notebook>
+                </group> -->
+            <group>
+                <group>
+                    <field force_save="1" name="mts_id" string="ID MTS" readonly="1" invisible="1" attrs="{'readonly': [('state_mutasi', 'in', ('wait','approved','rejected'))]}"/>
+                    <field name="no_sj" string="No.SJ" readonly="1" invisible="1" attrs="{'readonly': [('state_mutasi', 'in', ('wait','approved','rejected'))]}"/>
+                    <field name="partner_id" string="Customer" readonly="1" invisible="0" attrs="{'readonly': [('state_mutasi', 'in', ('wait','approved','rejected'))]}"/>
+                    <field name="done_qty" string="Done Qty" readonly="1"/>
+                    <field name="lot_id" string="No. Lot" readonly="1" invisible="0"/>
+                    <field name="name" string="No.Mutasi" readonly="1" attrs="{'readonly': [('state_mutasi', 'in', ('wait','approved','rejected'))]}"/>
+                </group>
+                <group>
+                    <div>
+                        <label for="remain_qty" string="Remaining Qty" style="font-size:20px" class="oe_edit_only"/>
+                            <field name="remain_qty" style="font-size:20px"/>
+                        </div>
+                    <!-- <field name="remain_qty" string="Remaining Qty" style="font-size:30px"/> -->
+                </group>
+            </group>
+                <h2><u>Informasi Galon Kembali</u></h2>
+                <group>
+                            <group >
+                                <!-- <field name="gln_kosong" string="Galon Kosong" attrs="{'readonly': [('state_mutasi', 'in', ('approved'))]}" /> -->
+                                <field name="gln_sqa" string="Galon Sanqua" attrs="{'readonly': [('state_mutasi', 'in', ('approved'))]}"/>
+                                <field name="gln_lain" string="Galon Lain" attrs="{'readonly': [('state_mutasi', 'in', ('approved'))]}"/>
+                                <field name="gln_rusak"  string="Galon Rusak" attrs="{'readonly': [('state_mutasi', 'in', ('approved'))]}"/>
+                            </group>
+                            <group>
+                                <!-- <field name="qty_switch"  string="Quantity Switch" attrs="{'readonly': [('state_mutasi', 'in', ('approved'))]}"/> -->
+                                <field name="qty_deposit" string="Quantity Deposit"  attrs="{'readonly': [('state_mutasi', 'in', ('approved'))]}"/>
+                                <field name="qty_pinjam" string="Quantity Pinjam"  attrs="{'readonly': [('state_mutasi', 'in', ('approved'))]}"/>
+                                <field name="company_id" invisible="1" attrs="{'readonly': [('state_mutasi', 'in', ('wait','approved','rejected'))]}"/>
+                            </group>
+                </group>
+                        <notebook>
+                            <page id="page_note" string="Note">
+                                <field name="note" attrs="{'readonly': [('state_mutasi', 'in', ('approved','rejected'))]}"/>
+                            </page>
+                            <page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" invisible="1"/>
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved"/></group>
+
+                            <button string="Fetch Matrix" type="object" name="fetch_mtx" class="oe_highlight" groups="base.group_system" />
+                            </page>
+                        </notebook>
+                </sheet>
+                <footer>
+                    <button string="Save" type="object" name="confirms_" class="btn btn-warning"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="open_mutasi_reject_wizard">
+        <field name="name">Show Reject Wizard</field>
+        <field name="model">mutasi.reject.wizard</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                <group>
+                    <group>
+                        <field name="reject_detail" placeholder="Add detail..."/>                    
+                    </group>
+                </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="confirm_reject" class="btn btn-warning"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <record id="info_message_wizard_form" model="ir.ui.view">
+    <field name="name">info.message.wizard.form</field>
+    <field name="model">info.message.wizard</field>
+    <field name="arch" type="xml">
+        <form>
+            <script>$(document).ready(function(){ $('.modal-dialog').css({'max-width': '497px'});
+                    $('.modal-content').css({'max-height': '46%'});});
+            </script>
+            <field name="message" readonly="True"/>
+            <footer>
+                <button name="action_close" string="Ok" type="object" default_focus="1" class="oe_highlight"/>
+                <button string="Cancel" class="btn-secondary" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+<!-- //////////////////////////////////////////////////////////////SEQUENCE MUTASI REQUEST////////////////// -->
+
+        <record id="seq_mutasi_request" model="ir.sequence">
+            <field name="name">Mutasi Request</field>
+            <field name="code">seq.mutasi.request</field>
+            <field name="prefix">MTS/GLN/%(y)s/%(month)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id"></field>
+            <field name="implementation">no_gap</field>
+        </record>
+
+        <!-- /////////////////////////////AJDUST MUTASI//////////////////////////////////////////// -->
+
+        <record id="adjust_mutasi_form_view" model="ir.ui.view">
+            <field name="name">adjust.mutasi.form.view</field>
+            <field name="model">adjust.mutasi.request</field>
+            <field name="arch" type="xml">
+                <form string="Adjust Mutasi Request" >
+                <header>
+                      <field name="state" widget="statusbar"/>
+                      <button name="submit_" string="Submit" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state', 'in', ('wait','approved','rejected'))]}"/>
+                      <button name="approved_" string="Approve" type="object" class="btn btn-primary"
+                        attrs="{'invisible': ['|',('user_can_approve','=',False),('state', 'not in', ('wait'))]}"/>
+                      <button name="rejected_" string="Reject" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state', 'not in', ('wait','approved'))]}"
+                        groups="mis_mutasi_galon.group_acess_reject_mutasi" />
+                      <button name="draft_" string="Set to draft" type="object" class="btn btn-primary" invisible="1"/>
+                </header>
+                    <sheet string="Adjust Mutasi Request">
+                        <h1><field name="name" no_label="1" readonly="1" force_save="1"/></h1>
+                        <group>
+                            <group>
+                                <field name="date" string="Tanggal Adjustment" readonly="1" force_save="1"/>
+                                <field options="{'no_create': True, 'no_open': True}" name="id_mts_customer" string="No.Mutasi Customer" required="1" attrs="{'readonly': [('state', 'in', ('approved','rejected'))]}"/>
+                                <!-- <field name="done_qty" string="Done Qty"/> -->
+                                <field name="lot_id" string="No. Lot" invisible="1"/>
+                                <!-- <field name="no_sj" string="No.SJ"/> -->
+                                <!-- <field name="partner_id" string="Customer"/> -->
+                                <!-- <field name="gln_kosong"/> -->
+                            </group>
+                            <group>
+                            <table style="width:100%">
+                            <tr class="table-secondary" style="text-align:center;">
+                                <th style="width:14%">Saldo Awal :
+                                <field name="sum_s_awal" string="Saldo Awal" readonly="1" force_save="1"/>
+                                </th>
+                                <th style="width:14%">Deposit :
+                                <field name="sum_deposit" string="Deposit" readonly="1" force_save="1"/>
+                                </th>
+                                <th style="width:14%">Qty Pinjam :
+                                <field name="sum_qty_pinjam" string="Qty Pinjam" readonly="1" force_save="1"/>
+                                </th>
+                            </tr>
+                            <tr class="table-secondary" style="text-align:center;">
+                                <th style="width:14%">Qty Switch :
+                                <field name="sum_qty_switch" string="Qty Switch" readonly="1" force_save="1"/>
+                                </th>
+                                <th style="width:14%">Galon Rusak :
+                                <field name="sum_gln_rusak" string="Galon Rusak" readonly="1" force_save="1"/>
+                                </th>
+                                <th style="width:14%">Saldo Akhir :
+                                <field name="sum_s_akhir" string="Saldo Akhir" readonly="1" force_save="1"/>
+                                </th>
+                            </tr>
+                        </table>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="deposit" string="Deposit" attrs="{'readonly': [('state', 'in', ('approved','rejected'))]}"/>
+                                <field name="gln_rusak" string="Galon Rusak" attrs="{'readonly': [('state', 'in', ('approved','rejected'))]}"/>
+                            </group>
+                            <group>
+                                <field name="qty_pinjam" string="Quantity Pinjam" attrs="{'readonly': [('state', 'in', ('approved','rejected'))]}"/>
+                                <field name="qty_switch" string="Quantity Switch" attrs="{'readonly': [('state', 'in', ('approved','rejected'))]}"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page id="page_note" string="Note">
+                                <field name="note"/>
+                            </page>
+                            <page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" invisible="1"/>
+                            <field name="approval_ids" readonly="1"/>
+                            <field name="company_id" invisible="0"/>
+                            <group><field name="approved" groups="base.group_system"/></group>
+
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                            </page>
+                            <page id="page_other" string="Other Info" invisible="1">
+                                <field name="no_det_mts_gln" string="No. Detail Mutasi Galon" readonly="1" force_save="1"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="adjust_mutasi_request_tree_view" model="ir.ui.view">
+            <field name="name">adjust.mutasi.request.tree.view</field>
+            <field name="model">adjust.mutasi.request</field>
+            <field name="arch" type="xml">
+                <tree string="Mutasi Galon">
+                    <field name="name"/>
+                    <field name="id_mts_customer" string="No.Mutasi Customer"/>
+                    <field name="state" string="Status"/>
+                    <field name="company_id" invisible="1"/>          
+                </tree>
+            </field>
+        </record>
+        
+        <record id='adjust_mutasi_request_action' model='ir.actions.act_window'>
+            <field name="name">Adjust Mutasi Galon Customer</field>
+            <field name="res_model">adjust.mutasi.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="adjust_mutasi_request_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Adjust Mutasi Galon Customer
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_adjust_mutasi_request_action"
+            name="Adjust Mutasi Galon Customer"
+            parent="stock.menu_stock_inventory_control"
+            action="adjust_mutasi_request_action"
+            sequence="112"
+            groups="base.group_user"/>
+
+<!-- //////////////////////////////////////////////////////////////SEQUENCE ADJUST MUTASI////////////////// -->
+
+        <record id="seq_adjust_mutasi_request" model="ir.sequence">
+            <field name="name">Adjust Mutasi Request</field>
+            <field name="code">seq.adjust.mutasi.request</field>
+            <field name="prefix">ADJ-MTS/%(y)s/%(month)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id"></field>
+            <field name="implementation">no_gap</field>
+        </record>
+
+        <!-- ///////////////////////////////////////////////GROUP Acess///////////////////////////////// -->
+
+    <record id="group_acess_reject_mutasi" model="res.groups">
+        <field name="name">Access Reject Mutasi Galon</field>
+    </record>
+
+  </data>
+</odoo>

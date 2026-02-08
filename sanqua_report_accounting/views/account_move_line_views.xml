@@ -1,0 +1,178 @@
+<odoo>
+    <record id="view_move_line_detail_invoice_tree" model="ir.ui.view">
+        <field name="name">account.move.line.tree</field>
+        <field name="model">account.move.line</field>
+        <field eval="1000" name="priority"/>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false" delete="false">
+                <field name="partner_id" string="Nama Pelanggan"/>
+                <field name="company_id"/>
+                <field name="move_id" string="Invoice"/>
+                <field name="date" string="Invoice Date"/>
+                <field name="product_id"/>
+                <field name="product_categ_id" />
+                <field name="name" optional="hide"/>
+                <field name="account_id" optional="hide"/>
+                <field name="asset_account_id" optional="hide"/>
+                <field name="analytic_account_id" optional="hide"/>
+                <field name="quantity"/>
+                <field name="product_uom_id" optional="show"/>
+                <field name="price_unit"/>
+                <field name="display_discount"/>
+                <field name="tax_ids" widget="many2many_tags"/>
+                <field name="price_subtotal" sum="price_subtotal"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_move_line_detail_vendor_tree" model="ir.ui.view">
+        <field name="name">account.move.line.tree</field>
+        <field name="model">account.move.line</field>
+        <field eval="1000" name="priority"/>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false" delete="false">
+                <field name="partner_id" string="Nama Pelanggan"/>
+                <field name="company_id"/>
+                <field name="move_id" string="No. Bill"/>
+                <field name="date" string="Invoice Date"/>
+                <field name="product_id"/>
+                <field name="product_categ_id" />
+                <field name="name" optional="hide"/>
+                <field name="account_id" optional="hide"/>
+                <field name="asset_account_id" optional="hide"/>
+                <field name="analytic_account_id" optional="hide"/>
+                <field name="quantity"/>
+                <field name="product_uom_id" optional="show"/>
+                <field name="price_unit"/>
+                <field name="display_discount"/>
+                <field name="tax_ids" widget="many2many_tags"/>
+                <field name="price_subtotal" sum="price_subtotal"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="detail_invoice_filter" model="ir.ui.view">
+        <field name="name">account.move.line.search</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Detail Invoice">
+                <field name="move_id" string="Invoice" filter_domain="[
+                    '|', '|', '|',
+                    ('name', 'ilike', self), ('ref', 'ilike', self), ('account_id', 'ilike', self), ('partner_id', 'ilike', self)]"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="journal_id"/>
+                <field name="tax_ids" />
+                <field name="tax_line_id" string="Originator Tax"/>
+                <separator/>
+                <filter string="Unposted" name="unposted" domain="[('move_id.state', '=', 'draft')]" help="Unposted Journal Items"/>
+                <filter string="Posted" name="posted" domain="[('move_id.state', '=', 'posted')]" help="Posted Journal Items"/>
+                <separator/>
+                <filter string="To Check" name="to_check" domain="[('move_id.to_check', '=', True)]"/>
+                <separator/>
+                <filter string="Sales" name="sales" domain="[('move_id.journal_id.type', '=', 'sale')]" context="{'default_journal_type': 'sale'}"/>
+                <filter string="Purchases" name="purchases" domain="[('move_id.journal_id.type', '=', 'purchase')]" context="{'default_journal_type': 'purchase'}"/>
+                <filter string="Bank" name="bank" domain="[('move_id.journal_id.type', '=', 'bank')]" context="{'default_journal_type': 'bank'}"/>
+                <filter string="Cash" name="cash" domain="[('move_id.journal_id.type', '=', 'cash')]" context="{'default_journal_type': 'cash'}"/>
+                <filter string="Miscellaneous" domain="[('move_id.journal_id.type', '=', 'general')]" name="misc_filter" context="{'default_journal_type': 'general'}"/>
+                <separator/>
+                <filter string="Date" name="date" date="date"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Invoice" name="group_by_move" domain="[]" context="{'group_by': 'move_id'}"/>
+                    <filter string="Partner" name="group_by_partner" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Journal" name="journal" domain="[]" context="{'group_by': 'journal_id'}"/>
+                    <filter string="Date" name="groupby_date" domain="[]" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="detail_vendor_bill_filter" model="ir.ui.view">
+        <field name="name">account.move.line.search</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <search string="Search Detail Bill">
+                <field name="move_id" string="Bill" filter_domain="[
+                    '|', '|', '|',
+                    ('name', 'ilike', self), ('ref', 'ilike', self), ('account_id', 'ilike', self), ('partner_id', 'ilike', self)]"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="journal_id"/>
+                <field name="tax_ids" />
+                <field name="tax_line_id" string="Originator Tax"/>
+                <separator/>
+                <filter string="Unposted" name="unposted" domain="[('move_id.state', '=', 'draft')]" help="Unposted Journal Items"/>
+                <filter string="Posted" name="posted" domain="[('move_id.state', '=', 'posted')]" help="Posted Journal Items"/>
+                <separator/>
+                <filter string="To Check" name="to_check" domain="[('move_id.to_check', '=', True)]"/>
+                <separator/>
+                <filter string="Sales" name="sales" domain="[('move_id.journal_id.type', '=', 'sale')]" context="{'default_journal_type': 'sale'}"/>
+                <filter string="Purchases" name="purchases" domain="[('move_id.journal_id.type', '=', 'purchase')]" context="{'default_journal_type': 'purchase'}"/>
+                <filter string="Bank" name="bank" domain="[('move_id.journal_id.type', '=', 'bank')]" context="{'default_journal_type': 'bank'}"/>
+                <filter string="Cash" name="cash" domain="[('move_id.journal_id.type', '=', 'cash')]" context="{'default_journal_type': 'cash'}"/>
+                <filter string="Miscellaneous" domain="[('move_id.journal_id.type', '=', 'general')]" name="misc_filter" context="{'default_journal_type': 'general'}"/>
+                <separator/>
+                <filter string="Date" name="date" date="date"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Bill" name="group_by_move" domain="[]" context="{'group_by': 'move_id'}"/>
+                    <filter string="Partner" name="group_by_partner" domain="[]" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Journal" name="journal" domain="[]" context="{'group_by': 'journal_id'}"/>
+                    <filter string="Date" name="groupby_date" domain="[]" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="detail_invoice_action" model="ir.actions.act_window">
+        <field name="name">Detail Customer Invoice</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[('type', '=', 'out_invoice'), ('exclude_from_invoice_tab', '=', False), ('move_id.state', '!=', 'cancel')]]</field>
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('sanqua_report_accounting.view_move_line_detail_invoice_tree'), 'sequence':2}),
+                ]"/>
+        <field name="search_view_id" ref="detail_invoice_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            </p>
+        </field>
+    </record>
+
+    <record id="detail_bill_action" model="ir.actions.act_window">
+        <field name="name">Detail Vendor Bill</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[('type', '=', 'in_invoice'), ('exclude_from_invoice_tab', '=', False), ('move_id.state', '!=', 'cancel')]]</field>
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('sanqua_report_accounting.view_move_line_detail_vendor_tree'), 'sequence':2}),
+                ]"/>
+        <field name="search_view_id" ref="detail_vendor_bill_filter"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            </p>
+        </field>
+    </record>
+    
+    <menuitem id="detail_invoice_menu"
+            name="Detail Customer Invoice"
+            parent="account.menu_finance_reports"
+            action="detail_invoice_action"
+            sequence="0"/>
+
+    <menuitem id="detail_invoice_menu_sale"
+            name="Detail Customer Invoice"
+            parent="sale.menu_sale_report"
+            action="detail_invoice_action"
+            sequence="0"/>
+    <menuitem id="detail_bill_menu"
+            name="Detail Vendor Bill"
+            parent="account.menu_finance_reports"
+            action="detail_bill_action"
+            sequence="0"/>
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id= "assets_backend_mis_api" name="mis_api_token_assets" 
+        inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/css" 
+                href="/mis_api_token/static/src/css/styleku.css"/>
+        </xpath>
+    </template>
+</odoo>

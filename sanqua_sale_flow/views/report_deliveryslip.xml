@@ -1,0 +1,25 @@
+<odoo>
+    <template id="report_delivery_document_not_allowed">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page" style="padding-top: 200px;">
+                    <h2>
+                        <p>Not allowed to print this document.</p>
+                    </h2>
+                </div>
+            </t>
+         </t>
+    </template>
+
+    <template id="report_deliveryslip_inherits" inherit_id="stock.report_deliveryslip">
+        <xpath expr="//t[@t-call='stock.report_delivery_document']" position="replace">
+            <t t-if="o.allow_print == true">
+                <t t-call="stock.report_delivery_document" t-lang="o.partner_id.lang"/>
+                <t t-esc="o.printing_slip_constrains()"/>
+            </t>
+            <t t-else="">
+                <t t-call="sanqua_sale_flow.report_delivery_document_not_allowed" t-lang="o.partner_id.lang"/>
+            </t>
+        </xpath>
+    </template>
+</odoo>

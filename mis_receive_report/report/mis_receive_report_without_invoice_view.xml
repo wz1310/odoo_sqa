@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mis_receive_report_without_invoice_tree" model="ir.ui.view">
+        <field name="name">mis.rcv.report.without.invoice.tree</field>
+        <field name="model">mis.receive.report.without.invoice</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="vendor_name"/>
+                <field name="vendor_code"/>
+                <field name="po_no"/>
+                <field name="po_date"/>
+                <field name="gr_no"/>
+                <field name="date_received"/>
+                <field name="product_category"/>
+                <field name="product_code"/>
+                <field name="product_name"/>
+                <field name="qty_done"/>
+                <field name="qty_return"/>
+                <field name="qty_net"/>
+                <field name="uom"/>
+                <field name="price_unit"/>
+                <field name="diskon"/>
+                <field name="tot_net"/>
+                <!-- <field name="bill_no"/>
+                <field name="etax_no"/>
+                <field name="bill_ref_no"/>
+                <field name="accounting_date"/>
+                <field name="amount_untaxed"/> -->
+                <field name="company_id"/>
+                <!-- <field name="company_name"/> -->
+            </tree>
+        </field>
+    </record>
+
+    <record id="mis_receive_report_without_invoice_search" model="ir.ui.view">
+        <field name="name">mis.rcv.report.without.invoice.search</field>
+        <field name="model">mis.receive.report.without.invoice</field>
+        <field name="arch" type="xml">
+            <search string="Laporan Penerimaan Barang">
+                <field name="vendor_name"/>
+                <field name="vendor_code"/>
+                <field name="po_no"/>
+                <field name="gr_no"/>
+                <field name="product_category"/>
+                <field name="product_code"/>
+                <field name="product_name"/>
+                <!-- <field name="bill_no"/> -->
+                <!-- <field name="bill_ref_no"/> -->
+                <field name="date_received"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_mis_receive_report_without_invoice" model="ir.actions.act_window">
+        <field name="name">Laporan Penerimaan Barang</field>
+        <field name="res_model">mis.receive.report.without.invoice</field>
+        <field name="view_mode">tree,pivot,graph</field>
+    </record>
+
+    <menuitem id="menu_mis_receive_report2"
+                  name="Laporan Penerimaan Barang2"
+                  action="action_mis_receive_report_without_invoice"
+                  parent="stock.menu_warehouse_report"
+                  sequence="154"/>
+</odoo>

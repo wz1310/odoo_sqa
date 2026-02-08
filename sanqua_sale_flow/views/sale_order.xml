@@ -1,0 +1,354 @@
+<odoo>
+
+	<record model="ir.ui.view" id="interco_view_order_form_inherited">
+		<field name="name">Interco View Order Form Inherited</field>
+		<field name="model">sale.order</field>
+		<field name="inherit_id" ref="multi_intercompany_procurement_order.interco_view_order_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//group[@name='interco_procurement']/field[last()]" position="after">
+				<field name="interco_master"/>
+			</xpath>
+		</field>
+	</record>
+
+	<!-- sale.view_order_form -->
+	<record model="ir.ui.view" id="inherited_view_order_form">
+		<field name="name">Inherited View Order Form</field>
+		<field name="model">sale.order</field>
+		<field name="inherit_id" ref="sale.view_order_form" />
+		<field name="arch" type="xml">
+
+			<!-- replace origin sales_team_id position -->
+			<!-- because we dont know if sales team used in other xpath expression or other so we only readonly and invisible it -->
+			
+			<field name="team_id" position="replace"/>
+			<xpath expr="//button[@name='action_quotation_send'][1]" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+
+			<xpath expr="//button[@name='action_quotation_send'][2]" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+
+			<xpath expr="//button[@name='action_confirm'][2]" position="attributes">
+				<attribute name="attrs">{'invisible': ['|',('state', 'not in', ['draft']),('limit_approval_state','not in', ['draft','limit_approval_state'])]}</attribute>
+				<attribute name="confirm">Sudah Memeriksa Discount/Promosi?</attribute>
+			</xpath>
+			<xpath expr="//button[@name='%(sale.action_view_sale_advance_payment_inv)d']" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+
+			<xpath expr="//button[@name='action_confirm'][2]" position="attributes">
+				<attribute name="class">btn-primary</attribute>
+			</xpath>
+			<field name="partner_id" position="attributes">
+				<attribute name="attrs">{'readonly':[('sale_agreement_id','!=',False)]}</attribute>
+				
+			</field>
+			<field name="partner_invoice_id" position="attributes">
+				<attribute name="attrs">{'readonly':[('sale_agreement_id','!=',False)]}</attribute>
+			</field>
+
+			<xpath expr="//sheet" position="before">
+				<field name="blacklist_partner" invisible="1"/>
+				<div class="alert alert-danger" role="alert" attrs="{'invisible':[('blacklist_partner','=',False)]}">
+					<i class="fa fa-exclamation-triangle"></i>
+					<b>  CUSTOMER HAS BEEN BLACKLIST.</b>
+				</div>
+			</xpath>
+			<!-- add fields -->
+			<field name="partner_id" position="before">
+				<field name="credit_limit_value" invisible="1"/>
+				<field name="team_id" attrs="{'readonly':[('sale_agreement_id','!=',False)], 'required':[('interco_master','=',True)]}" kanban_view_ref="1028" options="{'no_create': True}" domain="[('state', '=', 'done')]"/>
+				<field name="partner_pricelist_team_id" readonly="0" invisible="1"/>
+			</field>
+			<field name="sale_order_template_id" position="before">
+				<!-- add  fields-->
+				<field name="plant_id" options="{'no_create':True, 'no_quick_create': True, 'no_open':True}" attrs="{'required':[('interco_master','=',True)], 'invisible':[('interco_master','=',False)]}" domain="[('id','!=',company_id)]" />
+				<field name="allowed_company_ids" widget="many2many_tags" invisible="1" />
+				<field name="vehicle_model_id" options="{'no_create':True, 'no_quick_create':True}" attrs="{'required':[('interco_master','=',True)]}" />
+				<field name="sale_mix_ids" context="{'show_division':1}"  attrs="{'readonly':[('state','not in',['draft'])]}" widget="many2many_tags" domain="[('partner_id','=',partner_id), ('id','!=',id)]" />
+				
+			</field>
+
+			<xpath expr="//sheet/notebook/page[@name='other_information']/group[@name='interco_procurement']/field[@name='interco_purchase_ids']" position="after">
+				<field name="interco_ref_picking_ids" widget="many2many_tags" readonly="1"/>
+				<field name="allowed_company_ids" widget="many2many_tags" />
+			</xpath>
+
+			<xpath expr="//form/sheet/group[1]/group[2]/field[1]" position="before">
+				<field name="order_pickup_method_id" options="{'no_create':True}" attrs="{'required':[('interco_master','=',True)]}" />
+			</xpath>
+
+			<button name="action_cancel" position="attributes">
+				<attribute name="attrs">{'invisible':['|', ('state','not in',['draft']), ('limit_approval_state','not in',['draft'])]}</attribute>
+				<attribute name="states"></attribute>
+			</button>
+
+			<field name="sale_order_template_id" position="attributes"><attribute name="invisible">1</attribute></field>
+
+			<xpath expr="//page[@name='other_information']/group[last()]" position="after">
+				<group name="group_sale_flow_tech" groups="base.group_system">
+					<field name="partner_can_direct_pickup" invisible="1" />
+					<field name="limit_approval_state" />
+					<field name="status_so" />
+					<field name="user_can_approve" />
+				</group>
+			</xpath>
+			<field name="pricelist_id" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</field>
+			<field name="user_id" position="after">
+				<field name="pricelist_id" readonly="1"/>
+			</field>
+			<field name="company_id" position="before">
+				
+			</field>
+			<xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
+				<field name="take_in_plant_disc_nom" attrs="{'readonly':[('state','not in',['draft'])]}" invisible="1" />
+			</xpath>
+			<xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
+				<attribute name="groups">sales_team.group_sale_salesman,sales_team.group_sale_salesman_all_leads</attribute>
+				<attribute name="attrs">{'readonly': [('agreement_line_id', '!=', False)]}</attribute>
+				<attribute name="force_save">1</attribute>
+			</xpath>
+			<xpath expr="//field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
+				<attribute name="groups">sales_team.group_sale_salesman,sales_team.group_sale_salesman_all_leads</attribute>
+			</xpath>
+			<xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="attributes">
+				<attribute name="groups">sales_team.group_sale_salesman,sales_team.group_sale_salesman_all_leads</attribute>
+			</xpath>
+			<xpath expr="//field[@name='order_line']/tree/field[@name='product_type']" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+			<xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+				<attribute name="options">{'no_quick_create':1,'no_create':1}</attribute>
+			</xpath>
+			
+			
+			
+			<xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+				<field name="agreement_line_id" force_save="1" invisible="1"/>
+			</xpath>
+			<xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+				<field name="discount_changed" invisible="1"/>
+				<field name="price_subtotal_include" optional="hide"/>
+			</xpath>
+			
+			<xpath expr="//field[@name='amount_untaxed']" position="attributes">
+				<attribute name="groups">sales_team.group_sale_salesman,sales_team.group_sale_salesman_all_leads</attribute>
+			</xpath>
+			<xpath expr="//field[@name='amount_tax']" position="attributes">
+				<attribute name="groups">sales_team.group_sale_salesman,sales_team.group_sale_salesman_all_leads</attribute>
+			</xpath>
+			<xpath expr="//field[@name='amount_total']" position="attributes">
+				<attribute name="groups">sales_team.group_sale_salesman,sales_team.group_sale_salesman_all_leads</attribute>
+			</xpath>
+			<xpath expr="//label[@for='amount_total']" position="attributes">
+				<attribute name="groups">sales_team.group_sale_salesman,sales_team.group_sale_salesman_all_leads</attribute>
+			</xpath>
+			<xpath expr="//field[@name='margin']" position="attributes">
+				<attribute name="groups">sales_team.group_sale_salesman,sales_team.group_sale_salesman_all_leads</attribute>
+			</xpath>
+
+
+			
+			<xpath expr="//field[@name='date_order']" position="replace"></xpath>
+			<xpath expr="//field[@name='validity_date']" position="replace"></xpath>
+
+			<xpath expr="//group[@name='sale_shipping']/label[@for='commitment_date']" position="replace"></xpath>
+			
+			<xpath expr="//field[@name='payment_term_id']" position="after">
+				<field name="discount_changed" invisible="1"/>
+				<field name="priority_type" />
+				<field name="date_order_mask" />
+				<field name="date_order" invisible="1"/>
+				<field name="commitment_date_mask" />
+				<field name="commitment_date" invisible="1"/>
+				<field name="validity_date" />
+				
+			</xpath>
+
+			<field name="date_order" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</field>
+
+			<xpath expr="//label[@for='date_order']" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+
+			<xpath expr="//field[@name='user_id']" position="replace"></xpath>
+			<field name="partner_id" position="after">
+				
+				<field name="user_id" readonly="1" force_save="1" />
+			</field>
+
+			<field name="margin" position="attributes"><attribute name="invisible">1</attribute></field>
+			<header position="inside">
+				
+				<button string="REQUEST APPROVAL" type="object" name="btn_request_approval_limit" confirm="REQUEST APPROVAL?" class="oe_highlight" attrs="{'invisible':[('limit_approval_state', '!=', 'need_approval_request')]}" />
+				
+				<button string="Approve" type="object" name="btn_approve_limit" confirm="Approve?" class="oe_highlight" attrs="{'invisible':['|',('limit_approval_state','!=','need_approval'),('user_can_approve','=',False)]}" />
+				<!-- <button string="Reject" type="object" name="btn_reject_limit" confirm="Reject?" class="oe_highlight" attrs="{'invisible':['|',('limit_approval_state','!=','need_approval'),('user_can_approve','=',False)]}" /> -->
+				<button string="Reject" type="object" name="open_reject_message_wizard" class="oe_highlight" attrs="{'invisible':['|',('limit_approval_state','!=','need_approval'),('user_can_approve','=',False)]}" />
+
+				<field name="can_cancel_approved" invisible="1"/>
+				<button string="Cancel" type="object" name="btn_cancel_approval" class="oe_highlight" attrs="{'invisible':['|',('state','not in', ['sale']), ('can_cancel_approved','=',False)]}" confirm="Cancel?" />
+				
+			</header>
+
+			<xpath expr="//form/sheet/div[hasclass('oe_button_box')]" position="after">
+				<widget name="web_ribbon" text="Overdue" bg_color="bg-danger" attrs="{'invisible': ['|','|', ('status_so','!=','1'), ('limit_approval_state', 'not in', ['draft','need_approval_request','need_approval']), ('id', '=', False)]}"/>
+
+				<widget name="web_ribbon" text="Overlimit" bg_color="bg-danger" attrs="{'invisible': ['|','|', ('status_so','!=','2'), ('limit_approval_state', 'not in', ['draft','need_approval_request','need_approval']), ('id', '=', False)]}"/>
+
+				<widget name="web_ribbon" text="Overlimit &amp; Overdue" bg_color="bg-danger" attrs="{'invisible': ['|','|', ('status_so','!=','3'), ('limit_approval_state', 'not in', ['draft','need_approval_request','need_approval']), ('id', '=', False)]}"/>
+			</xpath>
+
+			<xpath expr="//page[@name='other_information']/group[last()]" position="before">
+				<group groups="base.group_system">
+					<button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+				</group>
+			</xpath>
+
+			<xpath expr="//page[@name='other_information']" position="before">
+				<page name="page_overlimit" string="Overlimit" attrs="{'invisible': [('status_so','not in',['2','3'])]}" >
+				
+					<field name="partner_pricelist_ids">
+						<tree string="Pricelist Limit" decoration-success="parent.team_id==team_id">
+							<field name="team_id" />
+							<field name="credit_limit" />
+							<field name="current_credit" />
+							<field name="remaining_limit" />
+							<field name="company_id"/>
+						</tree>
+					</field>
+					<group>
+						<field name="overlimit_value"/>
+					</group>
+				</page>
+				<page name="page_overdue" string="Overdue" attrs="{'invisible': [('status_so','not in',['1','3'])]}">
+					<field name="overdue_invoice_ids">
+						<tree string="Overdue Invoices" decoration-success="parent.team_id==team_id">
+							<field name="name" string="Invoice"/>
+							<field name="invoice_date" />
+							<field name="invoice_origin" />
+							<field name="team_id" />
+							<field name="invoice_payment_term_id" />
+							<field name="overdue_days" />
+							<field name="invoice_date_due"/>
+							<field name="amount_residual_signed" />
+							<field name="currency_id" invisible="1" />
+							<field name="state" invisible="1"/>
+						</tree>
+					</field>
+				</page>
+				<page string="Note" name="note">
+					<field name="internal_sale_notes" string="Note" placeholder="Add an internal note that will be printed on the Picking Operations Form"/>
+				</page>
+			</xpath>
+
+
+		</field>
+	</record>
+
+
+	<record model="ir.ui.view" id="view_order_form_inherit_sale_stock_inherited">
+		<field name="name">view_order_form_inherit_sale_stock inherited</field>
+		<field name="model">sale.order</field>
+		<field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock" />
+		<field name="arch" type="xml">
+			<xpath expr="//button[@name='action_view_delivery']" position="attributes">
+				<attribute name="groups">base.group_no_one,stock.group_stock_user</attribute>
+				<attribute name="attrs">{'invisible': [('delivery_count', '=', 0)]}</attribute>
+			</xpath>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="sale_credit_limit_sale_order_form_view_inherited">
+		<field name="name">sale_credit_limit_sale_order_form_view_inherited inherited</field>
+		<field name="model">sale.order</field>
+		<field name="inherit_id" ref="sale_credit_limit.sale_order_form_view" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='status_so']" position="replace" />
+		</field>
+	</record>
+
+	<record model="ir.ui.menu" id="sale.menu_sale_quotations">
+		<field name="name">Sale Order</field>
+	</record>
+
+	<record model="ir.ui.menu" id="sale.sale_order_menu">
+		<field name="name">Order</field>
+	</record>
+
+	<record model="ir.ui.menu" id="sale.menu_sale_order">
+		<field name="name">Order Confirmation</field>
+	</record>
+
+	<record model="ir.actions.act_window" id="sale.action_quotations_with_onboarding">
+		<field name="name">Sale Order</field>
+	</record>
+
+	<record id="view_order_form_discount_inherit" model="ir.ui.view">
+		<field name="name">sale.order.form.discount.inherit</field>
+		<field name="model">sale.order</field>
+		<field name="inherit_id" ref="pci_discounts_advance.view_order_form_discount"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='order_line']/tree/field[@name='discount_fixed_line']" position="attributes">
+				<attribute name="groups">sales_team.group_sale_salesman,sales_team.group_sale_salesman_all_leads</attribute>
+				<attribute name="attrs">{'readonly': [('agreement_line_id', '!=', False)]}</attribute>
+				<attribute name="force_save">1</attribute>
+			</xpath>
+			<xpath expr="//field[@name='order_line']/tree/field[@name='multi_discounts']" position="attributes">
+				<attribute name="groups">sales_team.group_sale_salesman,sales_team.group_sale_salesman_all_leads</attribute>
+				<attribute name="attrs">{'readonly': [('agreement_line_id', '!=', False)]}</attribute>
+				<attribute name="force_save">1</attribute>
+			</xpath>
+			<xpath expr="//field[@name='order_line']/tree/field[@name='display_discount']" position="attributes">
+				<attribute name="groups">sales_team.group_sale_salesman,sales_team.group_sale_salesman_all_leads</attribute>
+				<attribute name="attrs">{'readonly': [('agreement_line_id', '!=', False)]}</attribute>
+				<attribute name="force_save">1</attribute>
+			</xpath>
+			<xpath expr="//field[@name='order_line']/tree/field[@name='tax_id']" position="attributes">
+				<attribute name="attrs">{'readonly': [('agreement_line_id', '!=', False)]}</attribute>
+				<attribute name="force_save">1</attribute>
+			</xpath>
+		</field>
+	</record>
+
+
+	<record model="ir.ui.view" id="view_quotation_tree_inherited">
+		<field name="name">Inherited view_quotation_tree</field>
+		<field name="model">sale.order</field>
+		<field name="inherit_id" ref="sale.view_quotation_tree" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='company_id']" position="before">
+				<field name="team_id"/>
+				<field name="priority_type"/>
+				<field name="order_pickup_method_id"/>
+				<field name="plant_id"/>
+				<field name="total_qty"/>
+				<field name="total_delivered_qty"/>
+				<field name="amount_total"/>
+				<field name="partner_shipping_id"/>
+				<field name="internal_sale_notes"/>
+				<field name="status_so"/>
+				
+				<field name="invoice_status"/>
+			</xpath>
+				
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="view_sales_order_filter">
+		<field name="name">sale.sale_order_view_search_inherit_quotation</field>
+		<field name="model">sale.order</field>
+		<field name="inherit_id" ref="sale.view_sales_order_filter" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='order_line']" position="after">
+				<field name="interco_ref_picking_ids" />
+			</xpath>
+		</field>
+	</record>
+</odoo>

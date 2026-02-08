@@ -1,0 +1,16 @@
+<odoo>
+    
+    <record id="group_performa_salesman_report" model="res.groups">
+        <field name="name">A12 - Performa Salesman Report</field>
+    </record>
+
+    <record model="ir.rule" id="rule_report_performa_salesman_global_user">
+        <field name="name">Rule Salesman Performa Global User</field>
+        <field name="model_id" ref="model_report_performa_salesman" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+    </record>
+</odoo>

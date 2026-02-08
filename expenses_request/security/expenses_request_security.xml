@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.module.category" id="module_category_expenses_request">
+             <field name="name">Expenses Request Position</field>
+             <field name="description">User access level for Expense Request module</field>
+             <field name="sequence">80</field>
+        </record>
+        <record id="expenses_request_user" model="res.groups">
+            <field name="name">Expense Request User</field>
+            <field name="category_id" ref="module_category_expenses_request"/>
+        </record>
+        <record id="expenses_request_manager" model="res.groups">
+            <field name="name">Expense Request Manager</field>
+            <field name="category_id" ref="module_category_expenses_request"/><!-- 
+            <field name="implied_ids" eval="[(4, ref('expenses_request_user'))]"/> -->
+        </record>
+        <record id="expenses_request_general_manager" model="res.groups">
+            <field name="name">Expense Request General Manager</field>
+            <field name="category_id" ref="module_category_expenses_request"/><!-- 
+            <field name="implied_ids" eval="[(4, ref('expenses_request_manager'))]"/> -->
+        </record>
+        <record id="expenses_request_direktur" model="res.groups">
+            <field name="name">Expense Request Direktur</field>
+            <field name="category_id" ref="module_category_expenses_request"/><!-- 
+            <field name="implied_ids" eval="[(4, ref('expenses_request_general_manager'))]"/> -->
+        </record>
+        <record id="expenses_request_managing_direktur" model="res.groups">
+            <field name="name">Expense Request Managing Direktur</field>
+            <field name="category_id" ref="module_category_expenses_request"/><!-- 
+            <field name="implied_ids" eval="[(4, ref('expenses_request_direktur'))]"/> -->
+        </record>
+        <record id="expenses_request_user_budget" model="res.groups">
+            <field name="name">Expense Request Budget User</field>
+            <field name="category_id" ref="module_category_expenses_request"/>
+        </record>
+        <record id="expenses_request_manager_budget" model="res.groups">
+            <field name="name">Expense Request Budget Manager</field>
+            <field name="category_id" ref="module_category_expenses_request"/><!-- 
+            <field name="implied_ids" eval="[(4, ref('expenses_request_user'))]"/> -->
+        </record>
+        <record id="expenses_request_corporate" model="res.groups">
+            <field name="name">Expense Request Corporate</field>
+            <field name="category_id" ref="module_category_expenses_request"/><!-- 
+            <field name="implied_ids" eval="[(4, ref('expenses_request_manager'))]"/> -->
+        </record>
+        <record id="expenses_request_bendahara_ypk" model="res.groups">
+            <field name="name">Expense Request Bendahara YPK</field>
+            <field name="category_id" ref="module_category_expenses_request"/><!-- 
+            <field name="implied_ids" eval="[(4, ref('expenses_request_direktur'))]"/> -->
+        </record>
+        <record id="expenses_request_vip_akses" model="res.groups">
+            <field name="name">Expense Request VIP</field>
+            <field name="category_id" ref="module_category_expenses_request"/><!-- 
+            <field name="implied_ids" eval="[(4, ref('expenses_request_direktur'))]"/> -->
+        </record>
+
+        <!-- 
+        <record model="ir.rule" id="expenses_request_manager_rule">
+            <field name="name">Personal Manager</field>
+            <field name="model_id" ref="model_expenses_request"/>
+            <field name="groups" eval="[(6,0, [ref('expenses_request.expenses_request_manager')])]"/>
+            <field name="domain_force">[('employee_id', '=', user.employee_ids.id)]</field>
+        </record>
+        <record model="ir.rule" id="expenses_request_general_manager_rule">
+            <field name="name">Personal General Manager</field>
+            <field name="model_id" ref="model_expenses_request"/>
+            <field name="groups" eval="[(6,0, [ref('expenses_request.expenses_request_general_manager')])]"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">[('manager_id', '=', user.employee_ids.id)]</field>
+        </record>
+        <record model="ir.rule" id="hr_expense_general_manager_rule">
+            <field name="name">Personal Hr Expense General Manager</field>
+            <field name="model_id" ref="model_hr_expense"/>
+            <field name="groups" eval="[(6,0, [ref('expenses_request.expenses_request_general_manager')])]"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', '|', '|',
+                ('employee_id.user_id', '=', user.id),
+                ('employee_id.department_id.manager_id.user_id', '=', user.id),
+                ('employee_id.parent_id.user_id', '=', user.id),
+                ('employee_id.expense_manager_id', '=', user.id)]</field>
+        </record>
+        <record model="ir.rule" id="hr_expense_direktur_rule">
+            <field name="name">Personal Hr Expense Direktur</field>
+            <field name="model_id" ref="model_hr_expense"/>
+            <field name="groups" eval="[(6,0, [ref('expenses_request.expenses_request_direktur')])]"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', '|', '|',
+                ('employee_id.user_id', '=', user.id),
+                ('employee_id.department_id.manager_id.user_id', '=', user.id),
+                ('employee_id.parent_id.user_id', '=', user.id),
+                ('employee_id.expense_manager_id', '=', user.id)]</field>
+        </record> -->
+</odoo>

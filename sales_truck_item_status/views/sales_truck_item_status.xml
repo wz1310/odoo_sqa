@@ -1,0 +1,115 @@
+<odoo>
+    <record model="ir.ui.view" id="sale_truck_item_status_search_view">
+        <field name="name">Sale Truck Item Status Search</field>
+        <field name="model">sale.truck.item.status</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="sale_truck_id"/>
+                <field name="partner_id"/>
+                <field name="order_type"/>
+                <field name="product_id"/>
+                <field name="picking_id"/>
+                <field name="origin"/>
+            </search>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="sale_truck_item_status_tree_view">
+        <field name="name">Sale Truck Item Status Tree</field>
+        <field name="model">sale.truck.item.status</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sale_truck_id" options="{'no_quick_create':True,'no_create':True}"/>
+                <field name="transaction_date"/>
+                <field name="partner_id"/>
+                <field name="order_type"/>
+                <field name="move_type" optional="hide"/>
+                <field name="product_id"/>
+                <field name="picking_id"/>
+                <field name="origin"/>
+                <field name="qty" optional="hide"/>
+                <field name="qty_calc"  optional="show" sum="Total"/>
+                <button string="Update" invisible="not context.get('btn_update_stock_card')" type="object" name="open_form" class="oe_stat_button" icon="fa-pencil" groups="sales_truck_item_status.group_sale_truck_item_status_manager" />
+            </tree>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="sale_truck_item_status_form_view">
+        <field name="name">Sales Truck Item Status Form</field>
+        <field name="model">sale.truck.item.status</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <header></header>
+                <sheet>
+                    <h1>
+                        <field name="sale_truck_id" options="{'no_quick_create':True,'no_create':True}" domain="[('state','in',['done'])]"/>
+                    </h1>
+                    <h1>
+                        <field name="picking_id" options="{'no_quick_create':True,'no_create':True}" />
+                    </h1>
+                    <h2>
+                        <field name="order_type"/>
+                    </h2>
+                    <group>
+                        <group>
+                            <field name="partner_id" options="{'no_quick_create':True,'no_create':True}" />
+                            <field name="transaction_date" />
+                            <field name="company_id" options="{'no_quick_create':True,'no_create':True}" />
+                            <field name="active" />
+                            <field name="move_type" />
+                            <field name="qty_calc" />
+                        </group>
+                        <group>
+                            <!-- START HERE -->
+                            <!-- YOU CAN ERASE THIS SYNTAX -->
+                            <field name="product_id" options="{'no_quick_create':True,'no_create':True}" />
+                            <field name="qty_calc" readonly="1"/>
+                            <field name="origin"/>
+                        </group>
+                    </group>
+                </sheet>
+                <!--<footer></footer>-->
+                
+                <!-- UNCOMMENT IF USING Mail Track SYSTEM -->
+                <!--<div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>-->
+            </form>
+        </field>
+    </record>
+
+    <record id="sale_truck_item_status_pivot" model="ir.ui.view">
+        <field name="name">Sale Truck Item Status Pivot</field>
+        <field name="model">sale.truck.item.status</field>
+        <field name="arch" type="xml">
+            <pivot string="Sale Truck Item Status Pivot" disable_linking="True">
+                <field name="partner_id" type="row"/>
+                <field name="product_id" type="col"/>
+                <field name="order_type" type="col"/>
+                <field name="qty_calc" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_sale_truck_item_status">
+        <field name="name">Stock Card Moves (Galon)</field>
+        <field name="res_model">sale.truck.item.status</field>
+        <!-- IF ODOO Version <= 12.0 REQUIRE view_type (UNCOMMENT THIS) -->
+        <!-- <field name="view_type">form</field> -->
+        <field name='view_mode'>pivot,tree,form</field>
+        <!-- <field name='view_id' ref='ref_view_id'/> -->
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'pivot', 'view_id': ref('sales_truck_item_status.sale_truck_item_status_pivot'), 'sequence':1}),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('sales_truck_item_status.sale_truck_item_status_tree_view'), 'sequence':2}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('sales_truck_item_status.sale_truck_item_status_form_view'), 'sequence':3})
+                ]"/>
+    </record>
+
+
+    <menuitem action="action_sale_truck_item_status" id="sale_truck_item_status_menu" name="Galon Moves" sequence="109" parent="stock.menu_warehouse_report" />
+</odoo>

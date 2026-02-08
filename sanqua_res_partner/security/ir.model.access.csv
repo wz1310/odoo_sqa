@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_evaluasi_supplier_user,access_evaluasi_supplier_user,model_evaluasi_supplier,contact_flow.group_contact_field_user,1,0,0,0
+access_evaluasi_supplier_manager,access_evaluasi_supplier_manager,model_evaluasi_supplier,contact_flow.group_contact_field_manager,1,1,1,1

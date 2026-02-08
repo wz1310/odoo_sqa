@@ -1,0 +1,95 @@
+<odoo>
+  <!-- sale.view_order_form -->
+  <!-- <record model="ir.ui.view" id="inherited_view_order_form">
+    <field name="name">Inherited View Order Form</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form" />
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='validity_date']" position="after">
+        <field name="test_column_1"/>
+      </xpath>
+        </field>
+  </record> -->
+  <record model="ir.ui.view" id="inherited_view_order_form_inv">
+    <field name="name">Inherited View Order Form Inv</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form" />
+    <field name="arch" type="xml">
+          <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="after">
+            <field name="promotion_product_id" invisible='1'/>
+            <field name="disc_fix_amount" invisible='1'/>
+            <field name="meth_fix_amount" invisible='1'/>
+            <field name="promotion_disc_type" invisible='1'/>
+            
+            <field name="program_promo_id" invisible='1'/>
+            <field name="create_date_promo" invisible='1'/>
+            <field name="start_date_promo" invisible='1'/>
+            <field name="end_date_promo" invisible='1'/>
+          </xpath>
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'in', ('cancel'))]}</attribute>
+            </xpath>
+          <xpath expr="//field[@name='plant_id']" position="after">
+            <field name="whs" attrs="{'invisible': [('interco_master', '=', False)]}" domain="[('company_id', '=', plant_id)]"/>
+          </xpath>
+  <xpath expr="//field[@name='require_payment']" position="after">
+    <field name="kode" readonly="1" force_save="1"/>
+  </xpath>
+  <!-- <xpath expr="//div[@class='oe_chatter']" position="replace">
+      <field name="message_follower_ids" widget="mail_followers"/>
+      <field name="activity_ids" widget="mail_activity"/>
+      <field name="message_ids" widget="mail_thread"/>
+  </xpath> -->
+  <!-- <xpath expr="//field[@name='validity_date']" position="after">
+    <field name="call_ovdue"/>
+  </xpath> -->
+
+      <!-- Penambahan kondisi state ovdue dan over limit -->
+      <!-- <xpath expr="//form/sheet/div[hasclass('oe_button_box')]" position="after">
+        <widget name="web_ribbon" text="Overdue" bg_color="bg-danger" attrs="{'invisible': ['|',('status_so','!=','1'),('id', '=', False)]}"/>
+
+        <widget name="web_ribbon" text="Overlimit" bg_color="bg-danger" attrs="{'invisible': ['|',('status_so','!=','2'),('id', '=', False)]}"/>
+
+        <widget name="web_ribbon" text="OL &amp; OD" bg_color="bg-danger" attrs="{'invisible': ['|',('status_so','!=','3'),('id', '=', False)]}"/>
+      </xpath> -->
+      <xpath expr="//widget[@text='Overdue']" position="replace">
+        <widget name="web_ribbon" text="Overdue" bg_color="bg-danger" attrs="{'invisible': ['|',('status_so','!=','1'),('id', '=', False)]}"/>
+      </xpath>
+      <xpath expr="//widget[@text='Overlimit']" position="replace">
+        <widget name="web_ribbon" text="Overlimit" bg_color="bg-danger" attrs="{'invisible': ['|',('status_so','!=','2'),('id', '=', False)]}"/>
+      </xpath>
+      <xpath expr="//widget[@text='Overlimit &amp; Overdue']" position="replace">
+        <widget name="web_ribbon" text="OL &amp; OD" bg_color="bg-danger" attrs="{'invisible': ['|',('status_so','!=','3'),('id', '=', False)]}"/>
+      </xpath>
+  <!-- <xpath expr="//page[@name='page_overdue']//field[@name='overdue_invoice_ids']" position="attributes">
+    <attribute name="attrs">{'invisible': [('call_ovdue','=', True)]}</attribute>
+    <attribute name="class">oe_read_only</attribute>
+  </xpath> -->
+        </field>
+  </record>
+
+  <!-- <record model="ir.ui.view" id="inherited_view_order_form_acc_move_com">
+    <field name="name">Inherited View Order Form Account Move Commercial</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_invoice_tree" />
+    <field name="arch" type="xml">
+
+      <xpath expr="//field[@name='ref']" position="after">
+        <field name="invoice_date" optional="show" string="Invoice date"/>
+        <field name="pick_method" optional="show" string="Picking method"/>
+      </xpath>
+    </field>
+  </record> -->
+
+  <!-- <record model="ir.ui.view" id="inherited_view_order_form_acc_move_btn">
+    <field name="name">Inherited View Order Form Button Account Move</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_move_form" />
+    <field name="arch" type="xml">
+
+      <xpath expr="//button[@name='button_draft']" position="attributes">
+        <attribute name="groups">account.group_account_manager,base.group_system, account.group_account_invoice,account.group_account_user</attribute>
+      </xpath>
+    </field>
+  </record> -->
+</odoo>

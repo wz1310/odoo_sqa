@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="1">
+    <record id="route_wh_qc" model="stock.location.route">
+        <field name="name">QC Karantina Bahan Baku PT. Wahana Inti Mas (WIM)</field>
+        <field name="sequence">6</field>
+    </record>
+</odoo>

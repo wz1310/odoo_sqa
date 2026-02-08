@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<odoo>
+<data>
+        <record id="product_category_view" model="ir.ui.view">
+            <field name="name">product.category.form</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group/field[@name='check_stock']" position="after">
+                    <field name="carton"/>
+                </xpath>
+            </field>
+        </record>
+</data>
+</odoo>
+

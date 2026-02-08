@@ -1,0 +1,45 @@
+<odoo>
+
+    <record id="inher_sale_forecast" model="ir.ui.view">
+        <field name="name">sale.forecast.view.move.form.inherit</field>
+        <field name="model">sale.forecast</field>
+        <field name="inherit_id" ref="sanqua_account_forecast_report.sale_forecast_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='forecast_qty']" position="after">
+                <field name="rev_qty"/>
+                <field name="logs" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <button string="Check Log" name="open_wizard" type="object" class="btn-secondary"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="open_logs_wizard">
+        <field name="name">Show Logs Wizard</field>
+        <field name="model">show.logs.wizard</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                <group>
+                <notebook>
+                    <page string="Logs">
+                    <field name="logs" readonly="True">
+                                <!-- <tree string="Categories" editable="bottom">
+                                    <field name="display_name"/>
+                                </tree> -->
+                    </field>
+                </page>
+                </notebook>
+                </group>
+                </sheet>
+                <footer>
+                    <!-- <button string="Confirm" type="object" name="confirm_reject" class="btn btn-warning"/> -->
+                    <button string="Close" class="btn btn-warning" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    
+</odoo>

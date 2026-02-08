@@ -1,0 +1,24 @@
+<odoo>
+    <record model="ir.ui.view" id="res_branch_tree_view_inherited">
+        <field name="name">Res Branch Tree View Inherited</field>
+        <field name="model">res.branch</field>
+        <field name="inherit_id" ref="operatingunit.res_branch_tree_view" />
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="related_company_id"/>
+            </field>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="res_branch_form_view_inherited">
+        <field name="name">Res Branch Form View Inherited</field>
+        <field name="model">res.branch</field>
+        <field name="inherit_id" ref="operatingunit.res_branch_form_view" />
+        <field name="arch" type="xml">
+            <field name="code" position="after">
+                <field name="related_company_id"/>
+                <field name="sequence_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

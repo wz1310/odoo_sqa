@@ -1,0 +1,35 @@
+<odoo>
+  <data>
+        
+        <record id="log_post_asset_tree_view" model="ir.ui.view">
+            <field name="name">log.post.asset.tree.view</field>
+            <field name="model">log.post.asset</field>
+            <field name="arch" type="xml">
+                <tree string="Log Post Asset" editable='bottom'>
+                    <field name="start_time"/>
+                    <field name="end_time"/>
+                    <field name="logs"/>          
+                </tree>
+            </field>
+        </record>
+        
+        <record id='log_post_asset_action' model='ir.actions.act_window'>
+            <field name="name">Log Post Asset</field>
+            <field name="res_model">log.post.asset</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="log_post_asset_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Log Post Asset
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_log_post_action"
+            name="Log Post Asset"
+            parent="account.menu_finance_entries_management"
+            action="log_post_asset_action"
+            sequence="112"/>
+
+  </data>
+</odoo>

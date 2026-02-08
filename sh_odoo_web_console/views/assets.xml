@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="assets_backend" name="Assets backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" href="/sh_odoo_web_console/static/src/css/style.css"/>
+            <script type="text/javascript" src="/sh_odoo_web_console/static/src/js/sh_odoo_web_console.js"/>
+        </xpath>
+    </template>
+</odoo>

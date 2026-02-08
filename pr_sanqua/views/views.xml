@@ -1,0 +1,108 @@
+<odoo>
+  <data>
+
+  <record id="pr_sanqua_view_tree" model="ir.ui.view">
+            <field name="name">pr.sanqua.tree</field>
+            <field name="model">pr.sanqua</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="order_kategori"/>
+                </tree>
+            </field>
+        </record>
+
+    <record id="pr_sanqua_form_view" model="ir.ui.view">
+        <field name="name">pr.sanqua.form.view</field>
+        <field name="model">pr.sanqua</field>
+        <field name="arch" type="xml">
+            <form>
+            <header>
+                <button name="create_po"
+                        string="CREATE PO"
+                        type="object"/>
+                <button name="close"
+                        string="CLOSE"
+                        type="object"
+                        class="oe_highlight"/>
+                <field name="state"
+                       widget="statusbar"
+                       statusbar_visible="draft,to_approve,approved"
+                       statusbar_colors='{"approved":"blue"}'/>
+            </header>
+              <sheet><h1>
+                    <field name="seq" attrs="{'readonly': [('seq','!=', False)]}" force_save='True'/>
+                  </h1>
+                  <div>
+                  <group>
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="order_kategori"/>
+                  </group>
+                </div>
+                <div>
+                  <group>
+                    <field name="created"/>
+                    <field name="asset"/>
+                  </group>
+                </div>
+        <notebook>
+          <page string="PR Line" >
+            <field name="line_pr" nolabel="1" widget="section_and_note_one2many">
+                <tree editable="botttom" create="1">
+                    <field name="name"/>
+                    <field name="last_price" />                    
+                    <field name="price_total" />                    
+                    <field name="Description"/>                    
+                    <field name="qty"/>                    
+                    <field name="uom"/>            
+                    <field name="pr_id" invisible="1"/>            
+              </tree>
+            </field>
+            </page>
+        </notebook>
+      </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="pr_sanqua_forms_view" model="ir.ui.view">
+        <field name="name">pr.sanqua.forms.view</field>
+        <field name="model">pr.sanqua</field>
+        <field name="arch" type="xml">
+            <form>
+              <sheet>
+                <group>
+              <field name="seq_find" string="Request"/></group>
+            <field name="line_pr" nolabel="1" widget="section_and_note_one2many">
+                <tree editable="botttom" create="1">
+                    <field name="name"/>
+                    <field name="last_price" />                    
+                    <field name="price_total" />                    
+                    <field name="Description"/>                    
+                    <field name="qty"/>                    
+                    <field name="uom"/>            
+                    <field name="pr_id" invisible="1"/>            
+              </tree>
+            </field>
+      </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pr_sanqua" model="ir.actions.act_window">
+        <field name="name">PR Sanqua</field>
+        <field name="res_model">pr.sanqua</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="pr_sanqua_root_menu" name="PR Sanqua" web_icon="pr_sanqua,static/description/pr_sanqua.png" />
+    <menuitem id="pr_sanqua_sub_menu" parent="pr_sanqua_root_menu"
+              name="PR Sanqua"/>
+    <menuitem id="pr_sanqua_menu" name="PR Sanqua"
+              action="action_pr_sanqua"
+              parent="pr_sanqua_sub_menu"/>
+
+  </data>
+</odoo>

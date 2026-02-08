@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_branch_tree_view" model="ir.ui.view">
+        <field name="name">res.branch.tree.view</field>
+        <field name="model">res.branch</field>
+        <field name="arch" type="xml">
+            <tree string="Branch">
+                <field name="name" string="Name"/>
+                <field name="code" string="Code"/>
+                <field name="active" string="Active"/>
+            </tree>
+        </field>
+	</record>
+
+    <record id="res_branch_form_view" model="ir.ui.view">
+        <field name="name">res.branch.form.view</field>
+        <field name="model">res.branch</field>
+        <field name="arch" type="xml">
+            <form string="Branch">
+                <group>
+                    <field name="name" string="Name"/>
+                    <field name="code" string="Code"/>
+                    <field name="active" string="Active"/>
+                </group>
+            </form>
+        </field>
+	</record>
+
+    <record id="action_res_branch" model="ir.actions.act_window">
+        <field name="name">Operating Unit</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.branch</field>
+        <!--<field name="view_type">form</field>-->
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a new operating unit
+          </p><p>
+            Create and manage the operating unit that will be managed by Odoo from here.
+          </p>
+        </field>
+    </record>
+
+    <menuitem action="action_res_branch" id="menu_action_res_branch" parent="base.menu_users"/>
+</odoo>

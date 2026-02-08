@@ -1,0 +1,36 @@
+thead{
+font-size:12px;
+background-color: #fff;
+}
+
+tbody{
+font-size:12px;
+border-collapse: collapse;
+}
+
+.total-row{
+font-weight: bold;
+font-size:12px;
+}
+
+.header{
+margin-top:30px;
+
+}
+
+.table-shrinkage{
+width:100%;
+overflow-x:auto;
+}
+
+.text-upper-text-head {
+text-align:left;
+}
+
+.text-lower-text-head{
+text-align:left;
+
+}
+.table-hover > tbody > tr:hover > td {
+    background-color: #C6EDFB;
+}

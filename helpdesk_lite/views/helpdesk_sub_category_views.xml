@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="helpdesk_sub_category_tree" model="ir.ui.view">
+        <field name="name">helpdesk_lite.sub.category.tree</field>
+        <field name="model">helpdesk_lite.sub.category</field>
+        <field name="arch" type="xml">
+            <tree string="Sub Category" editable="bottom">
+                <field name="id" optional="hide"/>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="description"/>
+                <field name="padding"/>
+                <field name="prefix"/>
+                <field name="sequence_id" readonly="" string="Sequence Id"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- <record id="helpdesk_stage_form" model="ir.ui.view">
+        <field name="name">helpdesk_lite.stage.form</field>
+        <field name="model">helpdesk_lite.stage</field>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <form string="Stage">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Stage name..."/>
+                            <field name="description" placeholder="Stage name..."/>
+                            <field name="legend_priority"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="last"/>
+                            <field name="fold"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                    <separator string="Requirements"/>
+                    <field name="requirements" nolabel="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record> -->
+
+    <record id="helpdesk_sub_category_action" model="ir.actions.act_window">
+        <field name="name">Sub Category</field>
+        <field name="res_model">helpdesk_lite.sub.category</field>
+        <field name="view_id" ref="helpdesk_lite.helpdesk_sub_category_tree"/>
+    </record>
+
+    <menuitem
+            id="menu_helpdesk_sub_category_act"
+            name="Sub Category"
+            sequence="25"
+            action="helpdesk_sub_category_action"
+            parent="menu_config"
+            groups="base.group_no_one"/>
+
+</odoo>

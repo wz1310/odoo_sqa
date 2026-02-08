@@ -1,0 +1,19 @@
+<odoo>
+	<record model="ir.ui.view" id="interco_view_order_form">
+		<field name="name">Interco View Order Form</field>
+		<field name="model">sale.order</field>
+		<field name="inherit_id" ref="sale.view_order_form" />
+		<field name="arch" type="xml">
+			<page name="other_information" position="inside">
+      
+				<group name="interco_procurement" string="Interco Procurement">
+				  
+					<field name="interco_company_id" options="{'no_create':True}"/>
+					<field name="interco_purchase_id" options="{'no_create':True}"/>
+					<field name="interco_purchase_ids" widget="many2many_tags" options="{'no_create':True}"/>
+          
+				</group>
+			</page>
+		</field>
+	</record>
+</odoo>

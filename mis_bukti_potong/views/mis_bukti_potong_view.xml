@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================inherit account_move================= -->
+    <record id="mis_bupot_view_form_inherit" model="ir.ui.view">
+        <field name="name">bupot.view.form.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page/field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="after">
+                <field name="pph_pasal" groups="mis_faktur_pajak_masuk.group_faktur_pajak_masuk_user,mis_faktur_pajak_masuk.group_faktur_pajak_masuk_manager"/>
+                <field name="kode_objek" groups="mis_faktur_pajak_masuk.group_faktur_pajak_masuk_user,mis_faktur_pajak_masuk.group_faktur_pajak_masuk_manager"/>
+                <field name="state_bupot" groups="mis_faktur_pajak_masuk.group_faktur_pajak_masuk_user,mis_faktur_pajak_masuk.group_faktur_pajak_masuk_manager"/>
+                <field name="bupot_id" groups="mis_faktur_pajak_masuk.group_faktur_pajak_masuk_user,mis_faktur_pajak_masuk.group_faktur_pajak_masuk_manager"/>
+                <button string="Details" name="detail_bupot" type="object" 
+                class="oe_highlight" groups="mis_faktur_pajak_masuk.group_faktur_pajak_masuk_user,mis_faktur_pajak_masuk.group_faktur_pajak_masuk_manager" attrs="{'invisible': [('parent.invoice_payment_state', 'not in', ('paid'))]}"/>
+                <!-- attrs="{'invisible':['|',('parent.state','!=','posted'),
+                        ('parent.type','!=','in_invoice')]}" 
+                groups="account.group_account_user" -->
+            </xpath>
+        </field>
+    </record>
+
+    <!-- =============================Bukti potong================================= -->
+        <record id="bupot_form_view" model="ir.ui.view">
+            <field name="name">mis.bupot.form.view</field>
+            <field name="model">mis.bukti.potong</field>
+            <field name="arch" type="xml">
+                <form string="MIS Bukti Potong">
+                <header>
+                      <field name="state_bupot" widget="statusbar"/>
+                      <button name="submit_" string="Submit" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state_bupot', 'in', ('wait','approved','rejected'))]}"/>
+                      <button name="approved_" string="Approve" type="object" class="btn btn-primary"
+                        attrs="{'invisible': ['|',('user_can_approve','=',False),('state_bupot', 'not in', ('wait'))]}" />
+                      <button name="rejected_" string="Reject" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state_bupot', 'not in', ('wait','approved'))]}" groups="mis_faktur_pajak_masuk.group_faktur_pajak_masuk_manager"/>
+                      <button name="draft_" string="Set to draft" type="object" class="btn btn-primary" attrs="{'invisible': [('state_bupot', 'not in', ('rejected'))]}"/>
+                </header>
+                    <sheet string="MIS Bukti Potong">
+                <group>
+                    <group>
+                        <field name="moveline_id"/>                    
+                        <field name="name"/>                    
+                        <field name="product_id"/>                    
+                        <field name="label"/>                    
+                        <field name="qty"/>                    
+                        <field name="price"/>                    
+                        <field name="tgl_potong"/>                    
+                        <field name="pn_npwp_nik"/>                    
+                        <field name="npwp_phs"/>                    
+                        <field name="nik_phs" />
+                        <field name="nm_penerima_nik"/>
+                    </group>
+                    <group>
+                        <field name="qq_nik"/>                    
+                        <field name="no_telp"/>                    
+                        <field name="pdt_bp"/>                    
+                        <field name="pdt_nik"/>
+                        <field name="no_dtp"/>                    
+                        <field name="lb"/>                    
+                        <field name="no_suket"/>
+                    </group>
+                </group>
+                <group>
+                    <group>                    
+                        <field name="no_work"/>
+                        <field name="jn_dok"/>
+                        <field name="no_dok"/>
+                        <field name="tgl_dok"/>
+                        <field name="pph_pasal"/>
+                        <field name="kode_objek"/>
+                        <field name="jpb" attrs="{
+                            'readonly': [(
+                            'state_bupot', 'not in', ('draft'))
+                            ],
+                            'invisible':[(
+                            'pph_pasal','!=',9
+                            )]
+                            }"/>
+                        <field name="jpd" attrs="{
+                            'readonly': [(
+                            'state_bupot', 'not in', ('draft'))
+                            ],
+                            'invisible':[(
+                            'pph_pasal','!=',9
+                            )]
+                            }"/>
+                        <field name="npwp_pdt"/>
+                        <field name="nik_pdt"/>
+                        <field name="nm_pdt_nik"/>
+                    </group>
+                    <group>                    
+                        <field name="pg_bruto"/>                    
+                        <field name="mp_fasilitas"/>
+                        <field name="no_skb"/>                    
+                        <field name="fs_pph"/>                    
+                        <field name="trf_pph"/>
+                        <field name="company_id"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="note"/>
+                    </group>
+                </group>
+                        <notebook>
+                            <page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" invisible="1"/>
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved"/></group>
+
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="mis_bupot_tree_view" model="ir.ui.view">
+            <field name="name">mis.bupot.tree.view</field>
+            <field name="model">mis.bukti.potong</field>
+            <field name="arch" type="xml">
+                <tree string="MIS Bukti Potong">
+                    <field name="name"/>
+                    <field name="name"/>                    
+                    <field name="product_id"/>                    
+                    <field name="label"/>                    
+                    <field name="qty"/>                    
+                    <field name="tgl_potong"/>
+                    <field name="nm_penerima_nik"/>                    
+                    <field name="no_telp"/>                    
+                    <field name="pdt_bp"/>                    
+                    <field name="pdt_nik"/>
+                    <field name="no_dtp"/>                    
+                    <field name="lb"/>                    
+                    <field name="no_suket"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id='mis_bupot_action' model='ir.actions.act_window'>
+            <field name="name">MIS Bukti Potong</field>
+            <field name="res_model">mis.bukti.potong</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="mis_bupot_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    MIS Bukti Potong
+                </p>    
+            </field>
+        </record>
+
+    <!-- ===================================pph bupot================================ -->
+        <record id="pph_bupot_form_view" model="ir.ui.view">
+            <field name="name">pph.bupot.form.view</field>
+            <field name="model">mis.pph.bukti.potong</field>
+            <field name="arch" type="xml">
+                <form string="PPH Bukti Potong">
+                    <sheet string="PPH Bukti Potong">
+                        <group>
+                            <group>
+                                <field name="name"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="kode_objek_line" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="pph_bupot_id" readonly="1"/>
+                            </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="pph_bupot_tree_view" model="ir.ui.view">
+            <field name="name">pph.bupot.tree.view</field>
+            <field name="model">mis.pph.bukti.potong</field>
+            <field name="arch" type="xml">
+                <tree string="PPH Bukti Potong">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id='pph_bupot_action' model='ir.actions.act_window'>
+            <field name="name">PPH Bukti Potong</field>
+            <field name="res_model">mis.pph.bukti.potong</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="pph_bupot_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    PPH Bukti Potong
+                </p>    
+            </field>
+        </record>
+        <!-- ===============================kode objek-=============== -->
+        <record id="kode_objek_line_form_view" model="ir.ui.view">
+            <field name="name">kode.objek.line.form.view</field>
+            <field name="model">mis.kode.objek.line</field>
+            <field name="arch" type="xml">
+                <form string="Kode Objek LIne">
+                    <sheet string="Kode Objek LIne">
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="pph_bupot_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="kode_objek_line_tree_view" model="ir.ui.view">
+            <field name="name">kode.objek.line.tree.view</field>
+            <field name="model">mis.kode.objek.line</field>
+            <field name="arch" type="xml">
+                <tree string="Kode Objek Line">
+                    <field name="name"/>
+                    <field name="pph_bupot_id"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id='kode_objek_line_action' model='ir.actions.act_window'>
+            <field name="name">Kode Objek Line</field>
+            <field name="res_model">mis.kode.objek.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="kode_objek_line_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Kode Objek Line
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_bukti_potong_action"
+            name="MIS Bukti Potong"
+            parent="account.menu_finance_payables"
+            action="mis_bupot_action"
+            sequence="115"
+            groups="base.group_erp_manager"/>
+        
+        <menuitem id="menu_kode_objek_action"
+            name="Kode Objek Line"
+            parent="account.menu_finance_payables"
+            action="kode_objek_line_action"
+            sequence="115"
+            groups="base.group_erp_manager,mis_faktur_pajak_masuk.group_faktur_pajak_masuk_manager"/>
+        
+        <menuitem id="menu_pph_bupot_action"
+            name="PPH Bukti Potong"
+            parent="account.menu_finance_payables"
+            action="pph_bupot_action"
+            sequence="114"
+            groups="base.group_erp_manager,mis_faktur_pajak_masuk.group_faktur_pajak_masuk_manager"/>
+
+    <record model="ir.ui.view" id="open_detail_bupot_wizard">
+        <field name="name">Show Detail Bupot Wizard</field>
+        <field name="model">show.detail.bupot</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <header attrs="{'invisible': [('bupot_id', '=', False)]}">
+                      <field name="state_bupot" widget="statusbar"/>
+                      <button name="submit_" string="Submit" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state_bupot', 'not in', ('draft'))]}" />
+                      <button name="approved_" string="Approve" type="object" class="btn btn-primary"
+                        attrs="{'invisible': ['|',('user_can_approve','=',False),('state_bupot', 'not in', ('wait'))]}" />
+                      <button name="rejected_" string="Reject" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state_bupot', 'not in', ('wait','approved'))]}" groups="mis_faktur_pajak_masuk.group_faktur_pajak_masuk_manager"/>
+                      <button name="draft_" string="Set to draft" type="object" class="btn btn-primary" attrs="{'invisible': [('state_bupot', 'not in', ('rejected'))]}"/>
+                </header>
+                <sheet>
+                <notebook>
+                <page string="Bukti Potong">
+                <group>
+                    <group>                    
+                        <field name="bupot_id" readonly="1"/>                    
+                        <field name="product_id" readonly="1"/>                    
+                        <field name="label" readonly="1"/>                    
+                        <field name="qty" readonly="1"/>                    
+                        <field name="price" readonly="1"/>                    
+                        <field name="pn_npwp_nik" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>                    
+                        <field name="npwp_phs" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>                    
+                        <field name="nik_phs" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                    </group>
+                    <group>                    
+                        <field name="qq_nik" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>                    
+                        <field name="tgl_potong" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                        <field name="nm_penerima_nik" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                        <field name="no_telp" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>                    
+                        <field name="pdt_bp" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>                    
+                        <field name="pdt_nik" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                    </group>
+                </group>
+                <group>
+                    <group>
+                        <field name="no_dtp" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>                    
+                        <field name="lb" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>                    
+                        <field name="no_suket" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>                    
+                        <!-- <field name="no_work" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/> -->                   
+                        <field name="no_work" readonly="1"/>
+                        <field name="jn_dok" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                        <field name="no_dok" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                        <field name="tgl_dok" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                        <field name="pph_pasal" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                        <field name="kode_objek" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                        <field name="jpb" attrs="{
+                            'readonly': [(
+                            'state_bupot', 'not in', ('draft')),
+                            ('bupot_id', '!=', False)
+                            ],
+                            'invisible':[(
+                            'pph_pasal','!=',9
+                            )]
+                            }"/>
+                        <field name="jpd" attrs="{
+                            'readonly': [(
+                            'state_bupot', 'not in', ('draft')),
+                            ('bupot_id', '!=', False)
+                            ],
+                            'invisible':[(
+                            'pph_pasal','!=',9
+                            )]
+                            }"/>
+                        <field name="npwp_pdt" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                    </group>
+                    <group>
+                        <field name="nik_pdt" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                        <field name="nm_pdt_nik" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>                    
+                        <field name="pg_bruto" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>                    
+                        <field name="mp_fasilitas" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                        <field name="no_skb" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>                    
+                        <field name="fs_pph" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>                    
+                        <field name="trf_pph" attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                    </group>
+                </group>
+                <group>
+                    <group attrs="{'readonly': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}">
+                        <field name="note" readonly="1"/>
+                    </group>
+                </group>
+                </page>
+                <page id="page_approval" string="Approvals">
+                        <field name="user_can_approve" invisible="1"/>
+                        <field name="approval_ids" readonly="1"/>
+                        <group><field name="approved"/></group>
+                        <!-- <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" /> -->
+                </page>
+                </notebook>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="confirm_bupot" class="btn btn-warning" attrs="{'invisible': [('state_bupot', 'not in', ('draft')),('bupot_id', '!=', False)]}"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="open_reject_wizard">
+        <field name="name">Show Reject Wizard</field>
+        <field name="model">bupot.show.reject.wizard</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                <group>
+                    <group>
+                        <field name="reject_detail" placeholder="Add detail..."/>                    
+                    </group>
+                </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="confirm_reject" class="btn btn-warning"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="res_company_bukti_potong" model="ir.ui.view">
+        <field name="name">res.company.bukti.potong</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="inter_company_rules.view_company_inter_change_inherit_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page" position="after">
+                <page string="No.Worksheet BUPOT">
+                        <group>
+                            <group>
+                                <field name="no_work" string="No. Worksheet"/>
+                            </group>
+                        </group>
+                    </page>
+            </xpath>
+        </field>
+    </record>
+
+    </data>
+</odoo>

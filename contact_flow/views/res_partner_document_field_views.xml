@@ -1,0 +1,47 @@
+<odoo>
+    <record id="res_partner_document_field_view_form" model="ir.ui.view">
+        <field name="name">res.partner.document.field.view.form</field>
+        <field name="model">res.partner.document.field</field>
+        <field name="arch" type="xml">
+            <form string="Master Document">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="mandatory"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="res_partner_document_field_view_tree" model="ir.ui.view">
+        <field name="name">res.partner.document.field.view.tree</field>
+        <field name="model">res.partner.document.field</field>
+        <field name="arch" type="xml">
+            <tree string="Partner Document">
+                <field name="name"/>
+                <field name="mandatory"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="res_partner_document_field_action" model="ir.actions.act_window">
+        <field name="name">Master Document</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner.document.field</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new partner document.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="menu_master_document"
+        name="Master Document"
+        action="res_partner_document_field_action"
+        parent="sale.menu_sale_config"/>
+</odoo>

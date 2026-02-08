@@ -1,0 +1,231 @@
+<odoo>
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="name">account.move.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@id='invoice_tab']" position="before">
+                <page string="Summary Invoice" name="summary_invoice">
+                    <field name="summary_invoice_line_ids" force_save="1">
+                        <tree>
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="account_id"/>
+                            <field name="analytic_account_id"/>
+                            <field name="quantity"/>
+                            <field name="product_uom_id"/>
+                            <field name="price_unit"/>
+                            <field name="discount_fixed_line"/>
+                            <field name="discount"/>
+                            <field name="tax_ids" widget="many2many_tags"/>
+                            <field name="price_subtotal"/>
+                        </tree>
+                    </field>
+                    <!-- Totals (only invoices / receipts) -->
+                    <group class="oe_right">
+                        <group class="oe_subtotal_footer">
+                            <field name="summary_invoice_amount_untaxed"/>
+                            <field name="summary_invoice_amount_tax"/>
+                            <field name="summary_invoice_amount_total" class="oe_subtotal_footer_separator"/>
+                        </group>
+                        <newline/>
+                    </group>
+                </page>
+            </xpath>
+            <!--xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='payments_info_group']" position="after">
+                <group string="Action" name="action">
+                    <field name="include_tax" type="checkbox" string="Include Tax?" attrs="" groups=""/>
+                </group>
+            </xpath-->
+            <xpath expr="//sheet/group/group[@id='header_left_group']/field[@name='ref']" position="after">
+                <field name="include_tax" type="checkbox" string="Tax" attrs="" groups=""/>
+            </xpath>
+            <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='payments_info_group']" position="after">
+                <group string="Action" name="action">
+                    <field name="hide_zero_price" type="checkbox" string="Hide Zero Price" attrs="" groups=""/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="inherit_view_move_form_account_payment" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='journal_id']" position="after">
+                <field name="journal_id" domain="[]"></field>
+            </xpath>
+        </field>
+    </record>
+
+  <template id="report_customer_invoice" inherit_id="sanqua_print.report_customer_invoice">
+            <xpath expr="//thead" position="replace">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 5%;">
+                                        No.
+                                    </th>
+                                    <th class="th-0" style="width: 30%;">
+                                        Description
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Qty
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Unit
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Unit Price (Rp.)
+                                    </th><!-- 
+                                    <th class="th-0" style="width: 15%;">
+                                        Disc (Rp.)
+                                    </th> -->
+                                    <th class="th-0" style="width: 15%;">
+                                        Amount (Rp.)
+                                    </th>
+                                </tr>
+                            </thead>
+            </xpath>
+                <xpath expr="//tbody" position="replace">
+                            <!-- <tbody>
+                                <t t-set="idx" t-value="1"/>
+                                
+                                <t t-foreach="o.invoice_line_ids.sorted(key=lambda ml: ml.quantity, reverse=True)" t-as="line">
+                                    <t t-if="'Discount' not in line.name and 'Free Product' not in line.name">
+
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="idx"/>
+                                        </td>
+                                        <td class="td-4 text-left">
+                                            <span t-esc="line.product_id.display_name"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="o.get_format_currency(line.quantity)"/>
+                                        </td>
+                                        <t t-if="'Discount' in line.name ">
+                                        <t class="td-4 text-center">
+                                            <span t-set="test_variable" t-value="[x.disc_fix_amount for x in o.picking_ids.sale_id.order_line.filtered(lambda d:d.promotion_product_id == str(line.product_id.id))][0]"/>
+                                        </t></t>
+                                        <t t-else="">
+                                        <t class="td-4 text-center">
+                                            <span t-set="test_variable" t-value="0"/>
+                                        </t></t>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.product_uom_id.name"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency((line.price_unit - line.discount_fixed_line)-test_variable)"/>
+                                        </td> --><!-- 
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.discount_fixed_line)"/>
+                                        </td> -->
+                                        <!-- <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(((line.price_unit - line.discount_fixed_line)-test_variable)*line.quantity)"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                </t></t>
+                            </tbody> -->
+                            <tbody>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-set="xTotalDiscount" t-value="0"/>
+                                <t t-if="o.hide_zero_price">
+                                  <t t-foreach="o.summary_invoice_line_ids.filtered(lambda r: r.price_unit > 0).sorted(key=lambda ml: ml.quantity, reverse=True)" t-as="line">
+                                      <tr>
+                                        <td class="td-4 text-center">
+                                              <span t-esc="idx"/>
+                                          </td>
+                                          <td class="td-4 text-left">
+                                              <span t-esc="line.product_id.display_name"/>
+                                          </td>
+                                          <td class="td-4 text-center">
+                                              <span t-esc="o.get_format_currency(line.quantity)"/>
+                                          </td>
+                                          <td class="td-4 text-center">
+                                              <span t-esc="line.product_uom_id.name"/>
+                                          </td>
+                                          <td class="text-right td-4">
+                                              <span t-esc="o.get_format_currency(line.price_unit-line.discount_fixed_line)"/>
+                                          </td><!-- 
+                                        <t t-if="'discount' in line.name ">
+                                        <t class="td-4 text-center">
+                                            <span t-set="test_variable" t-value="[x.disc_fix_amount for x in o.picking_ids.sale_id.order_line.filtered(lambda d:d.promotion_product_id == str(line.product_id.id))]"/>
+                                        </t></t>
+                                        <t t-else="">
+                                        <t class="td-4 text-center">
+                                            <span t-set="test_variable" t-value="0"/>
+                                        </t></t>
+                                          <td class="text-right td-4">
+                                              <span t-esc="test_variable"/>
+                                          </td> -->
+                                          <td class="text-right td-4">
+                                              <span t-esc="o.get_format_currency((line.price_unit-discount_fixed_line) * line.quantity)"/>
+                                          </td>
+                                      </tr>
+                                      <t t-set="idx" t-value="idx + 1"/>
+                                      <!--t t-set="xTotalDiscount" t-value="xTotalDiscount + line.display_discount"/-->
+                                  </t>
+                                </t>
+                                <t t-else="">
+                                  <t t-foreach="o.summary_invoice_line_ids.sorted(key=lambda ml: ml.quantity, reverse=True)" t-as="line">
+                                  <!-- <t t-foreach="o.summary_invoice_line_ids.sorted(key=lambda ml: ml.quantity, reverse=True)" t-as="line"> -->
+                                  <t t-if="'discount' not in line.name ">
+                                      <tr>
+                                      <td class="td-4 text-center">
+                                              <span t-esc="idx"/>
+                                          </td>
+                                          <td class="td-4 text-left">
+                                              <span t-esc="line.product_id.display_name"/>
+                                          </td>
+                                          <td class="td-4 text-center">
+                                              <span t-esc="o.get_format_currency(line.quantity)"/>
+                                          </td>
+                                          <td class="td-4 text-center">
+                                              <span t-esc="line.product_uom_id.name"/>
+                                          </td>
+                                          <!-- <td class="text-right td-4">
+                                              <span t-esc="o.get_format_currency(line.price_unit - line.discount_fixed_line)"/>
+                                          </td> -->
+                                        <t class="td-4 text-center">
+                                            <span t-set="test_variable" t-value="sum([ x.disc_fix_amount if 'discount' not in line.name else 0 for x in o.picking_ids.sale_id.order_line.filtered(lambda d:d.promotion_product_id == str(line.product_id.id))])"/>
+                                        </t>
+                                          <td class="text-right td-4">
+                                              <span t-esc="test_variable"/>
+                                          </td>
+                                          <td class="text-right td-4">
+                                              <span t-esc="o.get_format_currency(line.price_unit-line.discount_fixed_line)"/>
+                                          </td>
+                                          <!--td class="text-right td-4">
+                                              <span t-esc="o.get_format_currency(line.discount_fixed_line)"/>
+                                          </td-->
+                                          <!-- <td class="text-right td-4">
+                                              <span t-esc="o.get_format_currency((line.price_unit - line.discount_fixed_line) * line.quantity)"/>
+                                          </td> -->
+                                        <t class="td-4 text-center">
+                                            <span t-set="test_variable" t-value="sum([ x.disc_fix_amount if 'discount' not in line.name else 0 for x in o.picking_ids.sale_id.order_line.filtered(lambda d:d.promotion_product_id == str(line.product_id.id))])"/>
+                                        </t>
+                                          <td class="text-right td-4">
+                                              <span t-esc="test_variable"/>
+                                          </td>
+
+                                        <t class="td-4 text-center">
+                                            <span t-set="test_variable1" t-value="sum([x.quantity if 'Free Product' in x.name else 0 for x in o.invoice_line_ids.filtered(lambda d:d.product_id.id == line.product_id.id)])"/>
+                                        </t>
+                                          <td class="text-right td-4">
+                                              <span t-esc="test_variable1"/>
+                                          </td>
+
+                                          <td class="text-right td-4">
+                                              <span t-esc="o.get_format_currency((line.price_unit-line.discount_fixed_line) * line.quantity)"/>
+                                          </td>
+                                      </tr>
+                                      <t t-set="idx" t-value="idx + 1"/>
+                                      <!--t t-set="xTotalDiscount" t-value="xTotalDiscount + line.display_discount"/-->
+                                    </t>
+                                  </t>
+                                </t>
+                            </tbody>
+            </xpath>
+        </template>
+</odoo>

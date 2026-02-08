@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+    <record model="ir.ui.view" id="sale_order_promotion_tree_view">
+        <field name="name">sale.order.promotion.tree.view</field>
+        <field name="model">sale.order.promotion</field>
+        <field name="arch" type="xml">
+            <tree string="Tree Sale Promotion Support" decoration-success="state=='approved'" decoration-muted="state=='rejected'">
+                <field name="name"/>
+                
+                <field name="user_id"/>
+                <field name="division_id"/>
+                <field name="validity_date"/>
+                <field name="date_order"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="sale_order_promotion_form_view">
+        <field name="name">sale.order.promotion.form.view</field>
+        <field name="model">sale.order.promotion</field>
+        <field name="arch" type="xml">
+            <form string="Form Sale Promotion Support">
+                <header>
+                    <button name="btn_submit" states="draft" type="object" string="Submit" class="btn-primary" />
+                    <button name="btn_draft" states="rejected" type="object" string="Set to Draft"/>
+                    <button name="btn_reject" confirm="Sure to reject?" type="object" string="Reject" attrs="{'invisible':['|',('state','not in',['needapproval']),('user_can_approve','=',False)]}"/>
+                    <button name="btn_approve" confirm="Sure to Approve?" type="object" string="Approve"  class="btn-primary" attrs="{'invisible':['|',('state','not in',['needapproval']),('user_can_approve','=',False)]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,needapproval,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <field name="picking_ids" invisible="1"/>
+                        <button type="object"
+                            name="action_view_delivery"
+                            class="oe_stat_button"
+                            icon="fa-truck">
+                            <!-- attrs="{'invisible': [('delivery_count', '=', 0)]}" groups="base.group_user"> -->
+                            <field name="delivery_count" widget="statinfo" string="Delivery"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="division_id" options="{'no_quick_create':True,'no_create':True}"/>
+                            <field name="user_id" options="{'no_quick_create':True,'no_create':True}"/>
+                            <field name="partner_id" domain="[('internal_customer','=',True)]"/>
+                            <field name="partner_shipping_id"/>
+                            <field name="pricelist_id" invisible="1"/>
+                            <field name="company_id" options="{'no_quick_create':True,'no_create':True}"/>
+                            
+                        </group>
+                        <group>
+                            <field name="validity_date"/>
+                            <field name="date_order"/>
+                            <field name="promotion_desc"/>
+                            <field name="spesific_partner_id"/>
+                            
+                        </group>
+                    </group>
+                    <group>
+                        <field name="internal_memo"/>
+                    </group>
+                    <notebook>
+                        <page id="page_support_promotion" string="Promotion Lines">
+                            <field name="order_line">
+                                <tree editable="bottom">
+                                    <field name="order_id" invisible="1"/>
+                                    <field name="product_id" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom" options="{'no_quick_create':True,'no_create':True}"/>
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="order_id" invisible="1"/>
+                                            <field name="product_id"/>
+                                            <field name="product_uom_qty"/>
+                                            <field name="product_uom"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Other Information" name="page_other_info">
+                            <group string="Sales" groups="base.group_system,sale_promotion.group_sale_order_promotion_manager">
+                                <field name="sale_id"/>
+                            </group>
+                        </page>
+                        <page id="page_approval" string="Approvals">
+                            <button string="Approve Matrix" type="object" name="test_approve_matrix" class="oe_highlight" attrs="{'invisible':[('user_can_approve','=',False)]}" groups="base.group_system" />
+                            <field name="user_can_approve" invisible="0" />
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved" readonly="1"/></group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!--<footer></footer>-->
+                
+                <!-- UNCOMMENT IF USING Mail Track SYSTEM -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_sale_order_promotion">
+        <field name="name">Sale Order Promotion</field>
+        <field name="res_model">sale.order.promotion</field>
+        <field name='view_mode'>tree,form</field>
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('sale_promotion.sale_order_promotion_tree_view'), 'sequence':1}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('sale_promotion.sale_order_promotion_form_view'), 'sequence':2})
+                ]"/>
+    </record>
+
+    <menuitem action="action_sale_order_promotion" id="sale_order_promotion_menu" name="" sequence="12" groups="sale_promotion.group_sale_order_promotion_user,sale_promotion.group_sale_order_promotion_approver" parent="sale.sale_order_menu" />
+</odoo>

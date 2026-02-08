@@ -1,0 +1,25 @@
+<odoo>
+    <record id="mrp_product_produce_form_view_inherit" model="ir.ui.view">
+        <field name="name">mrp.product.produce.form.view.inherit</field>
+        <field name="model">mrp.product.produce</field>
+        <field name="inherit_id" ref="mrp.view_mrp_product_produce_wizard"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[1]/group/label[2]" position="after">
+                <field name="code_production" readonly="1"/>
+            </xpath>
+            <xpath expr="//group[1]/group/label[2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[1]/group/div[2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//group[2]/field[@name='raw_workorder_line_ids']/tree/field[@name='lot_id']" position="before">
+               <field name="available_lot_in_location" invisible="1"/>
+            </xpath>
+            <xpath expr="//group[2]/field[@name='raw_workorder_line_ids']/tree/field[@name='lot_id']" position="attributes">
+               <attribute name="domain">[('id', 'in', available_lot_in_location)]</attribute> 
+            </xpath>
+            
+        </field>
+    </record>
+</odoo>

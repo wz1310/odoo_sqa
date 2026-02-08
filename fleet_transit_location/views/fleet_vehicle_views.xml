@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fleet_vehicle_form_view" model="ir.ui.view">
+        <field name="name">fleet.vehicle.form.view</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+        <field name="arch" type="xml">
+            <field name="plan_to_change_car" position="before">
+                <field name="use_as_transit_location"/>
+                <field name="location_id" attrs="{'invisible': [('use_as_transit_location', '=', False)]}"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="mrp_mesin_view_tree" model="ir.ui.view">
+        <field name="name">mrp.mesin.view.tree</field>
+        <field name="model">mrp.mesin</field>
+        <field name="arch" type="xml">
+            <tree string="Mesin">
+                <field name="name" string='Nama Mesin'/>
+                <field name="description"/>
+                <field name="kode_mesin"/>
+                <field name="company_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="mrp_mesin_view_form" model="ir.ui.view">
+        <field name="name">mrp.mesin.view.form</field>
+        <field name="model">mrp.mesin</field>
+        <field name="arch" type="xml">
+            <form string="Mesin">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="description"/>
+                            <field name="type_mesin" />
+                            <field name="company_id"/>
+                        </group>
+                        <group>
+                            <field name="kode_mesin"/>
+                            <p class="text-muted" colspan="2">Waktu Pemanasan Mesin Sebelum/Sesudah</p>
+                            <label for="sebelum_produksi"/>
+                            <div class="oe_inline">
+                                <field name="sebelum_produksi" widget='float_time' class="oe_inline"/>minutes
+                            </div>
+                            <label for="sesudah_produksi"/>
+                            <div class="oe_inline">
+                                <field name="sesudah_produksi" widget='float_time' class="oe_inline"/>minutes
+                            </div>
+                            <field name="kwh_per_jam"/>
+                            <field name="standard_personil"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Information" name="information">
+                            <field name="information_ids">
+                                <tree string="Information" editable="bottom">
+                                    <field name="mesin_id" invisible="1"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="sku_id" required="1"/>
+                                    <field name="kapasitas" required="1"/>
+                                    <field name="satuan_id" required="1"/>
+                                    <field name="target_prod"/>
+                                    <field name="hasil_prod"/>
+                                    <!-- <field name="cost"/> -->
+                                    <field name="kwh"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="History Mesin" name="History Mesin">
+                            <field name="history_mesin_ids">
+                                <tree string="History Mesin" editable="bottom">
+                                    <field name="mesin_id" invisible="1"/>
+                                    <field name="date" required="1"/>
+                                    <field name="user_id" required="1"/>
+                                    <field name="production_id" required="1"/>
+                                    <field name="history"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mrp_mesin_action" model="ir.actions.act_window">
+        <field name="name">Mesin</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.mesin</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="mrp_mesin_view_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new Mesin.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="mrp_input_mesin"
+        name="Master Mesin"
+        action="mrp_mesin_action"
+        sequence="120"
+        parent="mrp.menu_mrp_bom"/>
+</odoo>

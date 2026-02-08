@@ -1,0 +1,9 @@
+<odoo>
+    <template id="report_invoice_document_inherits" inherit_id="account.report_invoice_document">
+        <xpath expr="//h2" position="inside">
+            <div class="pull-right text-right">
+                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s' % ('Code128', o.name, 600, 150)" style="width:300px;height:50px;" alt="Barcode"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>

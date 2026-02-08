@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_users_form" model="ir.ui.view">
+        <field name="name">res.users.form</field>
+        <field name="model">res.users</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="operatingunit.res_users_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='branch_ids']" position="after">
+				<field name="warehouse_ids" widget="many2many_tags" domain="['|', ('branch_id', '=', False), ('branch_id', 'in', branch_ids)]" options = "{'no_create': True}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

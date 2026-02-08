@@ -1,0 +1,22 @@
+<odoo>
+    <data>
+        <record id="res_partner_tax_form_view" model="ir.ui.view">
+            <field name="name">res.partner.tax.form.view</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+            	<page name="sales_purchases" position="after">
+            		<page name="tax" string="Tax Info">
+            			<group name="code">
+							<field name="national_id" />
+							<field name="vat"/>
+	            			<field name="tax_holder_name"/> 
+            				<field name="tax_holder_address"/> 
+	            			<field name="digit2"/> 
+            			</group>
+            		</page>
+            	</page>
+            </field>
+       	</record>
+    </data>
+</odoo>

@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_harga_rata_customer_report,access_harga_rata_customer_report,model_report_harga_rata_customer,sanqua_sale_report_a5.group_report_harga_rata_customer,1,0,0,0

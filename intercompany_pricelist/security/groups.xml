@@ -1,0 +1,7 @@
+<odoo>
+    <record model="res.groups" id="group_inter_company_pricelist_manager">
+        <field name="name">Manage Inter Company Pricelist</field>
+        <field name="comment">Manage Inter Company Pricelist</field>
+        <field name="menu_access" eval="[]"/>
+    </record>
+</odoo>

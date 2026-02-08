@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_picking_quality_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.quality.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="inward_quality.view_picking_quality_inherit"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//field[@name='move_ids_without_package']/tree/button[@name='%(inward_quality.act_quality_wizard)d']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', ('state', 'in', ('done','cancel')), ('picking_code', '!=', 'incoming')],'column_invisible': [('parent.check_active', '!=', True)]}</attribute>
+                <attribute name="string">Quality Control</attribute>
+            </xpath> -->
+        </field>
+    </record>
+</odoo>

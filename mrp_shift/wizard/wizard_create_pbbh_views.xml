@@ -1,0 +1,36 @@
+<odoo>
+        <record id="view_create_pbbh" model="ir.ui.view">
+            <field name="name">Create PBBH</field>
+            <field name="model">wizard.create.pbbh</field>
+            <field name="arch" type="xml">
+                <form string="Create PBBH">
+                    <p class="oe_grey">
+                        Are you Sure want to create Permintaan Bahan Baku Harian ?
+                    </p>
+                    <footer>
+                        <button name="confirm" string="Confirm" type="object"
+                            class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- <act_window id="action_view_create_pbbh"
+            name="Create PBBH"
+            src_model="mrp.rph.line"
+            res_model="wizard.create.pbbh"
+            view_type="form" view_mode="form"
+            key2="client_action_multi" target="new"
+            /> -->
+
+        <act_window
+            id="action_wizard_create_pbbh"
+            name="Create PBBH"
+            res_model="wizard.create.pbbh"
+            binding_model="mrp.rph.line"
+            binding_views="list"
+            view_mode="form"
+            target="new"
+        />
+</odoo>

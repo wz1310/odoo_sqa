@@ -1,0 +1,113 @@
+<odoo>
+    <record id="mrp_pbbh_view_form" model="ir.ui.view">
+        <field name="name">mrp.pbbh.view.form</field>
+        <field name="model">mrp.pbbh</field>
+        <field name="arch" type="xml">
+            <form string="Permintaan Bahan Baku Harian">
+                <header>
+                    <!-- <button name="wizard_create_rpm" string="Create RPM" type="object" class="oe_highlight" attrs="{'invisible':[('state','!=','approved')]}"/> -->
+                    <button name="button_confirm" type="object" states="draft" string="Confirm" class="oe_highlight" id="confirm"/>
+                    <button name="button_approve" type="object"  attrs="{'invisible':['|',('user_can_approve','=',False), ('state','not in', ['waiting_approval'])]}" string="Approve" class="oe_highlight" id="approve"/>
+                    <button name="open_reject_message_wizard" type="object" attrs="{'invisible':['|',('user_can_approve','=',False), ('state','not in', ['waiting_approval'])]}" string="Reject" class="oe_highlight" id="reject"/>
+                    <button name="button_done" type="object" states="approved" string="Set to Done" class="oe_highlight" id="done"/>
+                    <button name="button_cancel" type="object" states="draft,waiting_approval" string="Cancel" class="oe_highlight" id="cancel"/>
+                    <button name="button_set_draft" type="object" states="cancel,rejected" string="Set to Draft" class="oe_highlight" id="set_draft"/>
+					<field name="state" widget="statusbar" statusbar_visible="draft,waiting_approval,approved,done" readonly="1"/>
+				</header>
+				<sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_transfer" class="oe_stat_button" icon="fa-truck">
+                            <field name="picking_count" widget="statinfo" string="Internal Transfer"/>
+                        </button>
+                        <!-- <button type="object" name="action_view_rpm" class="oe_stat_button" icon="fa-file">
+                            <field name="rpm_count" widget="statinfo" string="RPM"/>
+                        </button> -->
+                    </div>
+                    
+					<div class="oe_title">
+						<h1>
+							<field name="name" readonly="1" required="1" force_save="1"/>
+						</h1>
+					</div>
+					<group>
+						<group>
+                            <field name="picking_ids" invisible="1"/>
+                            <field name="rph_id" domain="[('state', '=', 'approved')]" options="{'no_quick_create':True, 'no_create_edit':True, 'no_create': True}"/>
+							<field name="product_id" options="{'no_quick_create':True, 'no_create_edit':True, 'no_create': True}"/>
+                            <field name="product_tmpl_id" invisible="1"/>
+                            <field name="bom_id" domain="[('product_tmpl_id', '=', product_tmpl_id)]" options="{'no_quick_create':True, 'no_create_edit':True, 'no_create': True}"/>
+							<field name="company_id"/>
+                            <field name="location_id"/>
+                            
+						</group>
+                        <group>
+                            <field name="date"/>
+							<field name="total_qty"/>
+                            <field name="location_raw_material"/>
+                            <field name="dest_location_raw_material" options="{'no_quick_create':True, 'no_create_edit':True, 'no_create': True}"/>
+						</group>
+					</group>
+					<notebook>
+						<page string="Details">
+							<field name="mrp_pbbh_line_ids" force_save="1">
+								<tree editable="bottom" create="0" delete="0">
+									<field name="product_id" readonly="1" force_save="1"/>
+                                    <field name="qty_available" readonly="1" force_save="1"/>
+									<field name="qty" readonly="1" force_save="1"/>
+                                    <field name="product_uom_id" readonly="1" force_save="1" string="UoM"/>
+                                    <field name="qty_to_transfer" attrs="{'readonly':[('parent.state','!=','draft')]}"/>
+								</tree>
+							</field>
+						</page>
+                        <page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" invisible="1"/>
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved"/></group>
+
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                        </page>
+					</notebook>
+				</sheet>
+                <div class="oe_chatter">
+				    <field name="message_follower_ids" widget="mail_followers"/>
+				    <field name="activity_ids" widget="mail_activity"/>
+				    <field name="message_ids" widget="mail_thread"/>
+				</div>
+            </form>
+        </field>
+    </record>
+
+    <record id="mrp_pbbh_view_tree" model="ir.ui.view">
+        <field name="name">mrp.pbbh.view.tree</field>
+        <field name="model">mrp.pbbh</field>
+        <field name="arch" type="xml">
+            <tree string="Permintaan Bahan Baku Harian">
+                <field name="name"/>
+                <field name="rph_id"/>
+                <field name="company_id"/>
+                <field name="product_id"/>
+                <field name="bom_id"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="mrp_pbbh_action" model="ir.actions.act_window">
+        <field name="name">Permintaan Bahan Baku Harian</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.pbbh</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new Permintaan Bahan Baku Harian.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="pbbh_menu"
+        name="Permintaan Bahan Baku Harian"
+        parent="mrp_mps.mrp_mps_menu_planning"
+        action="mrp_pbbh_action"
+        sequence="3"/>
+</odoo>

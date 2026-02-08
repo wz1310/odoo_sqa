@@ -1,0 +1,21 @@
+ # ExpenseCreate = self.env['hr.expense'].create({ 
+                    #     'id'                    :sequence,
+                    #     'name'                  : self.kegiatan,
+                    #     'date'                  : self.tanggal_kegiatan,
+                    #     'employee_id'           : self.employee_id.id,
+                    #     'product_id'            : self.products_id.id,
+                    #     'product_uom_id'        : 1,
+                    #     'unit_amount'           : 1,
+                    #     'quantity'              : 1,
+                    #     'total_amount'          : self.total,
+                    #     'company_id'            : self.company_id.id,
+                    #     'analytic_account_id'   : self.analytic_account_id.id,
+                    #     'account_id'            : self.account_id.id,
+                    #     'payment_mode'          : self.payment_mode,
+                    #     'expense_reg_id'        : self.id ,
+                    #     'attachment_number'     : self.count_attachment,
+                    #     'state'                 : 'draft'}
+                    #     )
+                    # self.expense_id = ExpenseCreate.id
+
+['|',('employee_id.user_id','=',user.id),('employee_id.parent_id.user_id','=',user.id)] 

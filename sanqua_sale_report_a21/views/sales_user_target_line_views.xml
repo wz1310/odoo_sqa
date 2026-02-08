@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="sales_user_target_view_form_inherit">
+            <field name="name">sales.user.target.view.form.inherit</field>
+            <field name="model">sales.user.target</field>
+            <field name="inherit_id" ref="sales_product_target.sales_user_target_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='line_ids']/tree/field[@name='qty']" position="after">
+                    <field name="target_per_day" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

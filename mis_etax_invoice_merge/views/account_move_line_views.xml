@@ -1,0 +1,12 @@
+<odoo>
+    <record model="ir.ui.view" id="mis_view_move_line_detail_vendor_tree">
+        <field name="name">Detail Vendor Bill</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="sanqua_report_accounting.view_move_line_detail_vendor_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='display_discount']" position="after">
+                <field name="e_tax_vendor_bill"/>
+            </xpath>
+          </field>
+    </record>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Sequences for discount.target.support.master -->
+        <record id="seq_discount_target_support_master_code" model="ir.sequence">
+            <field name="name">Master Customer Diskon Code</field>
+            <field name="code">seq.discount.target.support.master.code</field>
+            <field name="prefix">CUSTDISC/%(day)s/%(month)s/%(year)s-</field>
+            <field name="padding">4</field>
+            <field name="company_id"></field>
+        </record>
+        <!-- Sequences for discount.target.support.customer -->
+        <record id="seq_discount_target_support_customer_code" model="ir.sequence">
+            <field name="name">Master Diskon and Target Code</field>
+            <field name="code">seq.discount.target.support.customer.code</field>
+            <field name="prefix">DISC/%(day)s/%(month)s/%(year)s-</field>
+            <field name="padding">4</field>
+            <field name="company_id"></field>
+        </record>
+    </data>
+</odoo>

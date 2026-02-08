@@ -1,0 +1,26 @@
+<odoo>
+  <data>
+
+
+    <record model="ir.ui.view" id="in_inherited_view_order_form">
+    <field name="name">Inherited View Order Form</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form" />
+    <field name="arch" type="xml">
+
+      <!-- replace origin sales_team_id position -->
+      <!-- because we dont know if sales team used in other xpath expression or other so we only readonly and invisible it -->
+      <xpath expr="//field[@name='validity_date']" position="after">
+        <field name="my_domain_id" widget="many2many_tags" readonly="True" invisible="1"/>
+      </xpath>
+      <xpath expr="//field[@name='validity_date']" position="after">
+        <field name="cek_akses" invisible="1"/>
+      </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                <attribute name="domain">[('sale_ok', '=', True), ('id', 'in', parent.product_ids),('id', 'not in', parent.my_domain_id)]</attribute>
+            </xpath>
+    </field>
+  </record>
+
+  </data>
+</odoo>

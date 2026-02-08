@@ -1,0 +1,4 @@
+id,sequence,name,parent_id/id
+module_category_sale_flow_technical,101,Sale Flow (Technical),
+module_category_sale_flow_technical_pickup_method,1,Order Pickup Method,sanqua_sale_flow.module_category_sale_flow_technical
+module_category_sale_flow_technical_sale_order_limit_approval,2,OverLimit/Overdue Approver,sanqua_sale_flow.module_category_sale_flow_technical

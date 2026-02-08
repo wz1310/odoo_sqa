@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    
+     <record id="inherit_mrp_view_stock_move_raw_tree" model="ir.ui.view">
+        <field name="name">inherit.mrp_view.stock.move.raw.tree</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="mrp.view_stock_move_raw_tree"/>
+        <field name="arch" type="xml">
+            <field name="quantity_done" position="after">
+                <field name="bom_amount" groups="account.group_account_user"/>
+                <field name="produksi_amount" groups="account.group_account_user"/>
+                <field name="reject_produksi_qty" groups="account.group_account_user"/>
+                <!-- <field name="reject_produksi_persen" groups="account.group_account_user"/> -->
+                <field name="reject_produksi_amount" groups="account.group_account_user"/>          
+            </field>
+        </field>
+    </record>
+
+    <record id="inherit_mrp_production_list_view" model="ir.ui.view">
+        <field name="name">inherit.mrp.production.tree.view</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="product_qty" position="after">
+                <field name="produktivitas_mesin" string="Produktivitas (%)" optional="show"/>
+                <field name="consumption" optional="show"/>
+                <field name="reject_produksi_persen" string="Reject Production (%)" optional="show"/>
+            </field>
+        </field>
+    </record>
+    <record id="inherit_mrp_production_form_view" model="ir.ui.view">
+        <field name="name">inherit.mrp.production.form.view</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="group_id" domain="[('company_id', '=', company_id)]"/>
+                <field name="jml_personel"/>
+                <label for="total_jam_kerja"/>
+                <div>
+                    <field name="total_jam_kerja" class="oe_inline" style="vertical-align:baseline"/> <span> Hours</span>
+                </div>
+            </field>
+            <field name="bom_id" position="after">
+                <field name="bom_amount" groups="account.group_account_user"/>
+                <field name="produksi_amount" groups="account.group_account_user"/>
+                <field name="reject_produksi_persen"/>
+                <field name="reject_produksi_amount" groups="account.group_account_user"/>
+                <field name="reject_produksi_qty"/>          
+            </field>
+            <xpath expr="//form/sheet/notebook" position="inside">
+                <page string="Mesin">
+                    <group>
+                        <group>
+                            <field name="mesin_id" required="1" domain="[('company_id', '=', company_id)]" options="{'no_quick_create':True,'no_create':True}"/>
+                            <field name="qty_produced" invisible="1"/>
+                            <field name="mesin_line_id" invisible="1"/>
+                            <label for="kapasitas" string="Kapasitas/satuan"/>
+                            <div class="oe_inline">
+                                <field name="kapasitas" class="oe_inline" required="1"/>/
+                                <field name="satuan_id" class="oe_inline" required="1"/>
+                            </div>
+                            <label for="target_produksi"/>
+                            <div class="oe_inline">
+                                <field name="target_produksi" class="oe_inline" required="1"/> /
+                                <field name="total_jam_kerja" class="oe_inline" required="1"/> Jam
+                            </div>
+                            <label for="produktivitas_mesin"/>
+                            <div class="oe_inline">
+                                <field name="produktivitas_mesin" class="oe_inline" required="1"/>%
+                            </div>
+                        </group>
+                        <group>
+                            
+                            <field name="kwh_mesin"/>
+                            <field name="consumption"/>
+                        </group>
+                        
+                        <field name="history_line">
+                            <tree editable="bottom">
+                                <field name="production_id" invisible="1"/>
+                                <field name="type_mesin_information"/>
+                                <field name="duration" widget='float_time'/>
+                                <field name="timestart" required="0" invisible="1"/>
+                                <field name="timeend" required="0" invisible="1"/>
+                                <field name="reason_id" required="1"/>
+                                <field name="notes"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

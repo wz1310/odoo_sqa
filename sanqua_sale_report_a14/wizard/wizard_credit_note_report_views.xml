@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="wizard_credit_note_report_form_view">
+        <field name="name">Wizard Credit Note Report</field>
+        <field name="model">wizard.credit.note.report</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date_start" />
+                            <field name="date_end" />
+                            <field name="company_id" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Generate Excel" type="object" name="btn_confirm" class="oe_highlight" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_credit_note_report" model="ir.actions.act_window">
+        <field name="name">Wizard Credit Note Report</field>
+        <field name="res_model">wizard.credit.note.report</field>
+        <field name="view_mode">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="wizard_daily_order_a17_report_form_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="a14_report_menu" name="A14 - Laporan Credit Note" action="action_credit_note_report" parent="sale.menu_sale_report" sequence="124"/>
+</odoo>

@@ -1,0 +1,17 @@
+<odoo>
+    
+    <record id="group_galon_payment_report" model="res.groups">
+        <field name="name">Payment Galon Report</field>
+    </record>
+
+    <record model="ir.rule" id="rule_report_galon_payment_global_user">
+        <field name="name">Rule Payment Galon Global User</field>
+        <field name="model_id" ref="model_report_galon_payment" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+    </record>
+</odoo>
+

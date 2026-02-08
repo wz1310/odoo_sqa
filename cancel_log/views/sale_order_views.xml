@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_order_form_view" model="ir.ui.view">
+        <field name="name">sale.order.form.view</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='action_cancel']" position="attributes">
+        		<attribute name="context">{'show_wizard_reason': True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='note']" position="after">
+        		<field name="cancel_note" readonly="1" force_save="1" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

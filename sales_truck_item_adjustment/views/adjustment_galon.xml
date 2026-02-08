@@ -1,0 +1,30 @@
+<odoo>
+
+    <record model="ir.ui.view" id="adjustment_galon_deposito_tree_view">
+        <field name="name">Adjustment Galon Deposito Tree</field>
+        <field name="model">adjustment.galon</field>
+        <field name="arch" type="xml">
+            <tree string="Adjustment Galon" editable="top">
+                <field name="name" readonly="1" force_save="1" string="No. Doc"/>
+                <field name="partner_id" required="1" options="{'no_create': True, 'no_open':True}" domain="[('customer', '=', True)]"/>
+                <field name="product_id" required="1" options="{'no_create': True, 'no_open':True}" domain="[('sale_truck', '=', True)]"/>
+                <field name="delivery_date" required="1"/>
+                <field name="borrow_qty" required="1"/>
+                <field name="deposito_qty" required="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_adjustment_galon">
+        <field name="name">Adjustment Galon</field>
+        <field name="res_model">adjustment.galon</field>
+        <field name='view_mode'>tree,form</field>
+    </record>
+
+    <menuitem action="action_adjustment_galon"
+                id="adjustment_galon_menu"
+                name="Adjusment Saldo Galon" 
+                sequence="35" 
+                groups="sales_truck_item_adjustment.group_adjustment_manager" 
+                parent="sale.product_menu_catalog"/>
+</odoo>

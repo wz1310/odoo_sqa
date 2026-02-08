@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+        <record id="sh_odoo_web_consoles_view_form" model="ir.ui.view">
+            <field name="name">sh.odoo.web.console.view.form</field>
+            <field name="model">sh.odoo.web.console</field>
+            <field name="arch" type="xml">
+                <form string="Settings" class="oe_form_configuration">
+                    <div class="sh_odoo_web_consol_container">
+                        <h2 class="mb16">
+                            Write your code in this editor and press "Run" button to execute it.
+                        </h2>
+                        <div class="sh_odoo_web_console_style">
+                            <style>
+                                :root{
+                                    --sh-number-width: 40.1px;
+                                }
+                            </style>
+                        </div>
+                        <div class="sh_odoo_web_console_action_buttons">
+                            <div class="sh_run_button">
+                                <button string="Run" type="object" name="run" class="oe_highlight"  icon="fa-play"/>
+                            </div>
+                        </div>
+                        <div class="sh_odoo_web_console">
+                            <div class="sh_editor">
+                                <div class="sh_editor_buttons">
+                                    <button string="Clear" type="object" name="clear"  icon="fa-refresh" class="btn-sm"/>
+                                </div>
+                                <div class="sh_editor-content">
+                                    <div class="sh_editor_layer">
+                                        <div class="sh_editor-cell">1</div>
+                                        <div class="sh_editor-cell">2</div>
+                                        <div class="sh_editor-cell">3</div>
+                                        <div class="sh_editor-cell">4</div>
+                                        <div class="sh_editor-cell">5</div>
+                                        <div class="sh_editor-cell">6</div>
+                                        <div class="sh_editor-cell">7</div>
+                                        <div class="sh_editor-cell">8</div>
+                                        <div class="sh_editor-cell">9</div>
+                                        <div class="sh_editor-cell">10</div>
+                                        <div class="sh_editor-cell">11</div>
+                                        <div class="sh_editor-cell">12</div>
+                                        <div class="sh_editor-cell">13</div>
+                                        <div class="sh_editor-cell">14</div>
+                                        <div class="sh_editor-cell">15</div>
+                                        <div class="sh_editor-cell">16</div>
+                                        <div class="sh_editor-cell">17</div>
+                                        <div class="sh_editor-cell">18</div>
+                                        <div class="sh_editor-cell">19</div>
+                                        <div class="sh_editor-cell">20</div>
+                                        <div class="sh_editor-cell">21</div>
+                                        <div class="sh_editor-cell">22</div>
+                                        <div class="sh_editor-cell">23</div>
+                                        <div class="sh_editor-cell">24</div>
+                                        <div class="sh_editor-cell">25</div>
+                                        <div class="sh_editor-cell">26</div>
+                                        <div class="sh_editor-cell">27</div>
+                                        <div class="sh_editor-cell">28</div>
+                                        <div class="sh_editor-cell">29</div>
+                                        <div class="sh_editor-cell">30</div>
+                                        <div class="sh_editor-cell">31</div>
+                                        <div class="sh_editor-cell">32</div>
+                                        <div class="sh_editor-cell">33</div>
+                                        <div class="sh_editor-cell">34</div>
+                                        <div class="sh_editor-cell">35</div>
+                                        <div class="sh_editor-cell">36</div>
+                                    </div>
+                                    <field name="code" widget="ace" options="{'mode': 'xml'}" nolabel="1"/>
+                                </div>
+                            </div>
+                            <div class="sh_result">
+                                <div class="sh_result-content">
+                                    <field name="result" readonly="1" nolabel="1"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sh_odoo_web_console_help">
+                            <div><h3>Help</h3></div>
+                            <ul class="sh_help">
+                                <li data-title="Get all partner object">
+                                    <span class="span-c">self.env['res.partner'].search([])</span>
+                                </li>
+                                <li data-title="Get Partners object with name John">
+                                    <span class="span-c">self.env['res.partner'].search([('name','ilike','Jhon')])</span>
+                                </li>
+                                <li data-title="Get total of Partners">
+                                    <span class="span-c">self.env['res.partner'].search_count([])</span>
+                                </li>
+                                <li data-title="Get Partners data">
+                                    <span class="span-c">self.env['res.partner'].search_read([], ['id','name','email'])</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <h5 class="mt32">Note **: Please, be aware about the code you execute here, It will effect you server directly.</h5>
+                    </div>
+                </form>
+            </field>
+        </record>
+        <record id="sh_odoo_web_console_act_window" model="ir.actions.act_window">
+            <field name="name">Odoo Code Test</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sh.odoo.web.console</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+
+        <menuitem id="sh_odoo_web_console_menu"
+            name="Web Console"
+            parent="base.menu_custom"
+            action="sh_odoo_web_console_act_window"
+            sequence='3'/>
+</odoo>

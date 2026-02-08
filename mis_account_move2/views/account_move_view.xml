@@ -1,0 +1,19 @@
+<odoo>
+    <record id="    " model="ir.ui.view">
+        <field name="name">mis.view.move.form.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='name']" position="after">
+                <!-- <field name="no_sj_wim" attrs="{'invisible':[('parent.type','not in',['out_invoice'])]}"/> -->
+                <field name="no_sj_plan" attrs="{'invisible':[('parent.type','not in',['out_invoice'])]}"/>
+                <field name="stock_move_id" optional="hide" force_save="1" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='line_ids']/tree/field[@name='name']" position="after">
+                <field name="no_sj_wim" attrs="{'invisible':[('parent.type','not in',['out_invoice'])]}"/>
+                <field name="no_sj_plan" attrs="{'invisible':[('parent.type','not in',['out_invoice'])]}"/>
+                <field name="stock_move_id" optional="hide" force_save="1" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_report_sale_summary_sku,access_report_sale_summary_sku,sanqua_sale_report_a25.model_report_sale_summary_sku,sanqua_sale_report_a25.group_sale_summary_sku,1,0,0,0

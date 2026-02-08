@@ -1,0 +1,13 @@
+<odoo>
+    <template id="assets_hlp_dashboard" name="Helpdesk Dashboard" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/helpdesk_lite/static/src/js/basic_view.js"/>
+        </xpath>
+    </template>
+    <template id="help_assets_frontend" inherit_id="web.assets_frontend" name="Help Assets">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/helpdesk_lite/static/src/js/help_submit.js"></script>
+            <link rel="stylesheet" href="/helpdesk_lite/static/src/css/website_preloader.css"/>
+        </xpath>
+    </template>
+</odoo>

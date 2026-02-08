@@ -1,0 +1,142 @@
+<odoo>
+    <record id="mis_view_move_form_inherit" model="ir.ui.view">
+        <field name="name">mis.view.move.form.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@id='aml_tab']/field[@name='line_ids']/tree/field[@name='account_id']" position="after">
+                <field name="journal_id" readonly="False"/>
+            </xpath>
+            <xpath expr="//field[@name='journal_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('name', '!=', '/')]}</attribute>
+            </xpath>
+            <xpath expr="//page[@id='invoice_tab']/field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="after">
+                <field name="picking_id" readonly="False"/>
+            </xpath>
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="analytic_account_gbl" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+            </xpath>
+        </field>
+    </record>
+
+        <record id="inherit_view_invoice_tree" model="ir.ui.view">
+            <field name="name">inherit.account.invoice.tree</field>
+            <field name="model">account.move</field>
+            <field name="arch" type="xml">
+                <tree string="Invoices"
+                      decoration-info="state == 'draft'"
+                      decoration-muted="state == 'cancel'"
+                      banner_route="/account/account_invoice_onboarding"
+                      js_class="account_tree">                      
+                    <field name="name" modifiers="{'readonly':true,'required':true}"/>
+                    <field name="partner_id" invisible="1" on_change="1" can_create="true" can_write="true" modifiers="{'readonly':[['state','not in',['draft']]],'column_invisible':true}"/>
+                    <field name="e_tax_invoice_id" can_create="true" can_write="true" modifiers="{}"/>
+                    <field name="invoice_source_email" invisible="1" on_change="1" modifiers="{'column_invisible':true}"/>
+                    <field name="invoice_partner_icon" string=" " modifiers="{'readonly':true}"/>
+                    <field name="invoice_partner_display_name" invisible="context.get('default_type') not in ('in_invoice', 'in_refund','in_receipt')" string="Vendor" modifiers="{'readonly':true,'column_invisible':true}"/>
+                    <field name="invoice_partner_display_name" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Customer" modifiers="{'readonly':true,'column_invisible':false}"/>
+                    <field name="ref" optional="show" modifiers="{}"/>
+                    <field name="invoice_date" optional="show" string="Invoice date" on_change="1" modifiers="{'readonly':[['state','not in',['draft']]]}"/>
+                    <field name="pick_method" invisible="0" string="Picking method" widget="selection" readonly="1" force_save="1" can_create="true" can_write="true" modifiers="{'readonly':true,'column_invisible':false}"/>
+                    <field name="div_method" invisible="0" string="Divisi" widget="selection" readonly="1" force_save="1" can_create="true" can_write="true" modifiers="{'readonly':true,'column_invisible':false}"/>
+                    <field name="invoice_date" optional="show" invisible="context.get('default_type') not in ('in_invoice', 'in_refund','in_receipt')" string="Bill Date" on_change="1" modifiers="{'readonly':[['state','not in',['draft']]],'column_invisible':true}"/>
+                    <field name="invoice_date" optional="show" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Invoice Date" on_change="1" modifiers="{'readonly':[['state','not in',['draft']]],'column_invisible':false}"/>
+                    <field name="invoice_origin" optional="show" string="Source Document" modifiers="{'readonly':true}"/>
+                    <field name="invoice_payment_ref" optional="hide" invisible="context.get('default_type') in ('out_invoice', 'out_refund','out_receipt')" on_change="1" modifiers="{'column_invisible':true}"/>
+                    <field name="invoice_user_id" optional="show" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Sales Person" on_change="1" can_create="true" can_write="true" modifiers="{'column_invisible':false}"/>
+                    <field name="company_id" options="{'no_create': True}" optional="show" on_change="1" can_create="true" can_write="true" modifiers="{'readonly':true}"/>
+                    <field name="invoice_date_due" optional="show" on_change="1" modifiers="{'readonly':[['state','not in',['draft']]]}"/>
+                    <field name="amount_untaxed_signed" string="Tax Excluded" sum="Total" optional="show" modifiers="{'readonly':true}"/>
+                    <field name="amount_tax_signed" string="Tax" sum="Total" optional="hide" modifiers="{'readonly':true}"/>
+                    <field name="amount_total_signed" string="Total" sum="Total" optional="show" modifiers="{'readonly':true}"/>
+                    <field name="amount_residual_signed" string="Amount Due" sum="Amount Due" optional="show" modifiers="{'readonly':true}"/>
+                    <field name="amount_residual" string="Original Currency" sum="Original Amount Due" optional="hide" modifiers="{'readonly':true}"/>
+                    <field name="currency_id" invisible="1" on_change="1" can_create="true" can_write="true" modifiers="{'readonly':[['state','not in',['draft']]],'required':true,'column_invisible':true}"/>
+                    <field name="company_currency_id" invisible="1" can_create="true" can_write="true" modifiers="{'readonly':true,'column_invisible':true}"/>
+                    <field name="state" optional="show" on_change="1" modifiers="{'readonly':true,'required':true}"/>
+                    <field name="invoice_payment_state" optional="hide" modifiers="{'readonly':true}"/>
+                    <field name="type" invisible="context.get('default_type', True)" on_change="1" modifiers="{'readonly':true,'required':true,'column_invisible':true}"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id='inherit_view_invoice_tree_action' model='ir.actions.act_window'>
+            <field name="name">Invoice</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_id" ref="inherit_view_invoice_tree"/>
+            <field name="domain">[('type', '=', 'out_invoice')]</field>
+            <field name="context">{'default_type': 'out_invoice'}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Invoice
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_inherit_view_invoice_action"
+            name="Invoice(2)"
+            parent="account.menu_finance_receivables"
+            action="inherit_view_invoice_tree_action"
+            sequence="113"/>
+
+        <record id="inherit_view_bill_tree" model="ir.ui.view">
+            <field name="name">inherit.view.bill.tree</field>
+            <field name="model">account.move</field>
+            <field name="arch" type="xml">
+                <tree>
+                <field name="name" modifiers="{'readonly':true,'required':true}"/>
+                <field name="partner_id" invisible="1" on_change="1" can_create="true" can_write="true" modifiers="{'readonly':[['state','not in',['draft']]],'column_invisible':true}"/>
+                <field name="e_tax_invoice_id" can_create="true" can_write="true" modifiers="{}"/>
+                <field name="invoice_source_email" invisible="1" on_change="1" modifiers="{'column_invisible':true}"/>
+                <field name="invoice_partner_icon" string=" " modifiers="{'readonly':true}"/>
+                <field name="invoice_partner_display_name" invisible="context.get('default_type') not in ('in_invoice', 'in_refund','in_receipt')" string="Vendor" modifiers="{'readonly':true,'column_invisible':false}"/>
+                <field name="invoice_partner_display_name" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Customer" modifiers="{'readonly':true,'column_invisible':true}"/>
+                <field name="ref" optional="show" modifiers="{}"/>
+                <field name="invoice_date" optional="show" string="Invoice date" on_change="1" modifiers="{'readonly':[['state','not in',['draft']]]}"/>
+                <field name="pick_method" invisible="0" string="Picking method" widget="selection" readonly="1" force_save="1" can_create="false" can_write="false" modifiers="{'readonly':true,'column_invisible':false}"/>
+                <field name="div_method" invisible="0" string="Divisi" widget="selection" readonly="1" force_save="1" can_create="true" can_write="true" modifiers="{'readonly':true,'column_invisible':false}"/>
+                <!-- <field name="call_pick_method" invisible="1" string="Call Picking" readonly="1" modifiers="{'readonly':true,'column_invisible':true}"/> -->
+                <field name="invoice_date" optional="show" invisible="context.get('default_type') not in ('in_invoice', 'in_refund','in_receipt')" string="Bill Date" on_change="1" modifiers="{'readonly':[['state','not in',['draft']]],'column_invisible':false}"/>
+                <field name="invoice_date" optional="show" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Invoice Date" on_change="1" modifiers="{'readonly':[['state','not in',['draft']]],'column_invisible':true}"/>
+                <field name="invoice_origin" optional="show" string="Source Document" modifiers="{'readonly':true}"/>
+                <field name="invoice_payment_ref" optional="hide" invisible="context.get('default_type') in ('out_invoice', 'out_refund','out_receipt')" on_change="1" modifiers="{'column_invisible':false}"/>
+                <field name="invoice_user_id" optional="show" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" string="Sales Person" on_change="1" can_create="true" can_write="true" modifiers="{'column_invisible':true}"/>
+                <field name="team_id" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" optional="hide" can_create="true" can_write="true" modifiers="{'column_invisible':true}"/>
+                <field name="company_id" options="{'no_create': True}" optional="show" on_change="1" can_create="true" can_write="true" modifiers="{'readonly':true}"/>
+                <field name="invoice_date_due" optional="show" on_change="1" modifiers="{'readonly':[['state','not in',['draft']]]}"/>
+                <field name="amount_untaxed_signed" string="Tax Excluded" sum="Total" optional="show" modifiers="{'readonly':true}"/>
+                <field name="amount_tax_signed" string="Tax" sum="Total" optional="hide" modifiers="{'readonly':true}"/>
+                <field name="amount_total_signed" string="Total" sum="Total" optional="show" modifiers="{'readonly':true}"/>
+                <field name="amount_residual_signed" string="Amount Due" sum="Amount Due" optional="show" modifiers="{'readonly':true}"/>
+                <field name="amount_residual" string="Original Currency" sum="Original Amount Due" optional="hide" modifiers="{'readonly':true}"/>
+                <field name="currency_id" invisible="1" on_change="1" can_create="true" can_write="true" modifiers="{'readonly':[['state','not in',['draft']]],'required':true,'column_invisible':true}"/>
+                <field name="company_currency_id" invisible="1" can_create="true" can_write="true" modifiers="{'readonly':true,'column_invisible':true}"/>
+                <field name="state" optional="show" on_change="1" modifiers="{'readonly':true,'required':true}"/>
+                <field name="invoice_payment_state" optional="hide" modifiers="{'readonly':true}"/>
+                <field name="type" invisible="context.get('default_type', True)" on_change="1" modifiers="{'readonly':true,'required':true,'column_invisible':true}"/>
+            </tree>
+            </field>
+        </record>
+        
+        <record id='inherit_view_bill_tree_action' model='ir.actions.act_window'>
+            <field name="name">Bills</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">tree,kanban,form</field>
+            <field name="view_id" ref="inherit_view_bill_tree"/>
+            <field name="domain">[('type', '=', 'in_invoice')]</field>
+            <field name="context">{'default_type': 'in_invoice'}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Bills
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_inherit_view_bill_action"
+            name="Bills(2)"
+            parent="account.menu_finance_payables"
+            action="inherit_view_bill_tree_action"
+            sequence="201"/>
+
+</odoo>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="settlement_request_view_form_inherit">
+            <field name="name">settlement.request.view.form.inherit</field>
+            <field name="model">settlement.request</field>
+            <field name="inherit_id" ref="settlement_request.settlement_request_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='btn_submit']" position="attributes">
+                    <attribute name="groups">settlement_request.group_settlement_user,settlement_request_purchase.group_purchase_settlement_user</attribute>
+                </xpath>
+
+                <xpath expr="//button[@name='btn_draft']" position="attributes">
+                    <attribute name="groups">settlement_request.group_settlement_user,settlement_request_purchase.group_purchase_settlement_user</attribute>
+                </xpath>
+
+                <xpath expr="//button[@name='btn_done']" position="attributes">
+                    <attribute name="groups">settlement_request.group_settlement_user,settlement_request_purchase.group_purchase_settlement_user</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="nolabel">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="before">
+                    <div class="o_td_label">
+                        <label for="partner_id" string="Customer" style="font-weight:bold;" attrs="{'invisible': [('invoice_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt',False))]}"/>
+                        <label for="partner_id" string="Vendor" style="font-weight:bold;" attrs="{'invisible': [('invoice_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt'))]}"/>
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='activity_id']" position="attributes">
+                    <attribute name="attrs">{'invisible':[('invoice_type', '=', 'in_invoice')]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='activity_id']" position="after">
+                    <field name="invoice_type" attrs="{'invisible':[('invoice_type', '=', 'in_invoice')]}"/>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/tree/field[@name='amount_residual']" position="after">
+                    <field name="invoice_type" optional="hide"/>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']/tree/field[@name='discount_id']" position="attributes">
+                    <attribute name="attrs">{'column_invisible':[('parent.invoice_type', '!=', 'out_invoice')],'readonly':[('parent.invoice_type', '!=', 'out_invoice')]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']" position="attributes">
+                    <attribute name="context">{'default_invoice_type': invoice_type,'default_partner_id': partner_id}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='invoice_id']" position="attributes">
+                    <attribute name="domain">[('amount_residual','&gt;',0), ('state','not in',['cancel']),('partner_id','=',partner_id),('type','=',invoice_type)]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='line_ids']" position="after">
+                    <group class="oe_subtotal_footer">
+                        <field name="total_pay_amount"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="settlement_request.settlement_request_action" model="ir.actions.act_window">
+            <field name="context">{'default_invoice_type': 'out_invoice'}</field>
+            <field name="domain">[('invoice_type','=','out_invoice')]</field>
+        </record>
+
+        <record id="purchase_settlement_request_action" model="ir.actions.act_window">
+            <field name="name">Settlement Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">settlement.request</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+            Create a new settlement request.
+                </p>
+            </field>
+            <field name="context">{'default_invoice_type': 'in_invoice'}</field>
+            <field name="domain">[('invoice_type','=','in_invoice')]</field>
+        </record>
+
+        <record id="settlement_request.menu_settlement_request" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6,0,[ref('settlement_request.group_settlement_user'),ref('settlement_request.group_settlement_user')])]"/>
+        </record>
+
+        <menuitem id="menu_purchase_settlement_request" name="Settlement Request" action="purchase_settlement_request_action" parent="account.menu_finance_payables" groups="settlement_request_purchase.group_purchase_settlement_user,settlement_request_purchase.group_purchase_settlement_approver" sequence="25"/>
+
+    </data>
+</odoo>

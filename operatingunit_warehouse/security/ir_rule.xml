@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.rule" id="stock_warehouse_branch_rule">
+        <field name="name">Warehouse Allowed</field>
+        <field name="model_id" ref="stock.model_stock_warehouse"/>
+        <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('base.group_portal')), (4, ref('base.group_public'))]"/>
+        <field name="domain_force">[('id', 'in', user.warehouse_ids.ids)]</field>
+    </record>
+    <record model="ir.rule" id="stock_picking_type_branch_rule">
+        <field name="name">Picking Type Warehouse Rule</field>
+        <field name="model_id" ref="stock.model_stock_picking_type"/>
+        <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('base.group_portal')), (4, ref('base.group_public'))]"/>
+        <field name="domain_force">[('warehouse_id', 'in', user.warehouse_ids.ids)]</field>
+    </record>
+    <record model="ir.rule" id="stock_picking_branch_rule">
+        <field name="name">Stock Picking Warehouse Rule</field>
+        <field name="model_id" ref="stock.model_stock_picking"/>
+        <field name="groups" eval="[(4, ref('base.group_user')), (4, ref('base.group_portal')), (4, ref('base.group_public'))]"/>
+        <field name="domain_force">[('picking_type_id.warehouse_id', 'in', user.warehouse_ids.ids)]</field>
+    </record>
+    <record model="ir.rule" id="stock_warehouse_branch_admin_rule">
+        <field name="name">Warehouse multibranch</field>
+        <field name="model_id" ref="stock.model_stock_warehouse"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+    </record>
+    <record model="ir.rule" id="stock_picking_type_branch_admin_rule">
+        <field name="name">Picking Type Branch Rule</field>
+        <field name="model_id" ref="stock.model_stock_picking_type"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+    </record>
+</odoo>

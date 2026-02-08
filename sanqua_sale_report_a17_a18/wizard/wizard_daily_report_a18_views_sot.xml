@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="wizard_daily_order_a18_report_form_view_sot">
+        <field name="name">Wizard Daily Order a18 Report SOT</field>
+        <field name="model">wizard.daily.order.a18.report.sot</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date_start" />
+                            <field name="date_end" />
+                            <field name="company_id" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Generate Excel" type="object" name="btn_confirm" class="oe_highlight" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_daily_order_a18_report_sot" model="ir.actions.act_window">
+        <field name="name">Wizard Daily Order A18 Report SOT</field>
+        <field name="res_model">wizard.daily.order.a18.report.sot</field>
+        <field name="view_mode">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="wizard_daily_order_a18_report_form_view_sot"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="a18_report_menu_sot" name="Report OC SOT" action="action_daily_order_a18_report_sot" parent="sanqua_galon_report_1.menu_galon_report" sequence="100"/>
+</odoo>

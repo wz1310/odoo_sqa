@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_report_credit_note,access_report_credit_note,model_report_credit_note,sanqua_sale_report_a14.group_credit_note_report,1,0,0,0

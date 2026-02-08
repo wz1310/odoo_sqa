@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="kas_bank_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">kas.bank.report.wizard.view.form</field>
+        <field name="model">kas.bank.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Kas Bank">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="btn_confirm" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_kas_bank_report_wizard" model="ir.actions.act_window">
+        <field name="name">Kas Bank Report Wizard</field>
+        <field name="res_model">kas.bank.report.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_kas_bank_report_wizard"
+            name="Kas Bank Report"
+            action="action_kas_bank_report_wizard"
+            parent="sanqua_galon_report_1.menu_galon_report"
+            groups="sanqua_galon_report_10.group_kas_bank_report"  sequence="1"/>
+
+</odoo>

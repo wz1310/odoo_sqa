@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="pemakaian_bahan_baku_report_wizard_form_view">
+        <field name="name">Wizard Pemakaian Bahan Baku Report</field>
+        <field name="model">wizard.pemakaian.bahan.baku.report</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="start_date" />
+                            <field name="end_date" />
+                            <field name="company_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Print" type="object" name="button_print" class="oe_highlight" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pemakaian_bahan_baku_report" model="ir.actions.act_window">
+        <field name="name">Report Pemakaian Bahan Baku</field>
+        <field name="res_model">wizard.pemakaian.bahan.baku.report</field>
+        <field name="view_mode">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="pemakaian_bahan_baku_report_wizard_form_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="pemakaian_bahan_baku_report_menu" name="Report Pemakaian Bahan Baku"
+        action="action_pemakaian_bahan_baku_report" parent="mrp.menu_mrp_reporting" sequence="10"/>
+
+</odoo>

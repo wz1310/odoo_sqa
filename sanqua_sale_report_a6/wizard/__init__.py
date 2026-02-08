@@ -1,0 +1,1 @@
+from . import wizard_weekly_sale_ratio_report

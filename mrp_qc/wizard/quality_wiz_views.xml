@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="quality_wizard_form_view" model="ir.ui.view">
+        <field name="name">quality_wizard_form_view</field>
+        <field name="model">quality.wizard</field>
+        <field name="inherit_id" ref="inward_quality.quality_wizard_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/group/group[1]" position="after">
+        		<group>
+                    <field name="qc_production_id" attrs="{'invisible':[('qc_production_id', '=', False)]}"/>
+				</group>
+            </xpath>
+            <xpath expr="//field[@name='fail_reason']" position="after">
+                <field name="reason_qc_id" string="Quarantine Reason" attrs="{'invisible':[('qc_production_id', '=', False)]}"/>
+                <field name="notes_qc" attrs="{'invisible':[('qc_production_id', '=', False)]}"/>
+            </xpath>
+            <!-- <xpath expr="//field[@name='fail_reason']" position="attributes">
+                <attribute name="attrs">{'invisible': [('qc_production_id', '!=', False)]}</attribute>
+            </xpath> -->
+            <xpath expr="//field[@name='reason_qc_picking_id']" position="attributes">
+                <attribute name="attrs">{'invisible': [('qc_production_id', '!=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='notes_qc_picking']" position="attributes">
+                <attribute name="attrs">{'invisible': [('qc_production_id', '!=', False)]}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

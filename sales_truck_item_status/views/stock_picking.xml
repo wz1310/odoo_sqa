@@ -1,0 +1,16 @@
+<odoo>
+    <record model="ir.ui.view" id="stock_picking_sale_truck">
+        <field name="name">Stock Picking Sale Truck</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[3]" position="inside">
+                <group name="sale_truck">
+                    <group string="Sale Truck Informations">
+                        <field name="sale_truck_id" options="{'no_quick_create':True,'no_create':True}" readonly="1"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

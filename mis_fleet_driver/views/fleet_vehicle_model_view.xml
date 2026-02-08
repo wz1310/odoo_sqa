@@ -1,0 +1,15 @@
+<odoo>
+    <record model="ir.ui.view" id="mis_fleet_vehicle_model_inherited">
+        <field name="name">MIS Fleet Vehicle Model Inherited</field>
+        <field name="model">fleet.vehicle.model</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_model_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div//field[@name='brand_id']" position="after">
+                <div>
+                    <label for="expedition_app" class="oe_edit_only"/>
+                    <field string="Expedition app?" name="expedition_app"/>
+                </div>
+            </xpath>
+          </field>
+    </record>
+</odoo>

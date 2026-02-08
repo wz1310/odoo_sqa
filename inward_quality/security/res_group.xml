@@ -1,0 +1,8 @@
+<odoo>		
+
+		<record id="group_quality_control" model="res.groups">
+            <field name="name">Quality Control</field>
+        </record>
+
+
+</odoo>

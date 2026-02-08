@@ -1,0 +1,424 @@
+<odoo>
+    <record model="ir.ui.view" id="stock_picking_form_inherited">
+        <field name="name">Stock Picking Form Inherited</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//button[@name='action_cancel']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ('assigned', 'confirmed', 'partially_available', 'draft')), ('is_locked', '=', False)]}</attribute>
+            </xpath> -->
+            <xpath expr="//sheet/group/group/field[@name='location_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', '!=', 'draft'),('picking_type_code','=','internal')], 'invisible': [('picking_type_code', '=', 'incoming')]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='analytic_account_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', '!=', 'draft'),('picking_type_code','=','internal')]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='warehouse_plant_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', '!=', 'draft'),('picking_type_code','=','internal')]}</attribute>
+            </xpath>
+            <!--<xpath expr="//field[@name='scheduled_date']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', '!=', 'draft'),('picking_type_code','=','internal')]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_received']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', '!=', 'draft'),('picking_type_code','=','internal')]}</attribute>
+            </xpath>-->
+            <xpath expr="//field[@name='date_received']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', '!=', 'draft'),('picking_type_code','=','internal')]}</attribute>
+            </xpath>
+            <!-- penambahan alamat customer -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="cust_street" readonly="1" force_save="1"></field>
+            </xpath>
+            <!-- <xpath expr="//field[@name='plant_id']" position="attributes">
+                <attribute name="attrs">{'readonly':['|',('state','in',['plant-confirmed','done']),('interco_master','=',False)]}</attribute>
+            </xpath> -->
+            <xpath expr="//field[@name='plant_id']" position="attributes">
+                <attribute name="attrs">{'readonly':['|',('state','in',['plant-confirmed','done'])]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='fleet_vehicle_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', '!=', 'draft'),('picking_type_code','=','internal')]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='fleet_driver_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', '!=', 'draft'),('picking_type_code','=','internal')]}</attribute>
+            <attribute name="domain">[('is_driver', '=', True)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="cek_akses" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='state']" position="attributes">
+                <attribute name="statusbar_visible">draft,waiting_approval,confirmed,partially_available,assigned,done</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='button_validate']" position="before">
+                <button name="btn_approve" type="object" string="Approve"  class="btn-primary" attrs="{'invisible':['|',('user_can_approve','=',False), ('state','not in',['waiting_approval'])]}"/>
+                <button name="btn_reject" type="object" string="Reject" attrs="{'invisible':['|',('user_can_approve','=',False), ('state','not in',['waiting_approval'])]}"/>
+            </xpath>
+            <xpath expr="//field[@name='location_dest_id']" position="after">
+                <field name="replace_from_do" widget="many2many_tags" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='fleet_driver_id']" position="after">
+                <field name="next_loading_plant_id" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="replace">
+                <div >
+                <field name="partner_id" nolabel="1" attrs="{'readonly': [('picking_type_code', '=', 'incoming')]}" domain="['|',('id','=',customer_id),('parent_id','=',customer_id)]" on_change="1" can_create="true" can_write="true" modifiers="{'readonly':[['picking_type_code','=','incoming']]}"/>
+                <button string="Browse" name="btn_change_partner" type="object" attrs="{'invisible': [('state', 'in', ['done','cancel','rejected'])]}"/>
+            </div>
+            </xpath>
+
+        </field>
+    </record>
+    <record model="ir.ui.view" id="stock_picking_form_inheriteds">
+        <field name="name">Stock Picking Form Inheriteds</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock_picking_return_reason.stock_picking_form_inherited" />
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='direct_return_picking']" position="attributes">
+                <attribute name="confirm">Apakah anda yakin untuk melakukan proses RETURN?</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='btn_plant_confirm']" position="after">
+                <!--button type="object" attrs="{'invisible': [('sync_btn','=',False)]}" class="btn btn-warning" string="Sync Now" name="btn_sync"></button-->
+                <button type="object" attrs="" class="btn btn-warning" string="Sync Now" name="btn_sync"></button>
+                <field name="sync_btn" invisible="1"></field>
+                <!-- ///////////////tambahan field untuk log dan cetakan printout ///////////// -->
+                <!-- ///////////////dipindah ke mis_stock_picking_v1////////////////// -->
+                <!-- <field name="print_pick_op_count" invisible='True'></field>
+                <field name="print_int_tf_count" invisible='True'></field>
+                <field name="print_rcv_itm_count" invisible='True'></field>
+                <field name="print_po_rtr_count" invisible='True'></field> -->
+                <!-- ///////////////////////////////////////////////////////////////////// -->
+            </xpath>
+        </field>
+    </record>
+
+    <record id="mymodule_message_wizard_form" model="ir.ui.view">
+    <field name="name">mymodule.message.wizard.form</field>
+    <field name="model">mymodule.message.wizard</field>
+    <field name="arch" type="xml">
+        <form>
+            <field name="message" readonly="True"/>
+            <footer>
+                <button name="action_close" string="Ok" type="object" default_focus="1" class="oe_highlight"/>
+            </footer>
+        </form>
+    </field>
+</record>
+<!-- Memunculkan stock location pada wizard interco move line -->
+    <!--record model="ir.ui.view" id="stock_interco_form_inherit">
+        <field name="name">Stock Interco Form Inherit</field>
+        <field name="model">stock.interco.move.line</field>
+        <field name="inherit_id" ref="sanqua_sale_flow.stock_interco_move_line_editable_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='src_location_id']" position="attributes">
+                <attribute name="readonly">False</attribute>
+                <attribute name="invisible">0</attribute>
+            </xpath>
+        </field>
+    </record-->
+
+    <!-- /////////////////////tambahan count print picking operation////////////////////// -->
+    <!-- ///////////////////////////dipindah ke mis_stock_picking_v1/////////////////////////// -->
+    <!-- <template id="report_stock_report_picking_inherits" inherit_id="stock.report_picking">
+        <xpath expr="//t[@t-call='web.external_layout']" position="after">
+            <t t-if="o.print_pick_op_count">
+                <t t-esc="o.printing_pick_opr()"/>
+            </t>
+            <t t-else="">
+            </t>
+        </xpath>
+        <xpath expr="//p[@t-field='o.note']" position="after">
+                <div class="footer" style="font-size: 11px;position:absolute;bottom:-115px;">
+                    <table class="table table-borderless" style="width:100%">
+                        <tr> -->
+                            <!-- <th>
+                            <t t-if="o.state == 'draft'">
+                                <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Draft</h1>
+                            </t>
+                            <t t-if="o.state == 'waiting_approval'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting Approval</h1>
+                            </t>
+                            <t t-if="o.state == 'waiting'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting Another Operation</h1>
+                            </t>
+                            <t t-if="o.state == 'confirmed'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting</h1>
+                            </t>
+                            <t t-if="o.state == 'assigned'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Ready</h1>
+                            </t>
+                            <t t-if="o.state == 'plant-confirmed'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Confirmed</h1>
+                            </t>
+                            <t t-if="o.state == 'done'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Done</h1>
+                            </t>
+                            <t t-if="o.state == 'cancel'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Cancel</h1>
+                            </t>
+                            <t t-if="o.state == 'rejected'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Reject</h1>
+                            </t>
+                        </th> -->
+                            <!-- <th class="text-left" style="width:45%">Dicetak :<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></th>
+                            <th class="text-left" style="width:46.5%">
+                            Cetakan ke-<span t-esc="o.print_pick_op_count"/></th>
+                            <th class="text-right" style="width:50%">
+                            Page: <span class="page"/> / <span class="topage"/>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+        </xpath> -->
+        <!-- <xpath expr="//div[@class='page']" position="after">
+            <style>
+                .watermark {            
+                    position: absolute;            
+                    opacity:0.2;            
+                    font-size:100px;            
+                    width:50%;            
+                    text-align:center;            
+                    z-index:99;            
+                    border: 2px solid black;            
+                    -webkit-transform: rotate(-30deg);  
+                    bottom:-350px;          
+                }
+            </style>
+            <t t-if="o.state != 'done'">
+            <div class="watermark" style="top: 210px; right: 230px;">
+                <span t-field="o.state"/><br/>
+            </div>
+            </t>
+        </xpath>
+    </template> -->
+
+    <!-- /////////////////////tambahan count print delivery slip////////////////////// -->
+    <!-- <template id="report_delivery_slip_inherits" inherit_id="sanqua_print.report_delivery_document">
+        <xpath expr="//div[@class='footer']" position="replace">
+                <div class="footer" style="font-size: 11px;position:absolute;bottom:-80px;">
+                    <table class="table table-borderless" style="width:100%">
+                        <tr> -->
+                            <!-- <th>
+                            <t t-if="o.state == 'draft'">
+                                <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Draft</h1>
+                            </t>
+                            <t t-if="o.state == 'waiting_approval'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting Approval</h1>
+                            </t>
+                            <t t-if="o.state == 'waiting'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting Another Operation</h1>
+                            </t>
+                            <t t-if="o.state == 'confirmed'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting</h1>
+                            </t>
+                            <t t-if="o.state == 'assigned'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Ready</h1>
+                            </t>
+                            <t t-if="o.state == 'plant-confirmed'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Confirmed</h1>
+                            </t>
+                            <t t-if="o.state == 'done'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Done</h1>
+                            </t>
+                            <t t-if="o.state == 'cancel'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Cancel</h1>
+                            </t>
+                            <t t-if="o.state == 'rejected'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Reject</h1>
+                            </t>
+                        </th> -->
+                            <!-- <th class="text-left" style="width:45%">Dicetak :<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></th>
+                            <th class="text-left" style="width:46.5%">
+                            Cetakan ke-<span t-esc="o.print_count"/></th>
+                            <th class="text-right" style="width:50%">
+                            Page: <span class="page"/> / <span class="topage"/>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+                </xpath>
+            </template> -->
+
+    <!-- /////////////////////tambahan count print internal transfer////////////////////// -->
+    <!-- <template id="report_stock_int_tf_inherits" inherit_id="sanqua_print.report_internal_transfers_document">
+        <xpath expr="//t[@t-call='web.basic_layout']" position="after">
+            <t t-if="o.print_int_tf_count">
+                <t t-esc="o.printing_int_tf()"/>
+            </t>
+            <t t-else="">
+            </t>
+        </xpath>
+        <xpath expr="//div[@class='footer']" position="replace">
+                <div class="footer" style="font-size: 11px;position:absolute;bottom:-105px;">
+                    <table class="table table-borderless" style="width:100%">
+                        <tr> -->
+                            <!-- <th>
+                            <t t-if="o.state == 'draft'">
+                                <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Draft</h1>
+                            </t>
+                            <t t-if="o.state == 'waiting_approval'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting Approval</h1>
+                            </t>
+                            <t t-if="o.state == 'waiting'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting Another Operation</h1>
+                            </t>
+                            <t t-if="o.state == 'confirmed'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting</h1>
+                            </t>
+                            <t t-if="o.state == 'assigned'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Ready</h1>
+                            </t>
+                            <t t-if="o.state == 'plant-confirmed'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Confirmed</h1>
+                            </t>
+                            <t t-if="o.state == 'done'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Done</h1>
+                            </t>
+                            <t t-if="o.state == 'cancel'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Cancel</h1>
+                            </t>
+                            <t t-if="o.state == 'rejected'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Reject</h1>
+                            </t>
+                        </th> -->
+                            <!-- <th class="text-left" style="width:45%">Dicetak :<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></th>
+                            <th class="text-left" style="width:46.5%">
+                            Cetakan ke-<span t-esc="o.print_int_tf_count"/></th>
+                            <th class="text-right" style="width:50%">
+                            Page: <span class="page"/> / <span class="topage"/>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+        </xpath>
+    </template> -->
+
+    <!-- /////////////////////tambahan count print receive item////////////////////// -->
+    <!-- <template id="report_stock_rcv_inherits" inherit_id="sanqua_print.report_receiveitems_document_template">
+        <xpath expr="//t[@t-call='web.basic_layout']" position="after">
+            <t t-if="o.print_rcv_itm_count">
+                <t t-esc="o.printing_rcv_itm()"/>
+            </t>
+            <t t-else="">
+            </t>
+        </xpath>
+        <xpath expr="//div[@class='footer']" position="replace">
+                <div class="footer" style="font-size: 11px;position:absolute;bottom:-55px;">
+                    <table class="table table-borderless" style="width:100%">
+                        <tr> -->
+                            <!-- <th>
+                            <t t-if="o.state == 'draft'">
+                                <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Draft</h1>
+                            </t>
+                            <t t-if="o.state == 'waiting_approval'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting Approval</h1>
+                            </t>
+                            <t t-if="o.state == 'waiting'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting Another Operation</h1>
+                            </t>
+                            <t t-if="o.state == 'confirmed'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting</h1>
+                            </t>
+                            <t t-if="o.state == 'assigned'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Ready</h1>
+                            </t>
+                            <t t-if="o.state == 'plant-confirmed'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Confirmed</h1>
+                            </t>
+                            <t t-if="o.state == 'done'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Done</h1>
+                            </t>
+                            <t t-if="o.state == 'cancel'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Cancel</h1>
+                            </t>
+                            <t t-if="o.state == 'rejected'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Reject</h1>
+                            </t>
+                        </th> -->
+                            <!-- <th class="text-left" style="width:45%">Dicetak :<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></th>
+                            <th class="text-left" style="width:46.5%">
+                            Cetakan ke-<span t-esc="o.print_rcv_itm_count"/></th>
+                            <th class="text-right" style="width:50%">
+                            Page: <span class="page"/> / <span class="topage"/>
+                        </th>
+                        </tr>
+                    </table>
+                </div>
+        </xpath> -->
+        <!-- <xpath expr="//div[@class='page']" position="after">
+            <style>
+                .watermark {            
+                    position: absolute;            
+                    opacity:0.2;            
+                    font-size:100px;            
+                    width:50%;            
+                    text-align:center;            
+                    z-index:99;            
+                    border: 2px solid black;            
+                    -webkit-transform: rotate(-30deg);  
+                    bottom:-350px;          
+                }
+            </style>
+            <t t-if="o.state != 'done'">
+            <div class="watermark" style="top: 210px; right: 230px;">
+                <span t-field="o.state"/><br/>
+            </div>
+            </t>
+        </xpath>
+    </template> -->
+
+    <!-- /////////////////////tambahan count print purchase return////////////////////// -->
+    <!-- <template id="report_po_ret_inherits" inherit_id="sanqua_print.report_purchasereturns_document">
+        <xpath expr="//t[@t-call='web.basic_layout']" position="after">
+            <t t-if="o.print_po_rtr_count">
+                <t t-esc="o.printing_po_rtr()"/>
+            </t>
+            <t t-else="">
+            </t>
+        </xpath>
+        <xpath expr="//div[@class='footer']" position="replace">
+                <div class="footer" style="font-size: 11px;">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th>
+                            <t t-if="o.state == 'draft'">
+                                <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Draft</h1>
+                            </t>
+                            <t t-if="o.state == 'waiting_approval'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting Approval</h1>
+                            </t>
+                            <t t-if="o.state == 'waiting'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting Another Operation</h1>
+                            </t>
+                            <t t-if="o.state == 'confirmed'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting</h1>
+                            </t>
+                            <t t-if="o.state == 'assigned'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Ready</h1>
+                            </t>
+                            <t t-if="o.state == 'plant-confirmed'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Confirmed</h1>
+                            </t>
+                            <t t-if="o.state == 'done'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Done</h1>
+                            </t>
+                            <t t-if="o.state == 'cancel'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Cancel</h1>
+                            </t>
+                            <t t-if="o.state == 'rejected'">
+                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Reject</h1>
+                            </t>
+                        </th>
+                            <th class="text-right">Dicetak :<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/><br/>
+                            Cetakan ke-<span t-esc="o.print_po_rtr_count"/><br/>
+                            Page: <span class="page"/> / <span class="topage"/>
+                            </th>
+                        </tr>
+                    </table>
+                </div>
+        </xpath>
+    </template> -->
+    <!-- ////////////////////////////////////////////////////////////////////////////////////// -->
+
+</odoo>

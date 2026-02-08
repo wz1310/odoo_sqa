@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="query_view_sale_order_tree" model="ir.ui.view">
+        <field name="name">query.view.sale.order.tree</field>
+        <field name="model">query.view.sale.order</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <button icon="fa-sign-in" type="object" name="open_form"/>
+                <field name="id_so" invisible = "1"/>
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="division"/>
+                <field name="pickup_method"/>
+                <field name="payment_term_id"/>
+                <field name="priority_type"/>
+                <field name="date_order_mask"/>
+                <field name="commitment_date_mask"/>
+                <field name="validity_date"/>
+                <field name="plant"/>
+                <field name="total"/>
+                <field name="delivery_address"/>
+                <field name="status_so"/>
+                <field name="invoice_status"/>
+                <field name="company"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+        <record id="query_view_sale_order_form_view" model="ir.ui.view">
+            <field name="name">query.view.sale.order.form.view</field>
+            <field name="model">query.view.sale.order</field>
+            <field name="arch" type="xml">
+                <form string="Sale order query view">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="id_so" invisible = "1"/>
+                                <field name="name"/>
+                                <field name="division"/>
+                                <field name="partner_id"/>
+                                <field name="user_id"/>
+                                <field name="create_date"/>
+                                <field name="plant"/>
+                            </group>
+                            <group>
+                                <field name="pickup_method"/>
+                                <field name="payment_term_id"/>
+                                <field name="priority_type"/>
+                                <field name="date_order_mask"/>
+                                <field name="commitment_date_mask"/>
+                                <field name="validity_date"/>
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    <record id="action_query_view_sale_order_tree" model="ir.actions.act_window">
+        <field name="name">Sale order Query View</field>
+        <field name="res_model">query.view.sale.order</field>
+        <field name="view_mode">tree,pivot,graph</field>
+    </record>
+
+    <menuitem id="menu_query_view_sale_order"
+                  name="Sale Order Query View"
+                  action="action_query_view_sale_order_tree"
+                  parent="sale.sale_order_menu"
+                  />
+</odoo>

@@ -1,0 +1,12 @@
+<odoo>
+    <record model="ir.ui.view" id="stock_picking_sale_truck_inherit">
+        <field name="name">Stock Picking Sale Truck Inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sale_mix_ids']" position="after">
+                <field name="sale_truck_mix_ids" options="{'no_quick_create':True,'no_create':True}" widget="many2many_tags" attrs="{'invisible':[('picking_type_code', '=', 'incoming')]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

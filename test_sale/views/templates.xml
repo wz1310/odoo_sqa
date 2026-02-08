@@ -1,0 +1,10 @@
+<odoo>
+    <data>
+        <record id="action_test_sale" model="ir.actions.client">
+            <field name="name">Test Sale</field>
+            <field name="tag">account_report</field>
+            <field name="context" eval="{'model':'test.sale'}" />
+        </record>
+        <menuitem id="menu_action_test_sale" name="Test Sale" action="action_test_sale" parent="account.account_reports_management_menu" groups="account.group_account_user"/>
+    </data>
+</odoo>

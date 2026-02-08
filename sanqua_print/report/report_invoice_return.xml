@@ -1,0 +1,519 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_vendor_return">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div class="row">
+                        <table style="width: 100%;border-bottom: solid 2px black;">
+                            <tr>
+                                <td rowspan="2" style="width: 10%;">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                                </td>
+                                <td rowspan="2" style="font-size: 12px; width: 60%;">
+                                    <span style="font-size: 14px;" t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["adress", "name", "phone"], "no_marker": true}'/>
+                                    <span t-field="o.company_id.partner_id.street"/><br/>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Telp. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Fax. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.vat">
+                                        NPWP. <span t-field="o.company_id.partner_id.vat"/> 
+                                    </t>
+                                </td>
+                                <td style="width: 30%;">
+                                    <t t-if="o.company_id.iso_purchase_return">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            Doc. No. : <t t-esc="o.company_id.iso_purchase_return"/><br/>
+                                        </span>
+                                    </t>
+                                    <t t-if="o.state not in ['posted']">
+                                         <span class="text-left" style="font-size: 10px;">
+                                            <t t-esc="dict(o._fields['state'].selection).get(o.state)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4  class="text-right" >
+                                    Refund</h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="page" style="font-size: 11px;">
+                    <style>
+                        .table th,
+                        .table td {
+                            padding: 5px;
+                        }
+                        .th-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            text-align:center;
+                        }
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <div class="row">
+                        <div style="width:40%">
+                            Vendor Name : <span t-field="o.partner_id.name"/>, 
+                            <br/><br/>
+                            Address : 
+                            <t t-if="o.partner_shipping_id">
+                                <t t-if="o.partner_shipping_id.street">
+                                    <span t-field="o.partner_shipping_id.street"/>
+                                </t>
+                                <t t-if="o.partner_shipping_id.city">
+                                    , <span t-field="o.partner_shipping_id.city"/>
+                                </t>
+                                <t t-if="o.partner_shipping_id.zip">
+                                    , <span t-field="o.partner_shipping_id.zip"/>
+                                </t>
+                            </t>
+                        </div>
+                        <div style="width:60%">
+                            <table class="table" style="width:100%;">
+                                <tr>
+                                    <td class="td-1" style="width:20%;">Date</td>
+                                    <td class="td-2" style="width:1%;">:</td>
+                                    <td class="td-3" style="width:29%;"><span t-field="o.date"/></td>
+                                    <td class="td-2" style="width:15%;">Return No.</td>
+                                    <td class="td-2" style="width:1%;">:</td>
+                                    <td class="td-3" style="width:34%;"><span t-field="o.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">Receipt/INV. No</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-field="o.ref"/></td>
+                                    <td class="td-2">Rate</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-field="o.currency_id.rate"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <table class="table" style="width: 100%; border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 5%;">
+                                        No.
+                                    </th>
+                                    <th class="th-0" style="width: 45%;">
+                                        Description
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Qty
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Unit
+                                    </th>
+                                    <th class="th-0" style="width: 30%;">
+                                        Serial Number
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-foreach="o.invoice_line_ids" t-as="line">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="idx"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.name"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="o.get_format_currency(line.quantity)"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.product_uom_id.name"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <t t-if="line.return_move_id.id">
+                                                <t t-foreach="line.return_move_id.move_line_ids" t-as="l">
+                                                    <span t-esc="l.lot_id.name"/>
+                                                    <br/>
+                                                </t>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="footer-page" style="font-size: 11px;">
+                    <style>
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td rowspan="4" style="width: 25%;">
+                            <h6>Description :</h6></td>
+                            <td class="text-right" style="width: 25%;"><h6>Total Quantity <![CDATA[&nbsp;]]>:</h6></td>
+                            <td class="text-center" style="width: 10%;"><h6><span t-esc="o.get_format_currency(sum([x.quantity for x in o.invoice_line_ids]))"/></h6></td>
+                            <td colspan="2" style="width: 40%;"></td>
+                        </tr>
+                        <tr><td><span><![CDATA[&nbsp;]]></span></td></tr>
+                        <tr><td><span><![CDATA[&nbsp;]]></span></td ></tr>
+                        <tr><td><span><![CDATA[&nbsp;]]></span></td></tr>
+                        <tr>
+                            <td class="text-center">Prepared by,</td>
+                            <td class="text-center">Approved by,</td>
+                            <td class="text-center">Receive by,</td>
+                            <td class="text-right"></td>
+                            <td class="text-right"></td>
+                        </tr>
+                        <tr style="height: 40px;">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center"> (.................................) </td>
+                            <td class="text-center"> (.................................) </td>
+                            <td class="text-center"> (.................................) </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_customer_return">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div class="row">
+                        <table style="width: 100%;border-bottom: solid 2px black;">
+                            <tr>
+                                <td rowspan="2" style="width: 10%;">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                                </td>
+                                <td rowspan="2" style="font-size: 12px; width: 60%;">
+                                    <span style="font-size: 14px;" t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["adress", "name", "phone"], "no_marker": true}'/>
+                                    <span t-field="o.company_id.partner_id.street"/><br/>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Telp. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Fax. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.vat">
+                                        NPWP. <span t-field="o.company_id.partner_id.vat"/> 
+                                    </t>
+                                </td>
+                                <td style="width: 30%;">
+                                    <t t-if="o.company_id.iso_sales_return">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            Doc. No. : <t t-esc="o.company_id.iso_sales_return"/><br/>
+                                        </span>
+                                    </t>
+                                    <t t-if="o.state not in ['posted']">
+                                         <span class="text-left" style="font-size: 10px;">
+                                            <t t-esc="dict(o._fields['state'].selection).get(o.state)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4  class="text-right" >
+                                    Credit Note</h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="page" style="font-size: 11px;">
+                    <style>
+                        .table th,
+                        .table td {
+                            padding: 5px;
+                        }
+                        .th-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            text-align:center;
+                        }
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <div class="row">
+                        <div style="width:60%">
+                            Customer : <span t-field="o.partner_id.name"/>,
+                            <br/><br/>
+                            Address : 
+                            <t t-if="o.partner_shipping_id">
+                                <t t-if="o.partner_shipping_id.street">
+                                    <span t-field="o.partner_shipping_id.street"/>
+                                </t>
+                                <t t-if="o.partner_shipping_id.city">
+                                    , <span t-field="o.partner_shipping_id.city"/>
+                                </t>
+                                <t t-if="o.partner_shipping_id.zip">
+                                    , <span t-field="o.partner_shipping_id.zip"/>
+                                </t>
+                            </t>
+                        </div>
+                        <div style="width:40%">
+                            <table class="table" style="width:100%;">
+                                <tr>
+                                    <td class="td-1" style="width:20%;">Date</td>
+                                    <td class="td-2" style="width:1%;">:</td>
+                                    <td class="td-3" style="width:29%;"><span t-field="o.date"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">SR No.</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-field="o.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">Sales INV. No</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-field="o.ref"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <table class="table" style="width: 100%; border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 5%;">
+                                        No.
+                                    </th>
+                                    <th class="th-0" style="width: 40%;">
+                                        Description
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Qty
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Unit
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Unit Price (Rp.)
+                                    </th>
+                                    <th class="th-0" style="width: 20%;">
+                                        Amount (Rp.)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-foreach="o.invoice_line_ids" t-as="line">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="idx"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.name"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="o.get_format_currency(line.quantity)"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.product_uom_id.name"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.price_unit)"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.price_subtotal)"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="footer-page" style="font-size: 11px;">
+                    <style>
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="width:60%" colspan="3" rowspan="5">
+                            Terbilang  : <span t-esc="o.terbilang(o.amount_total)"/> Rupiah<br/><br/>
+                            Description :<br/><br/>
+                            * Lembar ke 1 &amp; 2 Untuk Pengusahan Kena Pajak Penjual<br/>
+                            <![CDATA[&nbsp;]]><![CDATA[&nbsp;]]>Lembar ke 3 Untuk Arsip Pembeli</td>
+                            <td class="text-right">Sub Total :</td>
+                            <td class="text-right"><span t-esc="o.get_format_currency(o.amount_untaxed,total=True)"/></td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Discount :</td>
+                            <td class="text-right"><span t-esc="o.get_format_currency(o.total_discount_amount,total=True)"/></td>
+                        </tr>
+                        <tr>
+                            <td class="text-right">Ppn :</td>
+                            <td class="text-right"><span t-esc="o.get_format_currency(o.amount_tax,total=True)"/></td>
+                        </tr>
+                        <tr>
+                            <td class="td-1 text-right" style="padding:2px;"><h6>Total Return :</h6></td>
+                            <td class="td-3 text-right" style="padding:2px;"><h6><span t-esc="o.get_format_currency(o.amount_total,total=True)"/></h6></td>
+                        </tr>
+                        <tr/>
+                        <tr>
+                            <td class="text-center">Prepared by,</td>
+                            <td class="text-center">Approved by,</td>
+                            <td class="text-center"></td>
+                            <td class="text-right"></td>
+                            <td class="text-right"></td>
+                        </tr>
+                        <tr style="height: 40px;">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center"> (.................................) </td>
+                            <td class="text-center"> (.................................) </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+    
+    <template id="report_invoice_return">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="lang" t-value="o.invoice_user_id.lang if o.type in ('in_invoice', 'in_refund') else o.partner_id.lang"/>
+                <t t-if="o.type in ('in_refund')">
+                    <t t-call="sanqua_print.report_vendor_return" t-lang="lang"/>
+                </t>
+                <t t-if="o.type in ('out_refund')">
+                    <t t-call="sanqua_print.report_customer_return" t-lang="lang"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

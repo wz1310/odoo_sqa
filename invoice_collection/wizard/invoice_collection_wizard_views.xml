@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="invoice_collection_wizard_view_form" model="ir.ui.view">
+            <field name="name">invoice.collection.wizard.view.form</field>
+            <field name="model">invoice.collection.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Invoice Collection">
+                    <sheet>
+                        <group>
+                            <field name="activity_id" readonly="1"/>
+                        </group>
+                        <notebook>
+                            <page name="invoice" string="Invoice">
+                                <field name="invoice_ids" context="{'tree_view_ref':'invoice_collection.view_invoice_tree_many2many'}">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="partner_id"/>
+                                        <field name="team_id"/>
+                                        <field name="invoice_date"/>
+                                        <field name="amount_total_signed"/>
+                                        <field name="amount_residual_signed"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <footer>
+                        <button name="confirm" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_invoice_tree_many2many" model="ir.ui.view">
+            <field name="name">account.invoice.tree.many2many</field>
+            <field name="model">account.move</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state == 'draft'" string="Invoices" decoration-muted="state == 'cancel'" js_class="account_tree">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="team_id"/>
+                    <field name="invoice_date"/>
+                    <field name="amount_total_signed"/>
+                    <field name="amount_residual_signed"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</odoo>

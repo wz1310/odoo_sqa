@@ -1,0 +1,46 @@
+<odoo>
+  <data>
+
+    <record id="mis_product_templ_inherit" model="ir.ui.view">
+        <field name="name">mis.product.templ.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="rep_bgt" string="Report Budget Vs Realisasi SKU">
+                    <div class="col-6">
+                        <group>
+                            <field name="amdk_groups"/>
+                        </group>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="mis_product_templ_inherits" model="ir.ui.view">
+        <field name="name">mis.product.templ.inherits</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="st_min_max" string="Detail Stock Min Max">
+                    <div>
+                        <group>
+                            <field name="stock_min_max_ids" nolabel="1" colspan="4">
+                            <tree editable="bottom">
+                                <field name="stock_min" width="20"/>
+                                <field name="stock_max"  width="20"/>
+                                <field name="prod_temp_id" invisible="1"/>
+                                <field name="company_id" width="20" options="{'no_create': True, 'no_open': True}"/>
+                            </tree>
+                        </field>
+                        </group>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+  </data>
+</odoo>

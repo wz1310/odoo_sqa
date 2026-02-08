@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="sale_order_truck_form">
+            <field name="name">sale.order.truck.form</field>
+            <field name="model">sale.order.truck</field>
+            <field name="inherit_id" ref="sales_truck.sale_order_truck_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='material']" position="inside">
+                    <group>
+                        <field name="material_print"/>
+                    </group>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page name="deliver_number" string="Delivery Number">
+                        <field name="sequence_sj_ids" readonly="1">
+                            <tree>
+                                <field name="partner_id"/>
+                                <field name="name"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sale_order_truck_inventory_view_form">
+            <field name="name">sale.order.truck.inventory.view.form</field>
+            <field name="model">sale.order.truck</field>
+            <field name="inherit_id" ref="sales_truck.sale_order_truck_inventory_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="deliver_number" string="Delivery Number">
+                        <field name="sequence_sj_ids" readonly="1">
+                            <tree>
+                                <field name="partner_id"/>
+                                <field name="name"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

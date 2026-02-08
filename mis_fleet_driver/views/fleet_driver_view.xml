@@ -1,0 +1,39 @@
+<odoo>
+
+    <record id="show_fleet_driver" model="ir.actions.act_window">
+            <field name="name">Driver</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="context">{'default_is_driver': True,'search_default_is_driver': 1}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new customer in your address book
+              </p><p>
+                Odoo helps you easily track all activities related to a customer.
+              </p>
+            </field>
+        </record>
+
+        <menuitem name="Driver" id="menu_fleet_driver_view" parent="fleet.menu_root"
+                  sequence="3" action="show_fleet_driver"/>
+
+    <record model="ir.ui.view" id="mis_rest_fleet_vehicle_inherited">
+        <field name="name">Mis Fleet Vehicle Form Inherited</field>
+        <field name="model">fleet.vehicle</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div//field[@name='tag_ids']" position="after">
+                <div>
+                <label for="expedition_app" class="oe_edit_only"/>
+                <field string="Expedition app?" name="expedition_app"/></div>
+            </xpath>
+            <xpath expr="//field[@name='driver_id']" position="attributes">
+                <attribute name="domain">[('is_driver', '=', True)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='future_driver_id']" position="attributes">
+                <attribute name="domain">[('is_driver', '=', True)]</attribute>
+            </xpath>
+          </field>
+        </record>
+</odoo>

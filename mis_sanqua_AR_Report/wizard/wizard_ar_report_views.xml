@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="ar_report_wizard_form_view">
+        <field name="name">Wizard AR Report</field>
+        <field name="model">wizard.ar.report</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="period" />
+                            <field name="partner_ids" widget="many2many_tags" />  
+                            <field name="company_id" options="{'no_open': True, 'no_create': True}"/>
+                            <!-- <field name="group_by" /> -->
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Generate Excel" type="object" name="button_print" class="oe_highlight" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ar_report" model="ir.actions.act_window">
+        <field name="name">AR Report</field>
+        <field name="res_model">wizard.ar.report</field>
+        <field name="view_mode">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="ar_report_wizard_form_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="mis_ar_report_menu" name="Report AR" action="action_ar_report" 
+        parent="account_reports.account_reports_partners_reports_menu" sequence="9"/>
+
+</odoo>

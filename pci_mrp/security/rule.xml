@@ -1,0 +1,23 @@
+<odoo>
+	<record model="ir.rule" id="rule_mesin_own_company">
+        <field name="name">Rule Mesin Own Company</field>
+        <field name="model_id" ref="model_mrp_mesin" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <!-- created or own team -->
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+    </record>
+
+    <record model="ir.rule" id="rule_shift_own_company">
+        <field name="name">Rule Shift Own Company</field>
+        <field name="model_id" ref="model_mrp_shift" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="True" />
+        <field name="perm_write" eval="True" />
+        <field name="perm_unlink" eval="True" />
+        <!-- created or own team -->
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+    </record>
+</odoo>

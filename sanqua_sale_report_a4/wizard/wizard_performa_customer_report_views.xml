@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="performa_customer_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">performa.customer.report.wizard.view.form</field>
+        <field name="model">performa.customer.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Performa Customer Report">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            Date Range Filter
+                        </h1>
+                    </div>
+                    <!-- <label for="sebelum_produksi"/> -->
+                    <div class="oe_inline">
+                        <field name="start_date" class="oe_inline"/> - <field name="end_date" class="oe_inline"/>
+                    </div>
+                    <footer>
+                        <button name="btn_confirm" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_performa_customer_report_wizard" model="ir.actions.act_window">
+        <field name="name">Performa Customer Report Wizard</field>
+        <field name="res_model">performa.customer.report.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_performa_customer_report"
+            name="A4 - Performa Customer Report"
+            action="action_performa_customer_report_wizard"
+            parent="sale.menu_sale_report" sequence="114"/>
+
+</odoo>

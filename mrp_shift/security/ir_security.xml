@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <record model="ir.rule" id="mrp_rpm_rule">
+            <field name="name">mrp_rpm multi-company</field>
+            <field name="model_id" search="[('model','=','mrp.rpm')]" model="ir.model"/>
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|',('company_id', 'in', company_ids),('company_id','=',False)]</field>
+        </record>
+        <record model="ir.rule" id="rule_plant_mrp_pbbh">
+            <field name="name">Rule Plant Summary Customer Global User PBBH</field>
+            <field name="model_id" search="[('model','=','mrp.pbbh')]" model="ir.model"/>
+            <field name="perm_read" eval="True" />
+            <field name="perm_create" eval="False" />
+            <field name="perm_write" eval="False" />
+            <field name="perm_unlink" eval="False" />
+            <field name="global" eval="True"/>
+            <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+        </record>
+    </data>
+</odoo>

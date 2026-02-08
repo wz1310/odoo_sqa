@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record model="ir.actions.act_window" id="stock.stock_picking_type_action">
+            <field name="domain">[('show_dash','=',True)]</field>
+        </record>
+
+        <record id="action_picking_tree_refused" model="ir.actions.act_window">
+            <field name="name">Refused Transfers</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,kanban,form,calendar</field>
+            <field name="domain">[('warehouse_plant_id', '=', False)]</field>
+            <field name="context">{'create':False, 'unlink':False, 'contact_display': 'partner_address', 'search_default_waiting': 1}</field>
+            
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new transfer
+                </p><p>
+                    Transfers allow you to move products from one location to another.
+                </p>
+            </field>
+        </record>
+
+        <record id="action_picking_tree_need_plan_confirm" model="ir.actions.act_window">
+            <field name="name">Need Confirmation</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,kanban,form,calendar</field>
+            <field name="domain">[('plant_id', '!=', False)]</field>
+            <field name="context">{'create':False, 'unlink':False, 'contact_display': 'partner_address', 'search_default_waiting': 1}</field>
+            
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new transfer
+                </p><p>
+                    Transfers allow you to move products from one location to another.
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_picking_internal_search_inherited">
+            <field name="name">View Picking Internal Search Inherited</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_internal_search" />
+            <field name="arch" type="xml">
+                <field name="name" position="attributes">
+                    <attribute name="filter_domain">['|', '|', ('name', 'ilike', self), ('origin', 'ilike', self), ('doc_name', 'ilike', self)]</attribute>
+                </field>
+                <xpath expr="//field[@name='picking_type_id']" position="after">
+                    <field name="interco_ref_picking_ids"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="stock_picking_type_kanban_inherited">
+            <field name="name">Stock Picking Type Inherited</field>
+            <field name="model">stock.picking.type</field>
+            <field name="inherit_id" ref="stock.stock_picking_type_kanban" />
+            <field name="arch" type="xml">
+                <field name="count_picking_backorders" position="after">
+                    <field name="other_wh_can_read" />
+                    <field name="count_picking_need_plan_confirm" />
+                </field>
+
+                <!-- TO PROCESS BUTTON -->
+                <!-- disable when other wh can read -->
+                <xpath expr="//div[hasclass('o_kanban_primary_left')]/button[1]" position="attributes">
+                    <attribute name="t-if">record.other_wh_can_read.raw_value==false</attribute>
+                </xpath>
+                <!-- end disabling -->
+
+                <xpath expr="//div[hasclass('o_kanban_primary_left')]/button[1]" position="after">
+                    <button t-if="record.other_wh_can_read.raw_value==true" class="btn btn-primary" name="get_action_picking_tree_need_plan_confirm" type="object">
+                        <span t-if="record.code.raw_value =='outgoing'"><t t-esc="record.count_picking_need_plan_confirm.value"/> To Confirm</span>
+                        <span t-if="record.code.raw_value =='incoming'"><t t-esc="record.count_picking_need_plan_confirm.value"/> To Process</span>
+                    </button>
+                </xpath>
+                <!-- END TO PROCESS -->
+
+                <xpath expr="//div[hasclass('o_kanban_primary_right')]/div[2]" position="attributes">
+                    <attribute name="t-if">record.count_picking_waiting.raw_value &gt; 0 and record.other_wh_can_read.raw_value==false</attribute>
+                </xpath>
+
+                <xpath expr="//div[hasclass('o_kanban_primary_right')]/div[2]" position="after">
+                    
+                    <div t-if="record.count_picking_refused.raw_value &gt; 0" class="row">
+                        <div class="col-9">
+                            <a name="get_action_picking_tree_refused" type="object">
+                                Refused
+                            </a>
+                        </div>
+                        <div class="col-3">
+                            <field name="count_picking_refused"/>
+                        </div>
+                    </div>
+                </xpath>
+
+                <xpath expr="//div[hasclass('o_kanban_primary_right')]/div[4]" position="attributes">
+                    <attribute name="t-if">record.count_picking_late.raw_value &gt; 0 and record.other_wh_can_read.raw_value==false</attribute>
+                </xpath>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="view_picking_type_form">
+            <field name="name">view picking type.form</field>
+            <field name="model">stock.picking.type</field>
+            <field name="inherit_id" ref="stock.view_picking_type_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[last()]/group[last()]" position="after">
+                    <group string="Intercompany Procurement">
+                        <!-- <field name="user_allowed_warehouse_ids" widget="many2many_tags" groups="base.group_no_one" context="{'all_companies':True}" options="{'no_create':1,'no_quick_create':1,'no_open':1}" /> -->
+                        <!-- <field name="other_warehouse_ids" widget="many2many_tags" options="{'no_create':1,'no_quick_create':1,'no_open':1}" /> -->
+                        <field name="other_wh_can_read" />
+                        <field name="show_dash"/>
+                        <field name="diff_company_show_dash"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

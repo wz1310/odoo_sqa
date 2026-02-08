@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="partner_pricelist_discount_view_tree" model="ir.ui.view">
+            <field name="name">partner.pricelist.discount.tree</field>
+            <field name="model">partner.pricelist.discount</field>
+            <field name="arch" type="xml">
+                <tree string="Partner Pricelist Discount" editable="top">
+                    <field name="sequence" widget="handle" />
+                    <field name="partner_id"/>
+                    <field name="categ_id"/>
+                    <field name="pricelist_discount_id" string="Discount Level 2 (%)"/>
+                    <field name="discount_percent" placeholder="10+5+2" string="Discount Level 3 (%)"/>
+                    <field name="total_discount_percent"/>
+                    <field name="discount_amount" string="Discount (Rp)"/>
+                    <field name="total_discount_amount"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="partner_pricelist_discount_action" model="ir.actions.act_window">
+            <field name="name">Partner Discount Pricelists</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">partner.pricelist.discount</field>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="partner_credit_limit.partner_pricelist_discount_view_tree"/>
+            <field name="context"></field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new partner discount pricelist
+
+              </p>
+            </field>
+        </record>
+
+    </data>
+
+    <menuitem id="sub_menu_partner_discount_pricelist" name="Partner Discount Pricelist" parent="sale.product_menu_catalog" sequence="15" action="partner_pricelist_discount_action"/>
+
+</odoo>

@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <template id="report_purchaseorder_document" inherit_id="purchase.report_purchaseorder_document">
+            <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <center>
+                            <u><h4>PURCHASE ORDER</h4></u>
+                            <div t-if="o.name" class="col-3 bm-2">
+                                <p>No : <span t-field="o.name" class="m-0"/></p>
+                            </div>
+                        </center>
+
+                        <div id="date_informations" class="row mt32 mb32">
+                            <div class="col-6">
+                                
+                            </div>
+                            <div class="col-6">
+                                
+                                <table border="0" style="width:100%">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:20%"/>
+                                            <td style="width:5%"/>
+                                            <td>
+                                                Tanggal PO : <span t-field="o.date_order" t-options="{&quot;format&quot;: &quot;dd MMMM yyyy&quot;}"/>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+
+
+                        </div>
+
+                        <div id="address_informations" class="row mt32 mb32">
+                            <div class="col-6">
+            
+                                <table border="0" style="width:100%">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:20%">Kepada</td>
+                                            <td style="width:5%">:</td>
+                                            <td>
+                                                <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
+                                                <span t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [ &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="width:20%">Alamat</td>
+                                            <td style="width:5%">:</td>
+                                            <td>
+                                                <span t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [ &quot;address&quot;], &quot;no_marker&quot;: True}"/>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="width:20%">Telp</td>
+                                            <td style="width:5%">:</td>
+                                            <td>
+                                                <span t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [ &quot;phone&quot;], &quot;no_marker&quot;: True}"/>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+                            <div class="col-6">
+                                
+                                <table border="0" style="width:100%">
+                                    <tbody>
+
+                                        <tr>
+                                            <td style="width:20%">Dikirim ke</td>
+                                            <td style="width:5%">:</td>
+                                            <td>
+                                                <span t-esc="o.company_id.name"/>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="width:20%">Alamat</td>
+                                            <td style="width:5%">:</td>
+                                            <td>
+                                                <span t-esc="o.company_id.street"/>
+                                                <span t-if="o.company_id.street2" t-esc="o.company_id.street2"/>
+                                                <span t-if="o.company_id.city" t-esc="o.company_id.city"/>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td style="width:20%">Telp</td>
+                                            <td style="width:5%">:</td>
+                                            <td>
+                                                <span t-esc="o.company_id.phone"/>
+                                            </td>
+                                        </tr>
+
+                                        <!-- <tr>
+                                            <td style="width:20%">Divisi</td>
+                                            <td style="width:5%">:</td>
+                                            <td>
+                                                <span t-field="o.department_id.name"/>
+                                            </td>
+                                        </tr> -->
+                                        
+                                        <tr>
+                                            <td style="width:20%">Status</td>
+                                            <td style="width:5%">:</td>
+                                            <td>
+                                                <t t-if="o.state == 'purchase' or o.state == 'done' ">
+                                                  <span>Approve</span>
+                                                </t>
+                                                <t t-else="">
+                                                  <span t-field="o.state"/>
+                                                </t>
+                                                
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+
+
+                        </div>
+
+
+                        <table class="table table-sm o_main_table">
+                            <thead>
+                                <tr>
+                                    <th name="th_description"><strong>Description</strong></th>
+                                    <th name="th_taxes"><strong>Taxes</strong></th>
+                                    <th name="th_date_req" class="text-center"><strong>Date Req.</strong></th>
+                                    <th name="th_quantity" class="text-right"><strong>Qty</strong></th>
+                                    <th name="th_price_unit" class="text-right"><strong>Unit Price</strong></th>
+                                    <th name="th_amount" class="text-right"><strong>Amount</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="current_subtotal" t-value="0"/>
+                                <t t-foreach="o.order_line" t-as="line">
+                                    <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                                    <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+
+                                    <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''">
+                                        <t t-if="not line.display_type">
+                                            <td id="product">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                            <td name="td_taxes">
+                                                <span t-esc="', '.join(map(lambda x: x.name, line.taxes_id))"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <span t-field="line.date_planned"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-field="line.product_qty"/>
+                                                <span t-field="line.product_uom.name" groups="uom.group_uom"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-field="line.price_unit"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <span t-field="line.price_subtotal"
+                                                    t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </t>
+                                        <t t-if="line.display_type == 'line_section'">
+                                            <td colspan="99" id="section">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                            <t t-set="current_section" t-value="line"/>
+                                            <t t-set="current_subtotal" t-value="0"/>
+                                        </t>
+                                        <t t-if="line.display_type == 'line_note'">
+                                            <td colspan="99" id="note">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                    <t t-if="current_section and (line_last or o.order_line[line_index+1].display_type == 'line_section')">
+                                        <tr class="is-subtotal text-right">
+                                            <td colspan="99" id="subtotal">
+                                                <strong class="mr16">Subtotal</strong>
+                                                <span
+                                                    t-esc="current_subtotal"
+                                                    t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                                />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div id="total" class="row justify-content-end">
+                            <div class="col-4">
+                                <table class="table table-sm">
+                                    <tr class="border-black">
+                                        <td><strong>Subtotal</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="o.amount_untaxed" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>PPN 10%</td>
+                                        <td class="text-right">
+                                            <span t-field="o.amount_tax" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-black o_total">
+                                        <td><strong>Total</strong></td>
+                                        <td class="text-right">
+                                            <span t-field="o.amount_total" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- <p t-field="o.notes"/> -->
+                        <div class="oe_structure border-black"/>
+
+                        <div id="payment_term" class="row mt32 mb32 ">
+                            <div class="col-12">
+            
+                                <table border="0" style="width:100%">
+                                    <tbody>
+                                        <tr>
+                                            <td style="width:70%">
+                                                <p>Hal-hal lain terlampir di penawaran <br/>
+                                                    System pembayaran : <br/>
+                                                    <span t-raw="o.notes"/>
+                                                </p>
+                                                
+                                            </td>
+                                            <td style="width:30%"/>
+                                            
+                                        </tr>
+
+                                        <tr>
+                                            <td style="width:70%">
+                                                <p>Note<br/>
+                                                    *Semua pengiriman barang harus disertakan surat jalan dan Kwitansi<br/>
+                                                    *Barang akan dikembalikan apabila tidak sesuai dengan pemesanan<br/>
+                                                    *Nomor Purchase Order (PO) harus dicantumkan dalam Nota/Faktur/Kwitansi<br/>
+                                                    *Bila pengiriman barang akan dilaksanakan secara bertahap, setiap pengiriman barang harap disertakan photocopy Purchase Order(PO)
+                                                </p>
+                                                
+                                            </td>
+                                            <td style="width:30%">
+                                                <center>
+                                                    <p>Hormat Kami</p>
+
+                                                    <!-- <br/><br/><br/> -->
+
+                                                    <!-- <span t-raw="o.confirm_id.digital_signature" widget="signature"/> -->
+                                                    <t t-if="o.confirm_id.digital_signature">
+                                                        <center><img t-att-src="image_data_uri(o.confirm_id.digital_signature)" style="max-height: 120px;" alt="Signature"/></center>
+                                                        
+                                                    </t>
+                                                    <t t-else="">
+                                                        <br/><br/><br/>
+                                                    </t> 
+                                                    <b><strong><span t-raw="o.confirm_id.name"/></strong></b>
+
+                                                    <!-- <t t-if="o.bis_type.name == 'Agribisnis' ">
+                                                      <b><strong>(Onny Untung)</strong></b>
+                                                    </t>
+                                                    <t t-else="">
+                                                      <b><strong>(Olivia)</strong></b>
+                                                    </t> -->
+
+                                                    
+                                                </center>
+                                            </td>
+                                            
+                                        </tr>
+
+                                        
+
+                                    </tbody>
+                                </table>
+                                
+                            </div>
+
+
+                        </div>
+                    </div>
+                </t>
+            </xpath>
+
+            
+        
+        </template>
+
+
+
+        
+    </data>
+
+</odoo>

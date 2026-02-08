@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_alert_safety_qty_product" model="ir.cron">
+        <field name="name">Product; Safety Qty Alert</field>
+        <field name="interval_number">2</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="model_id" ref="model_product_product"/>
+        <field name="code">model._send_notif_non_safe_qty()</field>
+        <field name="state">code</field>
+    </record>
+</odoo>

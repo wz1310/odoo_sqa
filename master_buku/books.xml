@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="book_form_view" model="ir.ui.view">
+            <field name="name">book.form.view</field>
+            <field name="model">master.buku</field>
+            <field name="arch" type="xml">
+                <form string="Buku" >
+                <header>
+                      <field name="state" widget="statusbar"/>
+                      <button name="submit_" string="Submit" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state', 'in', ('done'))]}"/>
+                      <button name="cancel_" string="Cancel" type="object" class="btn btn-primary" attrs="{'invisible': [('state', 'in', ('draft'))]}"/>
+                </header>
+                    <sheet string="Master Buku" >
+                    <div class="oe_button_box">
+                        <button name="_compute_buku_ids_count"
+                            class="oe_stat_button"
+                            icon="fa-book"
+                            type="object">
+                            <field name="buku_ids_count" widget="statinfo" string="Chart" options="{'reload_on_button': true}"/>
+                        </button>
+                    </div>
+                        <group attrs="{'readonly': [('state', 'in', ('done'))]}">
+                            <group>
+                                <field name="name" attrs="{'readonly': [('state', 'in', ('done'))]}"/>
+                                <field name="pgr" attrs="{'readonly': [('state', 'in', ('done'))]}"/>
+                                <field name="tgl" attrs="{'readonly': [('state', 'in', ('done'))]}"/>
+                            </group>
+                            <group>                                
+                                <field name="jn_bk" attrs="{'readonly': [('state', 'in', ('done'))]}"/>
+                                <field name="kateg_bk" attrs="{'readonly': [('state', 'in', ('done'))]}"/>
+                                <field name="desc" attrs="{'readonly': [('state', 'in', ('done'))]}"/>
+                                <field string="Tags" name="tags"  widget="many2many_tags" options="{'no_open': False}"  attrs="{'readonly': [('state', 'in', ('done'))]}"/>                       
+                            </group>
+                        </group>
+                        <group > 
+                            <field name="book_line" nolabel="1" attrs="{'readonly': [('state', 'in', ('done'))]}">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="hal"/>
+                                <field name="halex"/>
+                                <field name="halex1"/>
+                                <field name="desc"/>
+                                <field name="book_move_id" invisible="1"/>
+                            </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="book_tree_view" model="ir.ui.view">
+            <field name="name">book.tree.view</field>
+            <field name="model">master.buku</field>
+            <field name="arch" type="xml">
+                <tree string="Book" >
+                    <field name="name"/>
+                    <field name="pgr"/>
+                    <field name="tgl"/>
+                    <field name="jn_bk"/>
+                    <field name="kateg_bk"/>                   
+                    <field name="desc"/>     
+                </tree>
+            </field>
+        </record>
+
+        <!-- <record id="buku_line_form_view" model="ir.ui.view">
+            <field name="name">buku.line.form.view</field>
+            <field name="model">master.buku.line</field>
+            <field name="arch" type="xml">
+                <form string="Buku Line">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="fpm_move_id"/>
+                                <field name="hrg_satuan"/>
+                                <field name="jlm_barang"/>
+                            </group>
+                            <group>
+                                <field name="hrg_total"/>
+                                <field name="f_disc"/>
+                                <field name="dpp"/>
+                                <field name="ppn"/>                                
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="trf_ppnbm"/>
+                                <field name="ppnbm"/>
+                                <field name="company_id"/>
+                            </group> 
+                        </group>                
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record> -->
+        
+        <record id="buku_line_tree_view" model="ir.ui.view">
+            <field name="name">buku.line.tree.view</field>
+            <field name="model">master.buku.line</field>
+            <field name="arch" type="xml">
+                <tree string="Chart" editable="bottom">
+                    <field name="name"/>
+                    <field name="hal"/>
+                    <field name="halex"/>
+                    <field name="halex1"/>
+                    <field name="desc" />
+                    <field name="book_move_id"/>    
+                </tree>
+            </field>
+        </record>
+        
+        <record id='m_buku_action' model='ir.actions.act_window'>
+            <field name="name">Buku</field>
+            <field name="res_model">master.buku</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="book_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Master Buku
+                </p>    
+            </field>
+        </record>
+        
+        <record id='buku_line_action' model='ir.actions.act_window'>
+            <field name="name">Chart</field>
+            <field name="res_model">master.buku.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="buku_line_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Chart Buku
+                </p>    
+            </field>
+        </record>
+
+        <menuitem id="new_book_menu" name="menu_m_book" sequence="1"/>
+        
+        <menuitem id="menu_buku_action"
+            name="Master Buku"
+            parent="new_book_menu"
+            action="m_buku_action"
+            sequence="2"
+            groups="base.group_user"/>
+        
+        <menuitem id="menu_buku_line_action"
+            name="Chart"
+            parent="new_book_menu"
+            action="buku_line_action"
+            sequence="3"
+            groups="base.group_user"/>
+
+    </data>
+</odoo>

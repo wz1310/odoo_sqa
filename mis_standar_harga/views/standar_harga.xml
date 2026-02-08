@@ -1,0 +1,49 @@
+<odoo>
+
+    <record id="standar_harga_view_tree" model="ir.ui.view">
+        <field name="name">standar.harga.view.tree</field>
+        <field name="model">standar.harga</field>
+        <field name="arch" type="xml">
+            <tree string="Standar Harga" editable="bottom">
+                <field name="product_id" required="1"/>
+                <field name="month" string="Bulan" required="1"/>
+                <field name="year" string="Tahun" required="1"/>
+                <field name="standar_harga" string="Standar Harga"/>
+                <button string="Check Log" name="open_wizard" type="object" class="btn-secondary"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="standar_harga_view_form" model="ir.ui.view">
+        <field name="name">standar.harga.view.form</field>
+        <field name="model">standar.harga</field>
+        <field name="arch" type="xml">
+            <form string="Standar Harga">
+                <sheet>
+                    <group>
+                        <group name="standar_harga_details">
+                        <field name="product_id" required="1"/>
+                        <field name="month" string="Bulan" required="1"/>
+                        <field name="year" string="Tahun" required="1"/>
+                        <field name="standar_harga" string="Standar Harga"/>
+                        <button string="Check Log" name="open_wizard" type="object" class="btn-secondary"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="standar_harga_action" model="ir.actions.act_window">
+        <field name="name">Standar Harga</field>
+        <field name="res_model">standar.harga</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="mis_standar_harga.standar_harga_view_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Standar Harga
+            </p>
+        </field>
+    </record>
+
+</odoo>

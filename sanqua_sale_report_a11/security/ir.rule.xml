@@ -1,0 +1,16 @@
+<odoo>
+    
+    <record id="group_outstanding_receiveable_report" model="res.groups">
+        <field name="name">A11 - Outstanding Receiveable Report</field>
+    </record>
+
+    <record model="ir.rule" id="rule_outstanding_receiveable_report_user">
+        <field name="name">Rule Outstanding Receiveable Global User</field>
+        <field name="model_id" ref="account.model_account_move" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+    </record>
+</odoo>

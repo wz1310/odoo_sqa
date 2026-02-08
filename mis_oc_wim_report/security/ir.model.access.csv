@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_oc_wim_report_realisasi,access_oc_wim_report_realisasi,model_oc_wim_report_realisasi,stock.group_stock_user,1,1,1,1
+access_oc_wim_plant_report,access_oc_wim_plant_report,model_oc_wim_plant_report,stock.group_stock_user,1,1,1,1
+access_oc_po_wim_report,access_oc_po_wim_report,model_oc_po_wim_report,stock.group_stock_user,1,1,1,1

@@ -1,0 +1,17 @@
+<odoo>
+    
+    <record id="group_summary_customer_do_new" model="res.groups">
+        <field name="name">A27 - Summary Customer DO [2]</field>
+    </record>
+
+    <record model="ir.rule" id="rule_summary_customer_do_new_user">
+        <field name="name">Rule Summary Customer DO User New</field>
+        <field name="model_id" ref="sanqua_sale_report_a27_2.model_report_summary_customer_do_new" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+        <field name="groups" eval="[(4,ref('sanqua_sale_report_a27_2.group_summary_customer_do_new'))]" />
+    </record>
+</odoo>

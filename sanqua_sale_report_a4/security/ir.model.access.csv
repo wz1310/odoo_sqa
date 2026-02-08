@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_report_performa_customer,access_report_performa_customer,model_report_performa_customer,sanqua_sale_report_a4.group_performa_customer_report,1,0,0,0

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="query_view_res_partner_tree" model="ir.ui.view">
+        <field name="name">query.view.res.partner.tree</field>
+        <field name="model">query.view.res.partner</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="id_rp" invisible="1"/>
+                <field name="parent" invisible="1"/>
+                <field name="code"/>
+                <field name="name"/>
+                <button name="cek_id" type="object" string="Add" class="btn-primary"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_query_view_res_partner_tree" model="ir.actions.act_window">
+        <field name="name">Res Partner Query View</field>
+        <field name="res_model">query.view.res.partner</field>
+        <field name="view_mode">tree,pivot,graph</field>
+    </record>
+
+    <menuitem id="menu_query_view_res_partner"
+                  name="Res Partner Query View"
+                  action="action_query_view_res_partner_tree"
+                  parent="stock.menu_warehouse_report"
+                  />
+</odoo>

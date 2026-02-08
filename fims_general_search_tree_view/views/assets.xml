@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend" name="stickyheader_Theme" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/fims_general_search_tree_view/static/src/js/list_search.js"/>
+            <link rel="stylesheet" type="text/css" href="/fims_general_search_tree_view/static/src/css/list_search.css"/>
+        </xpath>
+    </template>
+</odoo>

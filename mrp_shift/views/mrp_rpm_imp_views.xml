@@ -1,0 +1,141 @@
+<odoo>
+    <record id="mrp_rpm_view_form" model="ir.ui.view">
+        <field name="name">mrp.rpm.view.form</field>
+        <field name="model">mrp.rpm</field>
+        <field name="arch" type="xml">
+            <form string="Rencana Pembelian Material">
+                <header>
+                    <button name="create_pr" type="object" states="approved" string="Create Purchase Request" class="oe_highlight" id="create_pr"/>
+                    <button name="button_confirm" type="object" states="draft" string="Confirm" class="oe_highlight" id="confirm"/>
+                    <button name="update_data" type="object" states="draft" string="Update" class="oe_highlight" id="update"/>
+                    <button name="button_approve" type="object" attrs="{'invisible':['|',('user_can_approve','=',False), ('state','not in', ['waiting_approval'])]}" string="Approve" class="oe_highlight" id="approve"/>
+                    <button name="open_reject_message_wizard" type="object" attrs="{'invisible':['|',('user_can_approve','=',False), ('state','not in', ['waiting_approval'])]}" string="Reject" class="oe_highlight" id="reject"/>
+                    <button name="button_set_draft" type="object" states="reject,cancel" string="Set to Draft" class="oe_highlight" id="set_draft"/>
+                    <button name="button_done" type="object" states="approved" string="Set to Done" class="oe_highlight" id="done"/>
+					<field name="state" widget="statusbar" statusbar_visible="draft,waiting_approval,approved,done" readonly="1"/>
+				</header>
+				<sheet>
+                    <div class="oe_button_box" name="button_box" states="approved,done">
+                        <button type="object" name="action_view_pr" class="oe_stat_button" icon="fa-truck" >
+                            <field name="pr_count" widget="statinfo" string="Purchase Request"/>
+                        </button>
+                    </div>
+                    <group>
+                        <field name="company_id" readonly="1"/>
+                        <field name="rpb_id" attrs="{'readonly':[('state','in',('reject','approved','done'))]}"/>
+                        <field name="rpb_bulan_berjalan" attrs="{'readonly':[('state','in',('reject','approved','done'))]}"/>
+                        <field name="date" attrs="{'readonly':[('state','in',('reject','approved','done'))]}"/>
+                    	
+                    </group>
+                    <notebook>
+                    	<page string="Detail">
+                    		<field name="mrp_rpm_line">
+                    			<tree>
+                    				<field name="product_id"/>
+                    				<field name="current_month_production_plan"/>
+                    				<field name="current_month_realization_production"/>
+                    				<field name="current_month_not_realization"/>
+                    				<field name="next_month_production_plan"/>
+                    			</tree>
+                    			<form>
+                                    <group>
+                        				<group string="Product Information">
+                        					<field name="product_id" readonly="1"/>
+                                            <field name="bom_id" readonly="1"/>
+                                            <label for="qty_bom" string="Qty Needed"/>
+                                            <div class="o_row">
+                                                <field name="qty_bom" reaodnly="1"/>
+                                                <field name="qty_bom_uom" options="{'no_open':True,'no_create':True}" groups="uom.group_uom" readonly="1"/>
+                                            </div>
+                                        </group>
+                                        <group string="Production Information">
+    	                    				<field name="current_month_production_plan" readonly="1"/>
+    	                    				<field name="current_month_realization_production" readonly="1"/>
+    	                    				<field name="current_month_not_realization" readonly="1"/>
+    	                    				<field name="next_month_production_plan" readonly="1"/>
+                        				</group>
+                                    </group>
+                    				<notebook>
+                    					<page string="Raw Material">
+                                            <field name="line_detail">
+                                                <tree editable="bottom">
+                                                    <field name="product_id" readonly="1"/>
+                                                    <field name="uom_id" readonly="1"/>
+                                                    <field name="qty_bom" readonly="1"/>
+                                                    <field name="qty_on_hand" readonly="1"/>
+                                                    <field name="qty_outstanding_po" readonly="1" string="Oustanding PO"/>
+                                                    <field name="qty_request" readonly="1"/>
+                                                    <field name="tolerance" readonly="1"/>
+                                                    <field name="state" invisible="1"/>
+                                                    <field name="qty_to_pr" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                                </tree>
+                                                <!-- <form>
+                                                    <group>
+                                                        <group>
+                                                            <field name="product_id"/>
+                                                            <field name="uom_id"/>
+                                                        </group>
+                                                        <group>
+                                                            <field name="qty_bom"/>
+                                                            <field name="qty_on_hand"/>
+                                                            <filed name="qty_outstanding_po"/>
+                                                            <field name="tolerance"/>
+                                                            <field name="qty_request"/>
+                                                            <field name="qty_to_pr"/>
+                                                        </group>
+                                                    </group>
+                                                </form> -->
+                                            </field>
+                    					</page>
+                    				</notebook>
+                    			</form>
+                    		</field>
+                    	</page>
+                    	<page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" invisible="1"/>
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved"/></group>
+
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                        </page>
+                    </notebook>
+				</sheet>
+                <div class="oe_chatter">
+				    <field name="message_follower_ids" widget="mail_followers"/>
+				    <field name="activity_ids" widget="mail_activity"/>
+				    <field name="message_ids" widget="mail_thread"/>
+				</div>
+            </form>
+        </field>
+    </record>
+
+    <record id="mrp_rpm_view_tree" model="ir.ui.view">
+        <field name="name">mrp.rpm.view.tree</field>
+        <field name="model">mrp.rpm</field>
+        <field name="arch" type="xml">
+            <tree string="Rencana Pembelian Material">
+                <field name="name"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="mrp_rpm_action" model="ir.actions.act_window">
+        <field name="name">Rencana Pembelian Material</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.rpm</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new Rencana Pembelian Material.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="rpm_menu"
+        name="Rencana Pembelian Material"
+        parent="mrp_mps.mrp_mps_menu_planning"
+        action="mrp_rpm_action"
+        sequence="4"/>
+</odoo>

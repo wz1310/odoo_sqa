@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_report_amount_deposit_galon,access_report_amount_deposit_galon,model_report_amount_deposit_galon,sanqua_galon_report_12.group_amount_deposit_galon_report,1,0,0,0

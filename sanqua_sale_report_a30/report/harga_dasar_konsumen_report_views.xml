@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="harga_dasar_konsumen_search" model="ir.ui.view">
+            <field name="name">harga.dasar.konsumen.report.view</field>
+            <field name="model">report.harga.dasar.konsumen</field>
+            <field name="arch" type="xml">
+                <search string="Harga Dasar Konsumen">
+                    <field name="partner_code"/>
+                    <field name="partner_name"/>
+                    <field name="user_id"/>
+                    <field name="pricelist_id"/>
+                    <field name="team_id"/>
+                    <field name="region_master_id"/>
+                    <field name="region_group_id"/>
+                    <field name="product_pricelis_id"/>
+                </search>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="harga_dasar_konsumen_tree_view">
+            <field name="name">harga.dasar.konsumen.report.tree</field>
+            <field name="model">report.harga.dasar.konsumen</field>
+            <field name="arch" type="xml">
+                <tree string="Harga Dasar Konsumen">
+                    <field name="partner_code"/>
+                    <field name="partner_name"/>
+                    <field name="user_id"/>
+                    <field name="pricelist_id"/>
+                    <field name="team_id"/>
+                    <field name="region_master_id"/>
+                    <field name="region_group_id"/>
+                    <field name="product_pricelis_id"/>
+                    <field name="fixed_price"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="harga_dasar_konsumen_pivot">
+            <field name="name">harga.dasar.konsumen.report.pivot</field>
+            <field name="model">report.harga.dasar.konsumen</field>
+            <field name="arch" type="xml">
+                <pivot string="Harga Dasar Konsumen" disable_linking="True">
+                     <field name="partner_id" type="row"/>
+                     <field name="user_id" type="row"/>
+                     <field name="team_id" type="row"/>
+                     <field name="pricelist_id" type="row"/>
+                     <field name="product_pricelis_id" type="row"/>
+                     <field name="team_id" type="col"/>
+                     <field name="fixed_price" type="measure"/>
+                 </pivot>
+            </field>
+        </record>
+
+        <record id="action_harga_dasar_konsumen" model="ir.actions.act_window">
+            <field name="name">A30 - Harga Dasar Konsumen Report</field>
+            <field name="res_model">report.harga.dasar.konsumen</field>
+            <field name="view_mode">tree,pivot</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_id" ref="sanqua_sale_report_a30.harga_dasar_konsumen_tree_view"/>
+        </record>
+
+        <menuitem
+            id="harga_dasar_konsumen_menu"
+            name="A30 - Harga Dasar Konsumen Report"
+            action="sanqua_sale_report_a30.action_harga_dasar_konsumen"
+            parent="sale.menu_sale_report"
+            groups="sanqua_sale_report_a30.group_harga_dasar_konsumen"
+            sequence="140"
+        />
+    </data>
+</odoo>

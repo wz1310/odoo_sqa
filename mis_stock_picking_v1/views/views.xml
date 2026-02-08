@@ -1,0 +1,248 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="mis_v1_stock_picking">
+        <field name="name">Stock Picking Form MIS_V1</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock_picking_return_reason.stock_picking_form_inherited" />
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//header/button[@name='btn_sync']" position="after">
+                <button type="object" confirm="Are you sure to delete moveline?" attrs="{'invisible': [('state', '=', 'done')]}" string="Delete moveline" name="repair_return" class="btn btn-danger" 
+                    groups="mis_stock_picking_v1.group_acess_delete_moveline"/>
+            </xpath> -->
+<!--            <xpath expr="//header/button[@name='btn_plant_confirm']" position="after">-->
+<!--                &lt;!&ndash; ///////////////tambahan field untuk log dan cetakan printout ///////// &ndash;&gt;-->
+<!--                <field name="print_pick_op_count" invisible='True'></field>-->
+<!--                <field name="print_int_tf_count" invisible='True'></field>-->
+<!--                <field name="print_rcv_itm_count" invisible='True'></field>-->
+<!--                <field name="print_po_rtr_count" invisible='True'></field>-->
+<!--            </xpath>-->
+            <xpath expr="//field[@name='warehouse_plant_id']" position="after">
+                <field name="warehouse_ids" invisible="True"/>
+            </xpath>
+            <xpath expr="//field[@name='warehouse_plant_id']" position="replace">
+                <field name="warehouse_plant_id" domain="[('id','in',warehouse_ids)]" attrs="{'readonly':[('state','in',['plant-confirmed','done'])]}" />
+            </xpath>
+        </field>
+    </record>
+
+      <record model="ir.ui.view" id="mis_stock_picking_v1_inherit_stock_view_picking_form">
+        <field name="name">Stock Picking Form MIS_V1</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='picking_type_id']" position="before">
+                <field name="domain_picking_type_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='domain_picking_type_id']" position="after">
+                <field name="domain_location_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='picking_type_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'in', ('cancel','done'))]}</attribute>
+                <attribute name="domain">[('id','=',domain_picking_type_id)]</attribute>
+            </xpath>
+            <xpath expr="//sheet/group/group/field[@name='location_id']" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'in', ('cancel','done'))], 'invisible': [('picking_type_code', '=', 'incoming')]}</attribute>
+                <attribute name="domain">[('id','=',domain_location_id)]</attribute>
+            </xpath>
+            <xpath expr="//page[3]" position="inside">
+                <group name="desc">
+                    <group>
+                        <field name="descript" placeholder="Add description..." nolabel="1"
+                            attrs="{'readonly': [('state', '=', 'done')]}"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- /////////////////////tambahan count print picking operation////////////////////// -->
+<!--    <template id="report_stock_report_picking_misv1" inherit_id="stock.report_picking">-->
+<!--        <xpath expr="//t[@t-call='web.external_layout']" position="after">-->
+<!--            <t t-if="o.print_pick_op_count">-->
+<!--                <t t-esc="o.printing_pick_opr()"/>-->
+<!--            </t>-->
+<!--            <t t-else="">-->
+<!--            </t>-->
+<!--        </xpath>-->
+<!--        <xpath expr="//p[@t-field='o.note']" position="after">-->
+<!--                <div class="footer" style="font-size: 11px;position:absolute;bottom:-115px;">-->
+<!--                    <table class="table table-borderless" style="width:100%">-->
+<!--                        <tr>-->
+<!--                            <th class="text-left" style="width:45%">Dicetak :<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></th>-->
+<!--                            <th class="text-left" style="width:46.5%">-->
+<!--                            Cetakan ke-<span t-esc="o.print_pick_op_count"/></th>-->
+<!--                            <th class="text-right" style="width:50%">-->
+<!--                            Page: <span class="page"/> / <span class="topage"/>-->
+<!--                            </th>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--        </xpath>-->
+<!--        <xpath expr="//div[@class='page']" position="after">-->
+<!--            <style>-->
+<!--                .watermark {            -->
+<!--                    position: absolute;            -->
+<!--                    opacity:0.2;            -->
+<!--                    font-size:100px;            -->
+<!--                    width:50%;            -->
+<!--                    text-align:center;            -->
+<!--                    z-index:99;            -->
+<!--                    border: 2px solid black;            -->
+<!--                    -webkit-transform: rotate(-30deg);  -->
+<!--                    bottom:-350px;          -->
+<!--                }-->
+<!--            </style>-->
+<!--            <t t-if="o.state != 'done'">-->
+<!--            <div class="watermark" style="top: 210px; right: 230px;">-->
+<!--                <span t-field="o.state"/><br/>-->
+<!--            </div>-->
+<!--            </t>-->
+<!--        </xpath>-->
+<!--    </template>-->
+
+<!--    &lt;!&ndash; /////////////////////tambahan count print delivery slip////////////////////// &ndash;&gt;-->
+<!--    <template id="report_delivery_slip_misv1" inherit_id="sanqua_print.report_delivery_document">-->
+<!--        <xpath expr="//div[@class='footer']" position="replace">-->
+<!--                <div class="footer" style="font-size: 11px;position:absolute;bottom:-80px;">-->
+<!--                    <table class="table table-borderless" style="width:100%">-->
+<!--                        <tr>-->
+<!--                            <th class="text-left" style="width:45%">Dicetak :<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></th>-->
+<!--                            <th class="text-left" style="width:46.5%">-->
+<!--                            Cetakan ke-<span t-esc="o.print_count"/></th>-->
+<!--                            <th class="text-right" style="width:50%">-->
+<!--                            Page: <span class="page"/> / <span class="topage"/>-->
+<!--                            </th>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--                </xpath>-->
+<!--            </template>-->
+
+<!--    &lt;!&ndash; /////////////////////tambahan count print internal transfer////////////////////// &ndash;&gt;-->
+<!--    <template id="report_stock_int_tf_misv1" inherit_id="sanqua_print.report_internal_transfers_document">-->
+<!--        <xpath expr="//t[@t-call='web.basic_layout']" position="after">-->
+<!--            <t t-if="o.print_int_tf_count">-->
+<!--                <t t-esc="o.printing_int_tf()"/>-->
+<!--            </t>-->
+<!--            <t t-else="">-->
+<!--            </t>-->
+<!--        </xpath>-->
+<!--        <xpath expr="//div[@class='footer']" position="replace">-->
+<!--                <div class="footer" style="font-size: 11px;position:absolute;bottom:-105px;">-->
+<!--                    <table class="table table-borderless" style="width:100%">-->
+<!--                        <tr>-->
+<!--                            <th class="text-left" style="width:45%">Dicetak :<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></th>-->
+<!--                            <th class="text-left" style="width:46.5%">-->
+<!--                            Cetakan ke-<span t-esc="o.print_int_tf_count"/></th>-->
+<!--                            <th class="text-right" style="width:50%">-->
+<!--                            Page: <span class="page"/> / <span class="topage"/>-->
+<!--                            </th>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--        </xpath>-->
+<!--    </template>-->
+
+<!--    &lt;!&ndash; /////////////////////tambahan count print receive item////////////////////// &ndash;&gt;-->
+<!--    <template id="report_stock_rcv_misv1" inherit_id="sanqua_print.report_receiveitems_document_template">-->
+<!--        <xpath expr="//t[@t-call='web.basic_layout']" position="after">-->
+<!--            <t t-if="o.print_rcv_itm_count">-->
+<!--                <t t-esc="o.printing_rcv_itm()"/>-->
+<!--            </t>-->
+<!--            <t t-else="">-->
+<!--            </t>-->
+<!--        </xpath>-->
+<!--        <xpath expr="//div[@class='footer']" position="replace">-->
+<!--                <div class="footer" style="font-size: 11px;position:absolute;bottom:-55px;">-->
+<!--                    <table class="table table-borderless" style="width:100%">-->
+<!--                        <tr>-->
+<!--                            <th class="text-left" style="width:45%">Dicetak :<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/></th>-->
+<!--                            <th class="text-left" style="width:46.5%">-->
+<!--                            Cetakan ke-<span t-esc="o.print_rcv_itm_count"/></th>-->
+<!--                            <th class="text-right" style="width:50%">-->
+<!--                            Page: <span class="page"/> / <span class="topage"/>-->
+<!--                        </th>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--        </xpath>-->
+<!--        <xpath expr="//div[@class='page']" position="after">-->
+<!--            <style>-->
+<!--                .watermark {            -->
+<!--                    position: absolute;            -->
+<!--                    opacity:0.2;            -->
+<!--                    font-size:100px;            -->
+<!--                    width:50%;            -->
+<!--                    text-align:center;            -->
+<!--                    z-index:99;            -->
+<!--                    border: 2px solid black;            -->
+<!--                    -webkit-transform: rotate(-30deg);  -->
+<!--                    bottom:-350px;          -->
+<!--                }-->
+<!--            </style>-->
+<!--            <t t-if="o.state != 'done'">-->
+<!--            <div class="watermark" style="top: 210px; right: 230px;">-->
+<!--                <span t-field="o.state"/><br/>-->
+<!--            </div>-->
+<!--            </t>-->
+<!--        </xpath>-->
+<!--    </template>-->
+
+<!--    &lt;!&ndash; /////////////////////tambahan count print purchase return////////////////////// &ndash;&gt;-->
+<!--    <template id="report_po_ret_misv1" inherit_id="sanqua_print.report_purchasereturns_document">-->
+<!--        <xpath expr="//t[@t-call='web.basic_layout']" position="after">-->
+<!--            <t t-if="o.print_po_rtr_count">-->
+<!--                <t t-esc="o.printing_po_rtr()"/>-->
+<!--            </t>-->
+<!--            <t t-else="">-->
+<!--            </t>-->
+<!--        </xpath>-->
+<!--        <xpath expr="//div[@class='footer']" position="replace">-->
+<!--                <div class="footer" style="font-size: 11px;">-->
+<!--                    <table class="table table-borderless">-->
+<!--                        <tr>-->
+<!--                            <th>-->
+<!--                            <t t-if="o.state == 'draft'">-->
+<!--                                <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Draft</h1>-->
+<!--                            </t>-->
+<!--                            <t t-if="o.state == 'waiting_approval'">-->
+<!--                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting Approval</h1>-->
+<!--                            </t>-->
+<!--                            <t t-if="o.state == 'waiting'">-->
+<!--                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting Another Operation</h1>-->
+<!--                            </t>-->
+<!--                            <t t-if="o.state == 'confirmed'">-->
+<!--                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Waiting</h1>-->
+<!--                            </t>-->
+<!--                            <t t-if="o.state == 'assigned'">-->
+<!--                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Ready</h1>-->
+<!--                            </t>-->
+<!--                            <t t-if="o.state == 'plant-confirmed'">-->
+<!--                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Confirmed</h1>-->
+<!--                            </t>-->
+<!--                            <t t-if="o.state == 'done'">-->
+<!--                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Done</h1>-->
+<!--                            </t>-->
+<!--                            <t t-if="o.state == 'cancel'">-->
+<!--                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Cancel</h1>-->
+<!--                            </t>-->
+<!--                            <t t-if="o.state == 'rejected'">-->
+<!--                            <h1 style="opacity:0.25;z-index:1000;transform:rotate(300deg);width:150%;">Reject</h1>-->
+<!--                            </t>-->
+<!--                        </th>-->
+<!--                            <th class="text-right">Dicetak :<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d-%m-%Y %H:%M')"/><br/>-->
+<!--                            Cetakan ke-<span t-esc="o.print_po_rtr_count"/><br/>-->
+<!--                            Page: <span class="page"/> / <span class="topage"/>-->
+<!--                            </th>-->
+<!--                        </tr>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--        </xpath>-->
+<!--    </template>-->
+        
+    <record id="group_acess_delete_moveline" model="res.groups">
+        <field name="name">Access Button Delete Moveline</field>
+    </record>
+  </data>
+</odoo>

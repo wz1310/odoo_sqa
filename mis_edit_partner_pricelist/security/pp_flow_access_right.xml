@@ -1,0 +1,8 @@
+<odoo>        
+    <record id="group_acess_pp_change" model="res.groups">
+        <field name="name">Access Edit Partner Pricelist (User)</field>
+    </record>        
+    <record id="group_acess_pp_change_mg" model="res.groups">
+        <field name="name">Access Edit Partner Pricelist (Manager)</field>
+    </record>
+</odoo>

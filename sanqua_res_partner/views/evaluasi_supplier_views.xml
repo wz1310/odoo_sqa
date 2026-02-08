@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="evaluasi_supplier_form">
+            <field name="name">evaluasi.supplier.form</field>
+            <field name="model">evaluasi.supplier</field>
+            <field name="arch" type="xml">
+                <form string="Evaluasi Supplier">
+                    <header>
+                        <button name="action_submit" states="draft" type="object" string="Submit" class="btn-primary"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,done" />
+                    </header>
+                    <sheet>
+                        <!-- <h2><field name="name"/></h2> -->
+                        <group>
+                            <group>
+                                <field name="partner_id" attrs="{'readonly':[('state','!=','draft')]}" domain="[('supplier', '=', True)]" required="1"/>
+                                <field name="rating" attrs="{'readonly':[('state','!=','draft')]}" required="1"/>
+                                <field name="date_rating" attrs="{'readonly':[('state','!=','draft')]}" required="1"/>
+                                <field name="note" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="evaluasi_supplier_tree_view">
+            <field name="name">evaluasi.supplier.tree.view</field>
+            <field name="model">evaluasi.supplier</field>
+            <field name="arch" type="xml">
+                <tree string="Partner Document">
+                    <field name="partner_id"/>
+                    <field name="rating"/>
+                    <field name="date_rating"/>
+                    <field name="note"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="evaluasi_supplier_search" model="ir.ui.view">
+            <field name="name">evaluasi.supplier.search</field>
+            <field name="model">evaluasi.supplier</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="partner_id" string="Contact"/>
+                    <field name="rating"/>
+                    <field name="date_rating"/>
+                    <field name="note"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="evaluasi_supplier_action" model="ir.actions.act_window">
+            <field name="name">Evaluasi Supplier</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">evaluasi.supplier</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="evaluasi_supplier_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                        Create a new Evaluasi Supplier.
+                </p>
+            </field>
+        </record>
+
+
+        <menuitem id="menu_evaluasi_supplier" name="Evaluasi Supplier" action="evaluasi_supplier_action" parent="contacts.res_partner_menu_config" sequence="2"/>
+    </data>
+</odoo>

@@ -1,0 +1,175 @@
+<odoo>
+    <record id="pp_change_request_view_form" model="ir.ui.view">
+        <field name="name">pp.change.request.view.form</field>
+        <field name="model">partner.price.change.request</field>
+        <field name="arch" type="xml">
+            <form string="Partner Pricelist Change Request">
+                <header>
+                    <button name="btn_submit" states="draft" type="object" string="Submit" class="btn-primary"/>
+                    <button name="btn_approve" type="object" string="Approve"  class="btn-primary" attrs="{'invisible':['|',('user_can_approve','=',False), ('state','not in',['submited'])]}"/>
+                    <button name="btn_reject" type="object" string="Reject"  attrs="{'invisible':['|',('user_can_approve','=',False), ('state','!=','submited')]}"/>
+                    <button name="btn_draft" type="object" string="Set to Draft"  attrs="{'invisible':['|',('user_can_approve','=',False),('state','not in',['submited'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submited,approved" />
+                </header>
+                <sheet>
+                    <h2><field name="name" readonly="1" force_save="1"/></h2>
+                    <group>
+                        <group>
+                            <field name="create_uid"/>
+                            <field name="partner_id" attrs="{'readonly':[('state','!=','draft')]}" domain="[('state','=','approved')]"/>
+                            <field name="company_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                    <page string="Old Partner pricelist">
+                        <field name="old_line_ids" nolabel="1" mode="tree" readonly="1" force_save="1" style="pointer-events:none;">
+                            <tree string="Old Lines" editable="bottom">
+                                <field name="opp_change_request_id" readonly="1" invisible="1"/>
+                                <field name="partner_id" readonly="1" force_save="1" invisible="1"/>
+                                <field name="p_pricelist_id" invisible="1"/>
+                                <field name="team_id" domain="[('state','=','done'),('company_id','=',parent.company_id)]" options="{'no_create': True, 'no_open': True}" readonly="1" force_save="1"/>
+                                <field name="team_member_ids" widget="many2many_tags" invisible="1"/>
+                                <field name="user_id" domain="[('id','in',team_member_ids)]" options="{'no_create': True, 'no_open': True}" readonly="1" force_save="1"/>
+                                <field name="sales_admin_id" options="{'no_create': True, 'no_open': True}" readonly="1" force_save="1"/>
+                                <field name="credit_limit" readonly="1" force_save="1" decoration-danger="credit_limit > 3"/>
+                                <field name="current_credit" readonly="1" force_save="1"/>
+                                <field name="over_due" readonly="1" force_save="1"/>
+                                <field name="remaining_limit" readonly="1" force_save="1" invisible="1"/>
+                                <field name="black_list" readonly="1" force_save="1"/>
+                                <field name="pricelist_id" options="{'no_create': True, 'no_open': True}" readonly="1" force_save="1"/>
+                                <field name="customer_group" options="{'no_create': True, 'no_open': True}" readonly="1" force_save="1"/>
+                                <field name="payment_term_id" options="{'no_create': True, 'no_open': True}" readonly="1" force_save="1"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Current Partner pricelist">
+                        <field name="line_ids" nolabel="1" mode="tree" attrs="{'readonly':[('state','!=','draft')]}">
+                            <tree string="Pricelist Lines" editable="bottom" decoration-danger="black_list=='blacklist'">
+                                <field name="pp_change_request_id" invisible="1"/>
+                                <field name="partner_id" required="1" readonly="1" force_save="1" invisible="1"/>
+                                <field name="p_pricelist_id" invisible="1"/>
+                                <field name="team_id" required="1" domain="[('state','=','done'),('company_id','=',parent.company_id)]" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="team_member_ids" widget="many2many_tags" invisible="1"/>
+                                <field name="user_id" required="1" domain="[('id','in',team_member_ids)]" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="sales_admin_id" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="credit_limit" required="1"/>
+                                <field name="current_credit" readonly="1" force_save="1"/>
+                                <field name="over_due" readonly="1" force_save="1"/>
+                                <field name="remaining_limit" readonly="1" force_save="1" invisible="1"/>
+                                <field name="black_list" readonly="1" force_save="1"/>
+                                <field name="pricelist_id" required="1" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="customer_group" required="1" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="payment_term_id" required="1" options="{'no_create': True, 'no_open': True}"/>
+                            </tree>
+                        </field>
+                    </page>
+                        <page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" invisible="1" />
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved"/></group>
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+				    <field name="message_follower_ids" widget="mail_followers"/>
+				    <field name="activity_ids" widget="mail_activity"/>
+				    <field name="message_ids" widget="mail_thread"/>
+				</div>
+            </form>
+        </field>
+    </record>
+
+    <record id="pp_change_request_view_tree" model="ir.ui.view">
+        <field name="name">pp.change.request.view.tree</field>
+        <field name="model">partner.price.change.request</field>
+        <field name="arch" type="xml">
+            <tree string="Partner Price Change Request">
+                <field name="name"/>
+                <field name="create_date"/>
+                <field name="create_uid"/>
+                <field name="partner_id" attrs="{'readonly':[('state','!=','draft')]}"/>
+                <field name="state"/>
+                <field name="company_id" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="pp_change_request_line_field_view_form" model="ir.ui.view">
+        <field name="name">pp.change.request.line.field.view.form</field>
+        <field name="model">partner.price.change.request.line</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="pp_change_request_id"/>
+                            <field name="p_pricelist_id"/>
+                            <field name="partner_id"/>
+                            <field name="team_id" required="1"/>
+                            <field name="team_member_ids" invisible="0" widget="many2many_tags"/>
+                            <field name="user_id" required="1" domain="[('id','in',team_member_ids)]"/>
+                            <field name="sales_admin_id"/>
+                            <field name="credit_limit" required="1"/>
+                            <field name="current_credit"/>
+                            <field name="over_due"/>
+                            <field name="remaining_limit"/>
+                            <field name="black_list" readonly="1"/>
+                            <field name="pricelist_id" required="1"/>
+                            <field name="customer_group" required="1"/>
+                            <field name="payment_term_id" required="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="old_pp_change_request_line_field_view_form" model="ir.ui.view">
+        <field name="name">old.pp.change.request.line.field.view.form</field>
+        <field name="model">old.partner.price.change.request.line</field>
+        <field name="arch" type="xml">
+            <form string="" >
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="opp_change_request_id"/>
+                            <field name="p_pricelist_id"/>
+                            <field name="partner_id"/>
+                            <field name="team_id" required="1"/>
+                            <field name="team_member_ids" invisible="0" widget="many2many_tags"/>
+                            <field name="user_id" required="1" domain="[('id','in',team_member_ids)]"/>
+                            <field name="sales_admin_id"/>
+                            <field name="credit_limit" required="1"/>
+                            <field name="current_credit"/>
+                            <field name="over_due"/>
+                            <field name="remaining_limit"/>
+                            <field name="black_list" readonly="1"/>
+                            <field name="pricelist_id" required="1"/>
+                            <field name="customer_group" required="1"/>
+                            <field name="payment_term_id" required="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="pp_change_request_action" model="ir.actions.act_window">
+        <field name="name">Partner Pricelist Change Request</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">partner.price.change.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new contact change request.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="menu_pp_change_request"
+        name="Edit Partner Pricelist"
+        action="pp_change_request_action"
+        web_icon="mis_edit_partner_pricelist,views/price.png"/>
+</odoo>

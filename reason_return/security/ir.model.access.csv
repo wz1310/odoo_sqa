@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_picking_return_request_user,access.picking.return.request.user,model_picking_return_request,reason_return.group_picking_return_request_user,1,0,0,0
+access_picking_return_request_manager,access.picking.return.request.manager,model_picking_return_request,reason_return.group_picking_return_request_manager,1,1,1,1
+access_picking_return_request_group_system,access.picking.return.request.group.system,model_picking_return_request,base.group_system,1,1,1,1
+access_picking_return_request_line_global_user,access.picking.return.request.line.global.user,model_picking_return_request_line,,1,0,0,0
+access_picking_return_request_line_manager,access.picking.return.request.line.user,model_picking_return_request_line,reason_return.group_picking_return_request_user,1,0,0,0
+access_picking_return_request_line_manager,access.picking.return.request.line.manager,model_picking_return_request_line,reason_return.group_picking_return_request_manager,1,1,1,1
+access_picking_return_request_line_group_system,access.picking.return.request.line.group.system,model_picking_return_request_line,base.group_system,1,1,1,1

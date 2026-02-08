@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_sales_order_truck_document">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-set="sequence_sj_id" t-value="o.sequence_sj_ids.filtered(lambda r: r.partner_id.id == x.id)"/>
+                <t t-set="line_ids" t-value="o.order_line_ids.filtered(lambda r: r.partner_id.id == x.id)"/>
+                <t t-set="material_line_ids" t-value="o.sale_truck_material_ids.filtered(lambda r: r.partner_id.id == x.id)"/>
+                <div class="header">
+                    <div class="row">
+                        <table style="width: 100%;border-bottom: solid 2px black;">
+                            <tr>
+                                <td rowspan="2" style="width: 10%;">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                                </td>
+                                <td rowspan="2" style="font-size: 12px; width: 60%;">
+                                    <span style="font-size: 14px;" t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["adress", "name"], "no_marker": true}'/>
+                                    <span t-field="o.company_id.partner_id.street"/><br/>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Telp. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Fax. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.vat">
+                                        NPWP. <span t-field="o.company_id.partner_id.vat"/> 
+                                    </t>
+                                </td>
+                                <td style="width: 30%;">
+                                    <t t-if="o.company_id.iso_purchase_return">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            Doc. No. : <t t-esc="o.company_id.iso_purchase_return"/><br/>
+                                        </span>
+                                    </t>
+                                    <t t-if="o.state not in ['posted']">
+                                         <span class="text-left" style="font-size: 10px;">
+                                            <t t-esc="dict(o._fields['state'].selection).get(o.state)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4  class="text-right" >
+                                    Delivery Order</h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="row" style="margin-top:10px;font-size:11px">
+                        <style>
+                            .table th,
+                            .table td {
+                                padding: 5px;
+                            }
+                            .th-0 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black !important;
+                                border-left: 1px solid black;
+                                border-right: 1px solid black;
+                                text-align:center;
+                            }
+                            .td-1 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: 1px solid black;
+                            }
+                            .td-2 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: none !important;
+                                border-right: none !important;
+                            }
+                            .td-3 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: none !important;
+                                border-right: 1px solid black;
+                            }
+
+                            .td-4 {
+                                border-top: none !important;
+                                border-bottom: none !important;
+                                border-left: 1px solid black;
+                                border-right: 1px solid black;
+                            }
+                            .no-border {
+                                border: none !important;
+                            }
+                        </style>
+                        <div style="width:40%">
+                            Ship To : <span t-field="sequence_sj_id.partner_id.name"/> <br/>
+                            <span t-field="sequence_sj_id.partner_id.street"/>, <span t-field="sequence_sj_id.partner_id.city"/>, <span t-field="sequence_sj_id.partner_id.zip"/>
+                        </div>
+                        <div style="width:60%">
+                            <table class="table" style="width:100%;">
+                                <tr>
+                                    <td class="td-1" style="width:20%;">Delivery No.</td>
+                                    <td class="td-2" style="width:1%;">:</td>
+                                    <td class="td-3" style="width:29%;"><span t-field="sequence_sj_id.name"/></td>
+                                    <td class="td-2" style="width:20%;">Pickup Method</td>
+                                    <td class="td-2" style="width:1%;">:</td>
+                                    <td class="td-3" style="width:29%;"><span t-field="sequence_sj_id.sale_truck_id.order_pickup_method_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">Delivery Date</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-esc="o.get_format_datetime(datetime_value=sequence_sj_id.sale_truck_id.start_date,only_date=True)"/></td>
+                                    <td class="td-2">License Plate</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-field="sequence_sj_id.sale_truck_id.vehicle_id.license_plate"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">SOT Number</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"></td>
+                                    <td class="td-2">Driver</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-field="sequence_sj_id.sale_truck_id.vehicle_driver_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">Warehouse</td>
+                                    <td class="td-2">:</td>
+                                    <td colspan="4" class="td-3"><span t-field="sequence_sj_id.sale_truck_id.sudo().warehouse_id.name"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="page" style="padding-top:180px;font-size: 11px;">
+                    <style>
+                        .table th,
+                        .table td {
+                            padding: 5px;
+                        }
+                        .th-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            text-align:center;
+                        }
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <div class="row" style="margin-top: 10px;">
+                        <table class="table" style="width: 100%; border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 5%;">
+                                        No.
+                                    </th>
+                                    <th class="th-0" style="width: 45%;">
+                                        Description
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        UOM
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Qty
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        BS Mobil
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        BS Gudang
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Total
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="note_agreement" t-value=""/>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-foreach="line_ids" t-as="line">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="idx"/>
+                                        </td>
+                                        <td class="td-4">
+                                            <span t-esc="line.product_id.name"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.uom_id.name"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="o.get_format_currency(line.product_uom_qty)"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="text-center td-4">
+                                            <span t-esc="o.get_format_currency(line.product_uom_qty)"/>
+                                        </td>
+                                        <t t-set="note_agreement" t-value="line.note"/>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                    <t t-if="idx == 7">
+                                                <t t-set="blank_space" t-value="7"/>
+                                                <t t-foreach="blank_space" t-as="a">
+                                                    <tr>
+                                                        <td class="no-border text-center">
+                                                            <!-- <span t-esc="idx"/> -->
+                                                        </td>
+                                                        <td class="no-border text-center">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-center">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <th class="th-0" style="width: 5%;">
+                                                        No.
+                                                    </th>
+                                                    <th class="th-0" style="width: 45%;">
+                                                        Description
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        UOM
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        Qty
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        BS Mobil
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        BS Gudang
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        Total
+                                                    </th>
+                                                </tr>
+                                            </t>
+                                        <!-- <t t-foreach="line.lot_ids" t-as="lot"> 
+                                            <tr>
+                                                <td class="td-4 text-center">
+                                                    <span t-esc="idx"/>
+                                                </td>
+                                                <td class="td-4" style="padding-left:50px;">
+                                                    - <span t-esc="lot.lot_id.name"/>
+                                                </td>
+                                                <td class="td-4 text-center">
+                                                    
+                                                </td>
+                                                <td class="td-4 text-center">
+                                                    <span t-esc="o.get_format_currency(lot.product_uom_qty)"/>
+                                                </td>
+                                                <td class="td-4 text-center">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                                <td class="text-right td-4">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                                <td class="text-center td-4">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                            </tr>
+                                            <t t-set="idx" t-value="idx + 1"/>
+                                            <t t-if="idx == 7">
+                                                <t t-set="blank_space" t-value="7"/>
+                                                <t t-foreach="blank_space" t-as="a">
+                                                    <tr>
+                                                        <td class="no-border text-center">
+                                                            
+                                                        </td>
+                                                        <td class="no-border text-center">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-center">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <th class="th-0" style="width: 5%;">
+                                                        No.
+                                                    </th>
+                                                    <th class="th-0" style="width: 45%;">
+                                                        Description
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        UOM
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        Qty
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        BS Mobil
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        BS Gudang
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        Total
+                                                    </th>
+                                                </tr>
+                                            </t>
+                                        </t> -->
+                                </t>
+                                <t t-if="o.material_print">
+                                    <t t-foreach="material_line_ids" t-as="line">
+                                        <tr>
+                                            <td class="td-4 text-center">
+                                                <span t-esc="idx"/>
+                                            </td>
+                                            <td class="td-4">
+                                                <span t-esc="line.product_id.name"/>
+                                            </td>
+                                            <td class="td-4 text-center">
+                                                <span t-esc="line.uom_id.name"/>
+                                            </td>
+                                            <td class="td-4 text-center">
+                                                <span t-esc="o.get_format_currency(line.product_uom_qty)"/>
+                                            </td>
+                                            <td class="td-4 text-center">
+                                                <span><![CDATA[&nbsp;]]></span>
+                                            </td>
+                                            <td class="text-right td-4">
+                                                <span><![CDATA[&nbsp;]]></span>
+                                            </td>
+                                            <td class="text-center td-4">
+                                                <span t-esc="o.get_format_currency(line.product_uom_qty)"/>
+                                            </td>
+                                        </tr>
+                                        <t t-set="idx" t-value="idx + 1"/>
+                                        <t t-if="idx == 7">
+                                                <t t-set="blank_space" t-value="7"/>
+                                                <t t-foreach="blank_space" t-as="a">
+                                                    <tr>
+                                                        <td class="no-border text-center">
+                                                            <!-- <span t-esc="idx"/> -->
+                                                        </td>
+                                                        <td class="no-border text-center">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-center">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <th class="th-0" style="width: 5%;">
+                                                        No.
+                                                    </th>
+                                                    <th class="th-0" style="width: 45%;">
+                                                        Description
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        UOM
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        Qty
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        BS Mobil
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        BS Gudang
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        Total
+                                                    </th>
+                                                </tr>
+                                            </t>
+                                        <!-- <t t-foreach="line.lot_ids" t-as="lot">
+                                            <tr>
+                                                <td class="td-4 text-center">
+                                                    <span t-esc="idx"/>
+                                                </td>
+                                                <td class="td-4" style="padding-left:50px;">
+                                                    - <span t-esc="lot.lot_id.name"/>
+                                                </td>
+                                                <td class="td-4 text-center">
+                                                </td>
+                                                <td class="td-4 text-center">
+                                                    <span t-esc="o.get_format_currency(lot.product_uom_qty)"/>
+                                                </td>
+                                                <td class="td-4 text-center">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                                <td class="text-right td-4">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                                <td class="text-center td-4">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                            </tr>
+                                            <t t-set="idx" t-value="idx + 1"/>
+                                            <t t-if="idx == 7">
+                                                <t t-set="blank_space" t-value="7"/>
+                                                <t t-foreach="blank_space" t-as="a">
+                                                    <tr>
+                                                        <td class="no-border text-center">
+                                                            <span t-esc="idx"/>
+                                                        </td>
+                                                        <td class="no-border text-center">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-center">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="no-border text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                                <tr>
+                                                    <th class="th-0" style="width: 5%;">
+                                                        No.
+                                                    </th>
+                                                    <th class="th-0" style="width: 45%;">
+                                                        Description
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        UOM
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        Qty
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        BS Mobil
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        BS Gudang
+                                                    </th>
+                                                    <th class="th-0" style="width: 10%;">
+                                                        Total
+                                                    </th>
+                                                </tr>
+                                            </t>
+                                        </t>-->
+                                    </t> 
+                                </t>
+                                <t t-set="blank_space" t-value="o.get_blank_space(idx-1)"/>
+                                <t t-foreach="blank_space" t-as="a">
+                                                    <tr>
+                                                        <td class="td-4 text-center">
+                                                            <span t-esc="idx"/>
+                                                        </td>
+                                                        <td class="td-4 text-center">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="td-4 text-center">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="td-4 text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="td-4 text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="td-4 text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                        <td class="td-4 text-right">
+                                                            <span><![CDATA[&nbsp;]]></span>
+                                                        </td>
+                                                    </tr>
+                                                    <t t-set="idx" t-value="idx + 1"/>
+                                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="footer" style="font-size: 11px;">
+                    <style>
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td colspan="2" style="width: 65%;">
+                            <h6>Note : </h6>
+                            <span t-esc="note_agreement"/>
+                            </td>
+                            <td class="text-right" style="width: 20%;"><h6>Total Quantity <![CDATA[&nbsp;]]>:</h6></td>
+                            <td class="text-right" style="width: 15%;"><h6><span t-esc="o.get_format_currency(sum([x.product_uom_qty for x in line_ids]) + sum([x.product_uom_qty for x in material_line_ids]))"/></h6></td>
+                            <td colspan="3" ></td>
+                        </tr>
+                        <tr><td><span><![CDATA[&nbsp;]]></span></td></tr>
+                        <tr><td><span><![CDATA[&nbsp;]]></span></td ></tr>
+                        <tr><td><span><![CDATA[&nbsp;]]></span></td></tr>
+                        <tr>
+                            <td class="text-center">Prepared by,</td>
+                            <td class="text-center">Approved by,</td>
+                            <td class="text-center">Shipped by,</td>
+                            <td class="text-center">Receive by,</td>
+                            <!-- <td class="text-right"></td> -->
+                        </tr>
+                        <tr style="height: 40px;">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center"> (.................................) </td>
+                            <td class="text-center"> (.................................) </td>
+                            <td class="text-center"> (.................................) </td>
+                            <td class="text-center"> (.................................) </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_sales_order_truck_document_false">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                Dokumen ini tidak dapat di print karena kesalahan teknis.
+            </t>
+        </t>
+    </template>
+
+    <template id="report_sales_order_truck">
+        <t t-foreach="docs" t-as="o">
+            <t t-if="o.state not in ['draft','rejected','waiting_approval','refuse','submited']">
+                <t t-if="len(o.sequence_sj_ids)">
+                    <t t-foreach="o.sequence_sj_ids.mapped('partner_id')" t-as="x">                
+                        <t t-call="sanqua_print.report_sales_order_truck_document" t-lang="x.lang"/>
+                    </t>
+                </t>
+                <t t-else="">
+                    <t t-call="sanqua_print.report_sales_order_truck_document_false"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="wizard_statistic_customer_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">statistic.customer.report.wizard.view.form</field>
+        <field name="model">statistic.customer.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Statistic Customer">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="year" />
+                            <field name="customer_ids" widget="many2many_tags" options="{'no_open': True, 'no_create': True}" domain="[('customer_rank','&gt;', 0),('state','=','approved')]"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="generate_excel" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_wizard_statistic_customer_report_wizard" model="ir.actions.act_window">
+        <field name="name">A20 - Statistic Customer</field>
+        <field name="res_model">statistic.customer.report.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_wizard_statistic_customer_report_wizard"
+            name="A20 - Statistic Customer"
+            action="action_wizard_statistic_customer_report_wizard"
+            parent="sale.menu_sale_report"
+            groups="sanqua_sale_report_a20.group_wizard_statistic_customer_report"  sequence="128"/>
+
+</odoo>

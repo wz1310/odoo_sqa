@@ -1,0 +1,1 @@
+from . import wizard_statistic_customer_report

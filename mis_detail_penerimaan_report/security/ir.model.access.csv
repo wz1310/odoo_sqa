@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_list_detail_penerimaan,access_list_detail_penerimaan,model_list_detail_penerimaan,mis_detail_penerimaan_report.group_list_detail_penerimaan,1,0,0,0

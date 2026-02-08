@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="plant_delivery_order_wo_invoice_report_tree" model="ir.ui.view">
+        <field name="name">plant.delivery.order.report.wo.invoice.tree</field>
+        <field name="model">plant.delivery.order.wo.invoice.report</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="location_id"/>
+                <field name="location_dest_id"/>
+                <field name="sj_no"/>
+                <field name="so_no"/>
+                <field name="sj_wim_no"/>
+
+                <field name="fleet_vehicle_id" optional="hide"/>
+                <field name="fleet_driver_id" optional="hide"/>
+                <!--field name="lot_ids" widget="many2many_tags" optional="hide"/-->
+
+                <field name="so_wim_no"/>
+                <field name="po_wim_no"/>
+                <field name="contact"/>
+                <field name="destination"/>
+                <field name="order_pickup_method_id"/>
+                <field name="region_group_id"/>
+                <field name="customer_wim"/>
+                <field name="customer_wim_reg"/>
+                <field name="gudang_wim"/>
+                <field name="internal_sale_notes"/>
+                <field name="do_date"/>
+                <field name="do_receive_date"/>
+                <field name="company_id"/>
+                <field name="desc_product"/>
+                <field name="qty_demand"/>
+                <field name="qty_done"/>
+                <field name="qty_return"/>
+                <field name="qty_net"/>
+                <field name="uom_name"/>
+            </tree>
+        </field>
+    </record>
+    <record id="plant_delivery_order_wo_invoice_report_search" model="ir.ui.view">
+        <field name="name">plant.delivery.order.wo.invoice.report.search</field>
+        <field name="model">plant.delivery.order.wo.invoice.report</field>
+        <field name="arch" type="xml">
+            <search string="Plant Delivery Order Report (Logistic)">
+                <field name="location_id"/>
+                <field name="sj_no"/>
+                <field name="sj_wim_no"/>
+                <field name="contact"/>
+                <field name="customer_wim"/>
+                <field name="so_no"/>
+                <field name="so_wim_no"/>
+                <field name="so_wim_no"/>
+                <filter name="destination_location_customer_wim" string="Customer WIM" domain="[('sj_wim_no','=like', 'WIM-SJ/%'),('so_wim_no','=like', 'WIM/SO%')]"></filter>
+                <filter name="destination_location_customer_plant" string="Customer Plant" domain="[('partner_id','!=', 7)]"></filter>
+            </search>
+        </field>
+    </record>
+    <record id="action_plant_delivery_order_wo_invoice_report" model="ir.actions.act_window">
+        <field name="name">Laporan Rincian Penjualan Bersih (Logistic)</field>
+        <field name="res_model">plant.delivery.order.wo.invoice.report</field>
+        <field name="view_mode">tree,pivot</field>
+    </record>
+    <menuitem id="menu_plant_delivery_order_wo_invoice_report"
+                  name="Plant Delivery Order Report (Logistic)"
+                  action="action_plant_delivery_order_wo_invoice_report"
+                  parent="stock.menu_warehouse_report"
+                  sequence="153"/>
+</odoo>

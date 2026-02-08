@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_expenses_request_expenses_request,expenses_request.expenses_request,model_expenses_request_expenses_request,base.group_user,1,1,1,1

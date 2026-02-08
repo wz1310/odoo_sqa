@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+        <record id="promo_sale_order_view_form" model="ir.ui.view">
+            <field name="name">promo.sale.order.view.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_shipping_id']" position="after">
+                    <field name="is_promotion" attrs="{'invisible': [('is_promotion', '=', False)]}"/>
+                    <field name="order_promotion_id" attrs="{'invisible': [('is_promotion', '=', False)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/form/group/group/field[@name='product_id']" position="after">
+                    <field name="promotion_line_id" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="sale.action_quotations_with_onboarding">
+            <field name="domain">[('is_promotion','=',False)]</field>
+        </record>
+	</data>
+</odoo>

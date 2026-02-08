@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="mrp_qc_production_tree_view" model="ir.ui.view">
+        <field name="name">mrp_qc_production_tree_view</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+        		<attribute name="decoration-danger">date_planned_start&lt;current_date and state not in ('done','cancel', 'waiting_qc', 'qc_done')</attribute>
+        		<attribute name="decoration-muted">state in ('done','cancel', 'waiting_qc', 'qc_done')</attribute>
+            </xpath>
+        </field>
+    </record>
+	
+    <record id="mrp_qc_production_form_view" model="ir.ui.view">
+        <field name="name">mrp_qc_production_form_view</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+        	<field name="location_dest_id" position="after">
+                <field name="finished_location_qc_id" options="{'no_create': True}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+            </field>
+            <button name="action_cancel" position="before">
+                <button name="button_qc_confirm" type="object" string="QC Confirm"
+                	attrs="{'invisible': ['|', ('finished_location_qc_id', '=', False), ('state', '!=', 'done')]}"/>
+            </button>
+            <xpath expr="//header/button[@name='action_assign']" position="attributes">
+        		  <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_cancel'][1]" position="attributes">
+        		  <attribute name="attrs">{'invisible': ['|', '|', '|', ('id', '=', False), ('is_locked', '=', False), ('state', 'in', ('done', 'cancel', 'waiting_qc', 'qc_done')), ('confirm_cancel', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_cancel'][2]" position="attributes">
+        		  <attribute name="attrs">{'invisible': ['|', '|', '|', ('id', '=', False), ('is_locked', '=', False), ('state', 'in', ('done', 'cancel', 'waiting_qc', 'qc_done')), ('confirm_cancel', '=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//button[@name='%(stock.action_stock_report)d']" position="attributes">
+        		  <attribute name="states">done,waiting_qc,qc_done</attribute>
+            </xpath>
+            <xpath expr="//button[@name='%(mrp.action_mrp_production_moves)d']" position="attributes">
+        		  <attribute name="attrs">{'invisible': [('state', 'not in', ('progress', 'done', 'waiting_qc', 'qc_done'))]}</attribute>
+            </xpath>
+            <xpath expr="//button[@name='%(mrp.action_change_production_qty)d']" position="attributes">
+        		  <attribute name="attrs">{'invisible': ['|', ('state', 'in', ('draft', 'done','cancel', 'waiting_qc', 'qc_done')), ('id', '=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_deadline']" position="attributes">
+        		  <attribute name="attrs">{'readonly': [('state', 'in', ['done', 'cancel', 'waiting_qc', 'qc_done'])]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_planned_start']" position="attributes">
+        		  <attribute name="attrs">{'invisible': [
+                                            ('routing_id', '!=', False),
+                                            ('state', 'in', ['draft', 'confirmed']),
+                                        ], 'readonly': [
+                                       '|',
+                                        '&amp;',
+                                            ('routing_id', '=', False),
+                                            ('state', 'in', ['done', 'cancel', 'waiting_qc', 'qc_done']),
+                                        '&amp;',
+                                            ('routing_id', '!=', False),
+                                            ('state', 'not in', ['draft', 'confirmed'])]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_planned_finished']" position="attributes">
+        		  <attribute name="attrs">{'readonly': [
+                                    '|',
+                                        '&amp;',
+                                            ('routing_id', '=', False),
+                                            ('state', 'in', ['done', 'cancel', 'waiting_qc', 'qc_done']),
+                                        ('routing_id', '!=', False)
+                                ], 'invisible': [
+                                    ('routing_id', '!=', False),
+                                    ('state', 'in', ['draft', 'confirmed'])
+                                ]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='finished_move_line_ids']/tree" position="attributes">
+        		  <attribute name="decoration-muted">state in ('done', 'cancel', 'waiting_qc', 'qc_done')</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="mrp_qc_production_form_inherit_view6" model="ir.ui.view">
+        <field name="name">mrp_qc_production_form_inherit_view6</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp_account_enterprise.mrp_production_form_inherit_view6"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='%(mrp_account_enterprise.action_cost_struct_mrp_production)d']" position="attributes">
+        		<attribute name="attrs">{'invisible': [('state', 'not in', ['done', 'waiting_qc', 'qc_done'])]}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <!-- rule group User -->
+        <record model="ir.rule" id="rule_e_tax_invoice_merge_group_user_allowed">
+            <field name="name">E-Tax Invoice Merge: Allowed-company only </field>
+            <field name="model_id" ref="e_tax_invoice_merge.model_etax_invoice_merge"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', [x.id for x in user.company_ids])]</field>
+            <field name="groups" eval="[(4, ref('pci_efaktur_13.group_e_tax_user'))]"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+    </data>
+</odoo>

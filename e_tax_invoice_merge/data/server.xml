@@ -1,0 +1,12 @@
+<odoo>
+    <record id="action_server_upload_etax_commerce" model="ir.actions.server">
+        <field name="name">Upload ETax</field>
+        <field name="model_id" ref="model_etax_invoice_merge"/>
+        <field name="binding_model_id" ref="model_etax_invoice_merge" />
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                records.upload_etax()
+        </field>
+    </record>
+</odoo>

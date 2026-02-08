@@ -1,0 +1,69 @@
+<odoo>
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.view.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Galon" name="galon" attrs="{'invisible':['|', ('customer','=',False), ('state','!=','approved')]}">
+                    <field name="is_readonly" invisible="1"/>
+                    <field name="sale_truck_item_status_partner_report_ids" mode="tree" context="{'btn_update_stock_card':1}"/>
+                    
+                    <group>
+                        <field name="final_stock"/>
+                    </group>
+                    <div class="oe_button_box" name="button_box">
+                        <button string="See Details" type="object" name="open_stock_card_moves" class="oe_stat_button" icon="fa-building" />
+                    </div>
+                </page>
+                <page string="Dispenser" name="dispenser">
+                    <field name="is_readonly"/>
+                    <button string="Fetch Dispenser" name="fetch_dispenser" type="object" class="oe_highlight"/>
+                    <field name="sale_truck_dispenser_ids">
+                        <tree>
+                            <field name="brand"/>
+                            <field name="vendor_ids" widget="many2many_tags"/>
+                            <field name="buy_date"/>
+                            <field name="serial_number"/>
+                            <field name="qty"/>
+                            <field name="deliver_date"/>
+                            <field name="condition"/>
+                            <field name="type_of_lease"/>
+                            <field name="rental_price_to_vendor"/>
+                            <field name="rental_price_to_customer"/>
+                            <field name="new_brand"/>
+                            <field name="new_serial_number"/>
+                        </tree>
+                        <form>
+                            <sheet>
+                                <group>
+                                    <group>
+                                        <field name="partner_id" invisible="1"/>
+                                        <field name="company_id" invisible="1"/>
+                                        <field name="brand"/>
+                                        <field name="vendor_ids" widget="many2many_tags"/>
+                                        <field name="buy_date"/>
+                                        <field name="serial_number"/>
+                                        <field name="qty" readonly="1"/>
+                                    </group>
+                                    <group>
+                                            <field name="deliver_date"/>
+                                            <field name="condition"/>
+                                            <field name="type_of_lease"/>
+                                            <field name="return_date" attrs="{'invisible': [('type_of_lease','!=','return')],'required' :[('type_of_lease','=','return')]}"/>
+                                            <field name="rental_price_to_vendor"/>
+                                            <field name="rental_price_to_customer"/>
+                                    </group>
+                                </group>
+                                <group string="New Information" attrs="{'invisible': [('type_of_lease', '!=','change')]}">
+                                    <field name="new_brand" attrs="{'invisible': [('type_of_lease','!=','change')],'required' :[('type_of_lease','=','change')]}"/>
+                                    <field name="new_serial_number" attrs="{'invisible': [('type_of_lease','!=','change')],'required' :[('type_of_lease','=','change')]}"/>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

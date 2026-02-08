@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_form_view" model="ir.ui.view">
+        <field name="name">res.partner.form"</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_pricelist_ids']/tree/field[@name='credit_limit']" position="attributes">
+                <attribute name="sum">Total Credit Limit</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_pricelist_ids']/tree/field[@name='pricelist_id']" position="after">
+                <field name="customer_group" required="1"/>
+                <field name="payment_term_id" required="1"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_pricelist_ids']/tree/field[@name='user_id']" position="after">
+                <field name="sales_admin_id" required="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="partner_pricelist_view_form_inherit" model="ir.ui.view">
+        <field name="name">partner.pricelist.view.form.inherit"</field>
+        <field name="model">partner.pricelist</field>
+        <field name="inherit_id" ref="partner_credit_limit.partner_pricelist_view_form"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="sales_admin_id" required="1"/>
+            </field>
+            <field name="pricelist_id" position="after">
+                <field name="customer_group" required="1"/>
+                <field name="payment_term_id" required="1"/>
+            </field>
+        </field>
+    </record>
+</odoo>

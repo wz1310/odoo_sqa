@@ -1,0 +1,1 @@
+from . import sale_truck_item_status_partner_report

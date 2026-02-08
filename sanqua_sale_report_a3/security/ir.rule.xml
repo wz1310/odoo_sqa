@@ -1,0 +1,17 @@
+<odoo>
+
+    <record id="group_report_daily_customer" model="res.groups">
+        <field name="name">A3 - Report Daily Customer</field>
+    </record>
+
+
+    <record model="ir.rule" id="rule_model_report_daily_customer_global_user">
+        <field name="name">Rule Daily Customer Global User</field>
+        <field name="model_id" ref="model_report_daily_customer" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+    </record>
+</odoo>

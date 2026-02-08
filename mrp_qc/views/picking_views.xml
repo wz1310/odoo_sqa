@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="act_quality_wizard_mrp_qc" model="ir.actions.act_window">
+        <field name="name">Quality</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">quality.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="inward_quality.quality_wizard_view"/>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="stock_picking_type_form_view" model="ir.ui.view">
+        <field name="name">stock_picking_type_form_view</field>
+        <field name="model">stock.picking.type</field>
+        <field name="inherit_id" ref="stock.view_picking_type_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_location_dest_id']" position="after">
+        		<field name="finished_location_qc_id" options="{'no_create': True}"
+        			domain="[('usage', '=', 'internal')]"
+        			attrs="{'invisible': [('code', 'not in', ('mrp_operation'))]}"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="stock_picking_form_view" model="ir.ui.view">
+        <field name="name">stock_picking_form_view</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/field[@name='immediate_transfer']" position="after">
+            	<field name="finished_picking_qc" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='move_line_nosuggest_ids']" position="attributes">
+            	<attribute name="attrs">{'readonly': ['|', '|', '|', ('finished_picking_qc', '=', True), ('show_operations', '=', False), ('state', '=', 'cancel'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='move_line_ids_without_package']" position="attributes">
+            	<attribute name="attrs">{'readonly': ['|', '|', '|', ('finished_picking_qc', '=', True), ('show_operations', '=', False), ('state', '=', 'cancel'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']" position="attributes">
+            	<attribute name="attrs">{'readonly': ['|', ('finished_picking_qc', '=', True), '|', '&amp;', ('show_operations', '=', True), '|', ('is_locked', '=', True), ('state', '=', 'done'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']/tree/button[@name='action_show_details']" position="before">
+            	<field name="finished_picking_qc" invisible="1"/>
+            </xpath>
+            <!-- <xpath expr="//field[@name='move_ids_without_package']/tree/button[@name='action_show_details']" position="attributes">
+            	<attribute name="attrs">{'invisible': ['|', ('show_details_visible', '=', False), ('finished_picking_qc', '=', False)]}</attribute>
+            </xpath> -->
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="view_picking_inward_quality_inherit">
+        <field name="name">view_picking_inward_quality_inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="inward_quality.view_picking_quality_inherit"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='%(inward_quality.act_quality_wizard)d']" position="after">
+                <button name="%(mrp_qc.act_quality_wizard_mrp_qc)d" type="action" string="Quality Check"
+                    groups="inward_quality.group_quality_control" class="oe_highlight"
+                    attrs="{'invisible': ['|', ('state', 'in', ('done','cancel')), ('parent.finished_picking_qc', '!=', True)],'column_invisible': [('parent.finished_picking_qc', '!=', True)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="stock_quality_check_form_view" model="ir.ui.view">
+        <field name="name">stock_quality_check_form_view</field>
+        <field name="model">stock.quality.check</field>
+        <field name="inherit_id" ref="inward_quality.view_stock_quality_check_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+        		<attribute name="create">true</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="stock_quality_check_tree_view" model="ir.ui.view">
+        <field name="name">stock_quality_check_tree_view</field>
+        <field name="model">stock.quality.check</field>
+        <field name="inherit_id" ref="inward_quality.view_stock_quality_check_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+        		<attribute name="create">true</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

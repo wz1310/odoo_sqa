@@ -1,0 +1,28 @@
+<odoo>
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.view.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Deposito Galon" name="deposito_galon" attrs="{'invisible':['|', ('customer','=',False), ('state','!=','approved')]}">
+                    <field name="sale_truck_adjustment_ids">
+                        <tree>
+                            <field name="name" />
+                            <field name="partner_id" />
+                            <field name="qty"  sum="qty"/>
+                            <field name="debit_amount"  sum="debit_amount"/>
+                            <field name="credit_amount" sum="credit_amount"/>
+                            <field name="balance" sum="balance" optional="hide"/>
+                            <field name="date_deposito" />
+                            <field name="state" />
+                        </tree>
+                    </field>
+                    <group>
+                        <field name="deposito_amount"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

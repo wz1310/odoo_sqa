@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_e_tax_invoice_user,access_e_tax_invoice_user,model_etax_invoice,pci_efaktur_13.group_e_tax_user,1,1,0,0
+access_e_tax_series_user,access_e_tax_series_user,model_etax_series,pci_efaktur_13.group_e_tax_user,1,0,0,0
+access_reexport_efaktur,access_reexport_efaktur,model_reexport_efaktur,,1,1,1,1
+
+
+access_e_tax_invoice_manager,access_e_tax_invoice_manager,model_etax_invoice,pci_efaktur_13.group_e_tax_manager,1,1,1,1
+access_e_tax_series_manager,access_e_tax_series_manager,model_etax_series,pci_efaktur_13.group_e_tax_manager,1,1,1,1

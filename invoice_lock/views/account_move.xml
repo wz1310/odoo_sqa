@@ -1,0 +1,20 @@
+<odoo>
+    <record model="ir.ui.view" id="view_move_form_inherited">
+        <field name="name">View Move Form Inherited</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form" />
+        <field name="arch" type="xml">
+            <field name="invoice_origin" position="after">
+                <field name="locked" groups="base.group_system"/>
+            </field>
+            <header position="inside">
+                <button string="Lock" type="object" name="btn_lock" confirm="Lock?" class="oe_highlight" attrs="{'invisible':['|', ('locked','=',True), ('type','!=','out_invoice')]}" />
+                <button string="UnLock" type="object" name="btn_unlock" confirm="Unlock?" class="oe_highlight"  attrs="{'invisible':['|', ('locked','=',False), ('type','!=','out_invoice')]}" />
+            </header>
+
+            <button name="button_draft" position="attributes">
+                <attribute name="groups">account.group_account_manager,base.group_system</attribute>
+            </button>
+        </field>
+    </record>
+</odoo>

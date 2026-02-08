@@ -1,0 +1,140 @@
+.sh_odoo_web_consol_container{
+    width: 100%;
+    max-width: 1250px;
+    margin: auto;
+}
+.sh_odoo_web_console_help ul.sh_help{
+    margin: 0;
+    padding-left: 30px;
+}
+.sh_odoo_web_console_help ul.sh_help .span-c{
+    font-weight: bold;
+    color: #1bc47d;
+}
+.sh_odoo_web_console_help ul.sh_help > li:nth-child(2) .span-c{
+    color: #18a0fb;
+}
+.sh_odoo_web_console_help ul.sh_help[data-title] {
+    color: var(--primary);
+    font-weight: bold;
+}
+.sh_odoo_web_console_help ul.sh_help > li[data-title]:after {
+    content: attr(data-title);
+    display: inline-block;
+    padding-left: 5px;
+    font-weight: normal;
+    color: var(--black);
+}
+
+.sh_odoo_web_console_action_buttons {
+    text-align: center;
+}
+.sh_odoo_web_console_action_buttons .sh_run_button .btn {
+    padding: 1rem 3rem;
+    font-size: 2rem;
+    box-shadow: 1px 2px 4px 0px #464646;
+}
+
+.sh_odoo_web_console {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 0 45px 0;
+    font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+}
+.sh_odoo_web_console > div {
+    width: 100%;
+    max-width: 630px;
+    box-shadow: 1px 2px 6px 0px #464646;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.sh_odoo_web_console > div > div.sh_editor-content,
+.sh_odoo_web_console > div > div.sh_result-content{
+    width: 100%;
+    height: 515px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.sh_odoo_web_console .sh_editor{
+    background-color: #ffffff;
+    position: relative;
+}
+
+.sh_odoo_web_console .sh_editor > div{
+    position: relative;
+}
+.sh_odoo_web_console .sh_editor .sh_editor_buttons{
+    text-align: right;
+    height: 33px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 10px;
+}
+.sh_odoo_web_console .sh_editor .sh_editor_buttons:after{
+    content: "";
+    display: block;
+    width: var(--sh-number-width);
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #f0f0f0;
+    z-index: 1;
+}
+.sh_odoo_web_console .sh_editor .sh_editor_layer{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 0;
+    background: #ffffff;
+}
+.sh_odoo_web_console .sh_editor .sh_editor_layer:after {
+    content: "";
+    width: var(--sh-number-width);
+    height: 100px;
+    background: #f0f0f0;
+    position: absolute;
+    left: 0;
+    bottom: -10px;
+    z-index: -1;
+}
+.sh_odoo_web_console .sh_editor .sh_editor_layer .sh_editor-cell{
+    padding-right: 13px;
+    padding-left: 19px;
+    text-align: right;
+    background: #f0f0f0;
+    height: 14px;
+    width: var(--sh-number-width);
+}
+.sh_odoo_web_console .sh_result{
+    background-color: #1a2130;
+    color: #fff;
+    padding: 10px 10px 0 10px;
+    padding-top: 33px;
+}
+.sh_odoo_web_console .sh_result > tbody > tr > td {
+    padding: 10px 15px;
+}
+.sh_odoo_web_console .sh_result .o_field_text[name="result"]:after {
+    content: "|";
+    display: inline-block;
+    animation-name: blinker;
+    animation-iteration-count: infinite;
+    animation-duration: 1s;
+    font-weight: bold;
+    transform: scale(1.5);
+}
+@keyframes blinker {
+   from {
+      opacity: 1;
+   }
+   to {
+      opacity: 0;
+   }
+}

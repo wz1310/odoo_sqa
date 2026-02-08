@@ -1,0 +1,141 @@
+<odoo>
+
+  <record model="ir.ui.view" id="inherited_view_pr_tree">
+    <field name="name">Inherited View PR Tree</field>
+    <field name="model">purchase.request</field>
+    <field name="inherit_id" ref="purchase_request.purchase_request_view_tree" />
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='state']" position="after">
+        <field name="status_pr"/>
+      </xpath>
+        </field>
+  </record>
+  <record model="ir.ui.view" id="inherited_view_pr_form">
+    <field name="name">Inherited View PR Form</field>
+    <field name="model">purchase.request</field>
+    <field name="inherit_id" ref="purchase_request.purchase_request_view_form" />
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='line_ids']/tree//field[@name='qty']" position="after">
+        <field name="fpb_not" string="Notes" optional="hide"/>
+        <field name="fpb_uom" string="Uom" optional="hide"/>
+      </xpath>
+        <xpath expr="//button[@name='open_po_wizard']" position="attributes">
+            <attribute name="attrs">{'invisible':['|',('state','!=','approved'),('status_pr','in',('close','cancel'))]}</attribute>
+        </xpath>
+        <xpath expr="//field[@name='user_id']" position="after">
+          <field name="cek_close" readonly="True" invisible="1"/>
+        </xpath>
+        <xpath expr="//button[@name='btn_draft']" position="attributes">
+            <attribute name="attrs">{'invisible':[('state','not in',['rejected']),('status_pr','not in',['cancel'])]}</attribute>
+        </xpath>
+        <xpath expr="//form/sheet/div[hasclass('oe_button_box')]" position="after">
+            <widget name="web_ribbon" text="Close" bg_color="bg-danger" attrs="{'invisible': [('status_pr','!=','close')]}"/>
+            <widget name="web_ribbon" text="Cancel" bg_color="bg-danger" attrs="{'invisible': [('status_pr','!=','cancel')]}"/>
+        </xpath>
+        <xpath expr="//notebook" position="inside">
+            <page string="Close reason" attrs="{'invisible': [('status_pr','!=','close')]}">
+              <field name="close_reason" readonly="True"/>
+            </page>
+            <page string="Cancel detail" attrs="{'invisible': [('status_pr','!=','cancel')]}">
+              <field name="cancel_details" readonly="True"/>
+            </page>
+            <page string="Open detail" attrs="{'invisible': [('openpr_reason','=',False)]}">
+              <field name="openpr_reason" readonly="True"/>
+            </page>
+        </xpath>
+        <xpath expr="//button[@name='open_po_wizard']" position="after">
+          <button name="bton_cancel" type="object" string="Cancel" attrs="{'invisible': ['|',('state','in',('draft','waiting_approval')),('status_pr','=','cancel')]}"></button>
+          <button name="btn_openpr" type="object" string="Open PR" attrs="{'invisible': ['|',('state','in',('draft','waiting_approval')),('status_pr','!=','close')]}"></button>
+        </xpath>
+        <xpath expr="//notebook/page/field[@name='line_ids']" position="attributes">
+          <attribute name="attrs">{'readonly':[('status_pr','=','close')]}</attribute>
+        </xpath>
+        <!-- <xpath expr="//field[@name='purchase_order_type']" position="after">
+          <field name="whs" options="{'no_create': True, 'no_open': True}"/>
+        </xpath> -->
+        </field>
+  </record>
+
+  <record id="close_wizard_view_form" model="ir.ui.view">
+        <field name="name">close.wizard.form</field>
+        <field name="model">close.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Close Reason">
+                <sheet>
+                <group>
+                    <field name="close_reason"/>
+                </group>
+                <footer>
+                    <button name="my_reason" type="object" string="OK" class="oe_highlight"/>
+                    <button string="CANCEL" special="cancel"/>
+                </footer>
+            </sheet>
+            </form>
+        </field>
+    </record>
+
+  <record id="cancel_wizards_view_form" model="ir.ui.view">
+        <field name="name">cancel.wizards.form</field>
+        <field name="model">cancel.wizards</field>
+        <field name="arch" type="xml">
+            <form string="Cancel Reason">
+                <sheet>
+                <group>
+                    <field name="cancel_details"/>
+                </group>
+                <footer>
+                    <button name="btn_cancel_detail" type="object" string="OK" class="oe_highlight"/>
+                    <button string="CANCEL" special="cancel"/>
+                </footer>
+            </sheet>
+            </form>
+        </field>
+    </record>
+
+  <record id="openpr_wizards_view_form" model="ir.ui.view">
+        <field name="name">openpr.wizards.form</field>
+        <field name="model">openpr.wizards</field>
+        <field name="arch" type="xml">
+            <form string="Cancel Reason">
+                <sheet>
+                <group>
+                    <field name="openpr_reason"/>
+                </group>
+                <footer>
+                    <button name="btn_openpr_detail" type="object" string="OK" class="oe_highlight"/>
+                    <button string="CANCEL" special="cancel"/>
+                </footer>
+            </sheet>
+            </form>
+        </field>
+    </record>
+  <!-- <xpath expr="//page[@name='page_overdue']//field[@name='overdue_invoice_ids']" position="attributes">
+    <attribute name="attrs">{'invisible': [('call_ovdue','=', True)]}</attribute>
+    <attribute name="class">oe_read_only</attribute>
+  </xpath> -->
+
+  <!-- <record model="ir.ui.view" id="inherited_view_order_form_acc_move_com">
+    <field name="name">Inherited View Order Form Account Move Commercial</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_invoice_tree" />
+    <field name="arch" type="xml">
+
+      <xpath expr="//field[@name='ref']" position="after">
+        <field name="invoice_date" optional="show" string="Invoice date"/>
+        <field name="pick_method" optional="show" string="Picking method"/>
+      </xpath>
+    </field>
+  </record> -->
+
+  <!-- <record model="ir.ui.view" id="inherited_view_order_form_acc_move_btn">
+    <field name="name">Inherited View Order Form Button Account Move</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_move_form" />
+    <field name="arch" type="xml">
+
+      <xpath expr="//button[@name='button_draft']" position="attributes">
+        <attribute name="groups">account.group_account_manager,base.group_system, account.group_account_invoice,account.group_account_user</attribute>
+      </xpath>
+    </field>
+  </record> -->
+</odoo>

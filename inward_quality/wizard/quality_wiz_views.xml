@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record id="quality_wizard_view" model="ir.ui.view">
+            <field name="name">Quality Wizard</field>
+            <field name="model">quality.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Quality Check">
+                    <group>
+                        <group>
+                            <field name="picking_id" invisible="1"/>
+                            <field name="product_id" readonly="1"/>
+                            <label for="product_qty" />
+                            <div class="o_row">
+                                <field name="product_qty" readonly="1"/>
+                                <field name="product_uom_id" readonly="1" groups="uom.group_uom"/>
+                            </div>
+                            <field name="pass_qty"/>
+                            <field name="fail_qty" invisible="1"/>
+                            <field name="fail_qty_fake"/>
+						</group>
+						<field name="quality_line_ids">
+							<tree create="false" editable="bottom" delete="false">
+								<field name="quality_id" invisible="1"/>
+								<field name="move_line_id" invisible="1"/>
+								<field name="lot_id" readonly="1"/>
+                                <field name="lot_name" readonly="1"/>
+								<field name="qty_done" string="Quantity" readonly="1"/>
+								<field name="fail_qty"/>
+							</tree>
+						</field>
+                        <group>
+                            <field name="fail_reason" invisible="1"/>
+                            <field name="reason_qc_picking_id"/>
+                            <field name="notes_qc_picking"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="do_quality_check" type="object" string="Confirm" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="act_quality_wizard" model="ir.actions.act_window">
+            <field name="name">Quality</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">quality.wizard</field>
+            
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="inward_quality.quality_wizard_view"/>
+            <field name="context">{}</field>
+            <field name="target">new</field>
+        </record>
+</odoo>

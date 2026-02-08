@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="oc_wim_plant_report_tree" model="ir.ui.view">
+        <field name="name">oc.wim.plant.report.tree</field>
+        <field name="model">oc.wim.plant.report</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="plant_id"/>
+                <field name="order_pickup_method_id" optional="hide"/>
+                <field name="license_plate" />
+                <field name="fleet_model_name"/>
+                <field name="carrier_type"/>
+                <field name="priority" optional="hide"/>
+                <field name="customer_code" optional="hide"/>
+                <field name="region_group" optional="hide"/>
+                <field name="region_master" optional="hide"/>
+                <field name="region" optional="hide"/>
+                <field name="customer_name"/>
+                <field name="sales_name" />
+                <field name="downline_name"/>
+                <field name="destination" optional="hide"/>
+                <field name="so_no" />
+                <field name="sj_no" optional="hide"/>
+                <field name="so_sale_order_mix"/>
+                <field name="create_date"/>
+                <field name="commitment_date_mask"/>
+                <field name="notes" optional="hide"/>
+
+                <field name="product_1"/>
+                <field name="product_2"/>
+                <field name="product_3"/>
+                <field name="product_4"/>
+                <field name="product_5"/>
+                <field name="product_6"/>
+                <field name="product_7"/>
+                <field name="product_8"/>
+                <field name="product_9"/>
+                <field name="product_10"/>
+
+                <field name="product_11"/>
+                <field name="product_12"/>
+                <field name="product_13"/>
+                <field name="product_14"/>
+                <field name="product_15"/>
+                <field name="product_16"/>
+                <field name="product_17"/>
+                <field name="product_18"/>
+
+                <field name="product_19"/>
+                <field name="product_20" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="oc_wim_plant_report_search" model="ir.ui.view">
+        <field name="name">oc.wim.plant.report.search</field>
+        <field name="model">oc.wim.plant.report</field>
+        <field name="arch" type="xml">
+            <search string="OC Search">
+                <field name="plant_id"/>
+                <field name="license_plate" />
+                <field name="fleet_model_name"/>
+                <field name="customer_code" optional="hide"/>
+                <field name="region_group" optional="hide"/>
+                <field name="region_master" optional="hide"/>
+                <field name="region" optional="hide"/>
+                <field name="customer_name"/>
+                <field name="sales_name" />
+                <field name="downline_name"/>
+                <field name="so_no"/>
+                <field name="sj_no"/>
+                <field name="so_sale_order_mix"/>
+                <field name="create_date"/>
+                <field name="commitment_date_mask"/>
+                <!--filter string="Filter for Logistic" name="oc_wim_filter_logistic" domain="[('license_plate', '!=', '')]" />
+                <filter string="Filter for Expedition" name="oc_wim_filter_expedition" domain="[('license_plate', '=', False)]" /-->
+                <filter string="Delivery" name="oc_wim_plant_filter_pickup_method_delivery" domain="[('order_pickup_method_id', '=', 'Deliver')]" />
+                <filter string="Take in Plant" name="oc_wim_plant_filter_pickup_method_take_in_plant" domain="[('carrier_type', '=', 'Take in Plant')]" />
+            </search>
+        </field>
+    </record>
+
+    <record id="action_oc_wim_plant_report" model="ir.actions.act_window">
+        <field name="name">OC</field>
+        <field name="res_model">oc.wim.plant.report</field>
+        <field name="view_mode">tree</field>
+        <field name="context">{'search_default_oc_wim_plant_filter_pickup_method_delivery': 1}</field>
+    </record>
+
+    <menuitem id="menu_oc_wim_plant_report"
+                  name="OC"
+                  action="action_oc_wim_plant_report"
+                  parent="stock.menu_warehouse_report"
+                  sequence="156"/>
+</odoo>

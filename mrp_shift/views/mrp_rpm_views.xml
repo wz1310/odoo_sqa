@@ -1,0 +1,100 @@
+<odoo>
+    <record id="mrp_rpm_view_form" model="ir.ui.view">
+        <field name="name">mrp.rpm.view.form</field>
+        <field name="model">mrp.rpm</field>
+        <field name="arch" type="xml">
+            <form string="Rencana Pembelian Material">
+                <header>
+                    <button name="create_pr" type="object" states="approved" string="Create Purchase Request" class="oe_highlight" id="create_pr"/>
+                    <button name="button_confirm" type="object" states="draft" string="Confirm" class="oe_highlight" id="confirm"/>
+                    <button name="button_approve" type="object" attrs="{'invisible':['|',('user_can_approve','=',False), ('state','not in', ['waiting_approval'])]}" string="Approve" class="oe_highlight" id="approve"/>
+                    <button name="open_reject_message_wizard" type="object" attrs="{'invisible':['|',('user_can_approve','=',False), ('state','not in', ['waiting_approval'])]}" string="Reject" class="oe_highlight" id="reject"/>
+                    <button name="button_set_draft" type="object" states="reject,cancel" string="Set to Draft" class="oe_highlight" id="set_draft"/>
+                    <button name="button_done" type="object" states="approved" string="Set to Done" class="oe_highlight" id="done"/>
+					<field name="state" widget="statusbar" statusbar_visible="draft,waiting_approval,approved,done" readonly="1"/>
+				</header>
+				<sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" name="action_view_pr" class="oe_stat_button" icon="fa-truck">
+                            <field name="pr_count" widget="statinfo" string="Purchase Request"/>
+                        </button>
+                        <button type="object" name="action_view_receipt" class="oe_stat_button" icon="fa-list-alt">
+                            <field name="picking_count" widget="statinfo" string="Receipt"/>
+                        </button>
+                    </div>
+					<div class="oe_title">
+						<h1>
+							<field name="name" required="1" readonly="1" force_save="1"/>
+						</h1>
+					</div>
+					<group>
+						<group>
+                            <field name="pr_ids" invisible="1"/>
+							<field name="rph_id" readonly="0" force_save="1" options="{'no_quick_create':True, 'no_create_edit':True, 'no_create': True}"/>
+                            <field name="pbbh_id" readonly="0" force_save="1" domain="[('rph_id', '=', rph_id)]" options="{'no_quick_create':True, 'no_create_edit':True, 'no_create': True}"/>
+							<field name="product_id" string="SKU" readonly="0" force_save="1" options="{'no_quick_create':True, 'no_create_edit':True, 'no_create': True}"/>
+							<field name="material_id" readonly="0" force_save="1" options="{'no_quick_create':True, 'no_create_edit':True, 'no_create': True}"/>
+							<field name="company_id" options="{'no_quick_create':True, 'no_create_edit':True, 'no_create': True}"/>
+						</group>
+                        <group>
+							<field name="date_start"/>
+							<field name="date_end"/>
+						</group>
+					</group>
+                    <group>
+						<group>
+						</group>
+                        <group>
+							<field name="qty"/>
+                            <field name="product_uom" options="{'no_quick_create':True, 'no_create_edit':True, 'no_create': True}"/>
+						</group>
+					</group>
+                    <notebook>
+                        <page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" invisible="1"/>
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved"/></group>
+
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                        </page>
+					</notebook>
+				</sheet>
+                <div class="oe_chatter">
+				    <field name="message_follower_ids" widget="mail_followers"/>
+				    <field name="activity_ids" widget="mail_activity"/>
+				    <field name="message_ids" widget="mail_thread"/>
+				</div>
+            </form>
+        </field>
+    </record>
+
+    <record id="mrp_rpm_view_tree" model="ir.ui.view">
+        <field name="name">mrp.rpm.view.tree</field>
+        <field name="model">mrp.rpm</field>
+        <field name="arch" type="xml">
+            <tree string="Rencana Pembelian Material">
+                <field name="name"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="mrp_rpm_action" model="ir.actions.act_window">
+        <field name="name">Rencana Pembelian Material</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.rpm</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new Rencana Pembelian Material.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="rpm_menu"
+        name="Rencana Pembelian Material"
+        parent="mrp_mps.mrp_mps_menu_planning"
+        action="mrp_rpm_action"
+        sequence="4"/>
+</odoo>

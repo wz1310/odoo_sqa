@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record model="ir.rule" id="sale_order_per_warehouse">
+        <field name="name">Sales Order Per Warehouse</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="domain_force">['|', ('warehouse_id', '=', False), ('warehouse_id', 'in', user.warehouse_ids.ids)]</field>
+    </record>
+    <record model="ir.rule" id="sale_order_line_per_warehouse">
+        <field name="name">Sales Order Line Per Warehouse</field>
+        <field name="model_id" ref="sale.model_sale_order_line"/>
+        <field name="domain_force">['|', ('order_id.warehouse_id', '=', False), ('order_id.warehouse_id', 'in', user.warehouse_ids.ids)]</field>
+    </record>
+    <record model="ir.rule" id="stock_warehouse_branch_rule">
+        <field name="name">Sales Team</field>
+        <field name="model_id" ref="sales_team.model_crm_team"/>
+        <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+        <field name="domain_force">[('id', 'in', user.sale_team_ids.ids)]</field>
+        <field name="active" eval="False"/>
+    </record>
+    <record model="ir.rule" id="stock_warehouse_branch_admin_rule">
+        <field name="name">Sales Team</field>
+        <field name="model_id" ref="sales_team.model_crm_team"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+    </record>
+    <record id="account_invoice_personal_rule" model="ir.rule">
+        <field name="name">Personal Invoice Orders</field>
+        <field ref="account.model_account_move" name="model_id"/>
+        <field name="domain_force">['|',('user_id','=',user.id),('user_id','=',False)]</field>
+        <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+    </record>
+    <record id="account_invoice_see_all" model="ir.rule">
+        <field name="name">All Invoice Orders</field>
+        <field ref="account.model_account_move" name="model_id"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman_all_leads'))]"/>
+    </record>
+</odoo>

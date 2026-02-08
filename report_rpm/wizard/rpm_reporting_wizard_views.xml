@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="rpm_reporting_wizard_form_view" model="ir.ui.view">
+        <field name="name">rpm.reporting.wizard.form.view</field>
+        <field name="model">rpm.reporting.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Pending Purhcase">
+                <sheet>
+                    <field name="data_x" invisible='1' />
+                    <group>
+                        <field name="start_date" required="1"/>
+                        <field name="end_date" required="1"/>
+                        <p>This Action will Create XLS Report for "Rencana Pembelian Material".</p>
+                    </group>
+                </sheet>
+                <footer>
+		            <button name="procceed" string="Continue" type="object" class="oe_highlight"/>
+		            <button special="cancel" string="Close"/>
+		        </footer>
+			</form>
+        </field>
+    </record>
+
+     <record model="ir.actions.act_window" id="action_rpm_reporting">
+        <field name="name">Rencana Pembelian Material</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">rpm.reporting.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_rpm_reporting"
+              name="Rencana Pembelian Material"
+              action="action_rpm_reporting"
+              sequence="1"
+              parent="mrp.menu_mrp_reporting"/>
+
+    <!-- <record id="rpm_reporting_tree_view" model="ir.ui.view">
+        <field name="name">mrp.rpm.line.raw.material.tree.view</field>
+        <field name="model">mrp.rpm.line.raw.material</field>
+        <field name="arch" type="xml">
+            <tree string="Rencana Pembelian Material">
+                <field name="line_id"/>
+                <field name="product_id"/>
+                <field name="uom_id"/>
+                <field name="qty_bom"/>
+                <field name="qty_on_hand"/>
+                <field name="qty_outstanding_po"/>
+                <field name="tolerance"/>
+                <field name="qty_request"/>
+                <field name="qty_to_pr"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_rpm_reporting">
+        <field name="name">Rencana Pembelian Material</field>
+        <field name="res_model">mrp.rpm.line.raw.material</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="rpm_reporting_tree_view"/>
+    </record>
+
+    <menuitem id="menu_rpm_reporting"
+              name="Rencana Pembelian Material"
+              action="action_rpm_reporting"
+              sequence="1"
+              parent="mrp.menu_mrp_reporting"/> -->
+</odoo>

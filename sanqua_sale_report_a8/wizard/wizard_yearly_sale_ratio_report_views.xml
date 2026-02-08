@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="yearly_sale_ratio_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">yearly.sale.ratio.report.wizard.view.form</field>
+        <field name="model">yearly.sale.ratio.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Yearly Sale Ratio">
+                <sheet>
+                    <group>
+                        <group>
+                            <label for="start_year"/>
+                            <div class="d-flex">
+                                <field name="start_year"/>
+                                <span class="o_form_label mx-3"> to </span>
+                                <field name="end_year"/>
+                            </div>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="btn_confirm" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_yearly_sale_ratio_report_wizard" model="ir.actions.act_window">
+        <field name="name">A8 - Yearly Sale Ratio Report Wizard</field>
+        <field name="res_model">yearly.sale.ratio.report.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_yearly_sale_ratio_report_wizard"
+            name="A8 - Yearly Sale Ratio Report"
+            action="action_yearly_sale_ratio_report_wizard"
+            parent="sale.menu_sale_report"
+            groups="group_yearly_sale_ratio_report"  sequence="117"/>
+
+</odoo>

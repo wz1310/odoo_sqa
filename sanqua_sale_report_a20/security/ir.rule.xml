@@ -1,0 +1,6 @@
+<odoo>
+    
+    <record id="group_wizard_statistic_customer_report" model="res.groups">
+        <field name="name">A20 - Statistic Customer Report</field>
+    </record>
+</odoo>

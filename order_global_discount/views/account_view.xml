@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="invoice_supplier_form" model="ir.ui.view">
+		<field name="name">account.invoice.supplier.form.discount</field>
+		<field name="model">account.move</field>
+		<field name="inherit_id" ref="account.view_move_form"/>
+		<field name="arch" type="xml">
+			<!-- <field name="amount_untaxed" position="before">
+				<field name="global_discount" attrs="{'readonly': [('state', 'in', ('paid' ,'cancel'))]}" />
+				<field name="amount_global_discount" attrs="{'readonly': [('state', 'in', ('paid' ,'cancel'))]}" />
+			</field> -->
+			<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='product_uom_id']" position="after">
+				<field name="amount_discount" invisible="1"/>
+			</xpath>
+			<xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='multi_discounts']" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+		</field>
+	</record>
+</odoo>

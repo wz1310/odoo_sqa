@@ -1,0 +1,1 @@
+from .import detail_customer_invoice

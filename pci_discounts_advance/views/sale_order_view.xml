@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Sales -->
+        <record id="view_order_form_discount" model="ir.ui.view">
+            <field name="name">sale.order.form.discount</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='order_line']/tree/field[@name='tax_id']" position="before">
+                    <field name="discount_fixed_line" force_save="1"/>
+                    <field name="multi_discounts" placeholder="55+20+10" force_save="1" invisible="1"/>
+                    <field name="display_discount" force_save="1" invisible="1"/>
+            	</xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='discount']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+            	</xpath>
+	        	<xpath expr="//field[@name='order_line']/form/group/group/field[@name='price_subtotal']" position="after">
+			        <field name="discount_fixed_line" force_save="1"/>
+			        <field name="multi_discounts" force_save="1" invisible="1"/>
+	            </xpath>
+            </field>
+        </record>
+        <!-- Read Discount User-->
+        <record id="view_order_form_discount_readonly" model="ir.ui.view">
+	        <field name="name">sale.order.form.discount.readonly</field>
+	        <field name="model">sale.order</field>
+	        <field name="inherit_id" ref="pci_discounts_advance.view_order_form_discount"/>
+	        <field name="groups_id" eval="[(4, ref('pci_discounts_advance.group_discount_readonly'))]"/>
+	        <field name="arch" type="xml">
+	        	<xpath expr="//field[@name='order_line']/tree/field[@name='discount_fixed_line']" position="attributes">
+	        		<attribute name="readonly">True</attribute>
+	        	</xpath>
+	        	<xpath expr="//field[@name='order_line']/tree/field[@name='multi_discounts']" position="attributes">
+	        		<attribute name="readonly">True</attribute>
+	        	</xpath>
+	        	<xpath expr="//field[@name='order_line']/form/group/group/field[@name='discount_fixed_line']" position="attributes">
+	        		<attribute name="readonly">True</attribute>
+	            </xpath>
+	            <xpath expr="//field[@name='order_line']/form/group/group/field[@name='multi_discounts']" position="attributes">
+	        		<attribute name="readonly">True</attribute>
+	            </xpath>
+	        </field>
+	    </record>
+    </data>
+</odoo>

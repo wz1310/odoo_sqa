@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="performa_salesman_report_pivot" model="ir.ui.view">
+         <field name="name">report.performa.salesman.pivot</field>
+         <field name="model">report.performa.salesman</field>
+         <field name="arch" type="xml">
+             <pivot string="Performa Salesman Report" disable_linking="True">
+                <field name="product_id" type="row"/>
+                <field name="user_id" type="col"/>
+                <field name="qty_realisasi" type="measure"/>
+                <field name="qty_target" type="measure"/>
+                <field name="persentase" type="measure"/>
+                <field name="biaya" type="measure"/>
+             </pivot>
+         </field>
+    </record>
+
+
+    <record id="performa_salesman_report_search" model="ir.ui.view">
+        <field name="name">report.performa.salesman.view</field>
+        <field name="model">report.performa.salesman</field>
+        <field name="arch" type="xml">
+            <search string="performa salesman Report">
+                <field name="product_id"/>
+                <field name="user_id"/>
+            </search>
+        </field>
+    </record>
+</odoo>

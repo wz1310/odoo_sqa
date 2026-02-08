@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mis_summary_budget_user,access_mis_summary_budget,model_mis_summary_budget,base.group_user,1,1,1,1
+access_mis_sku_user,access_mis_sku,model_mis_sku,base.group_user,1,1,1,1
+access_mis_group_sku_user,access_mis_group_sku,model_mis_grouping_sku,base.group_user,1,1,1,1
+access_mis_group_bp_user,access_mis_group_bp,model_mis_grouping_bp,base.group_user,1,1,1,1

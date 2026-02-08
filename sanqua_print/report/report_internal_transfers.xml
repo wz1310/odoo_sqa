@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_internal_transfers_document">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div class="row">
+                        <table style="width: 100%;border-bottom: solid 2px black;">
+                            <tr>
+                                <!-- <td rowspan="2" style="width: 10%;">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                                </td> -->
+                                <td rowspan="1" style="font-size: 12px; width: 70%;">
+                                    <span style="font-size: 14px;" t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["adress", "name", "phone"], "no_marker": true}'/>
+                                    <!-- <span t-field="o.company_id.partner_id.street"/><br/>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Telp. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Fax. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.vat">
+                                        NPWP. <span t-field="o.company_id.partner_id.vat"/> 
+                                    </t> -->
+                                </td>
+                                <td style="width: 30%;">
+                                    <t t-if="o.state not in ['purchase','done']">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            <t t-esc="dict(o._fields['state'].selection).get(o.state)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <!-- <t t-if="o.company_id.iso_purchase_order"> -->
+                                        <span class="text-left" style="font-size: 10px;">
+                                            Doc. No. : <t t-esc="o.company_id.iso_receive_order"/><br/>
+                                        </span>
+                                    <!-- </t> -->
+                                </td>
+                                <td>
+                                    <h4  class="text-center" >
+                                    Item Transfer</h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="text-danger" t-if="not o.date_done">CANT PRINT BEFORE CONFIRM!</div>
+                <div class="page" style="font-size: 11px;" t-if="o.date_done">
+                
+                    <style>
+                        .table th,
+                        .table td {
+                            padding: 2px;
+                        }
+                        .th-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            text-align:center;
+                        }
+                        .th-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: none !important;
+                            border-right: none !important;
+                            text-align:center;
+                        }
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    
+                    <div class="row">
+                        <table class="table" style="width:100%;">
+                            <tr>
+                                <td class="no-border" style="width:15%;">Date</td>
+                                <td class="no-border" style="width:1%;">:</td>
+                                <td class="no-border" style="width:34%;"><span t-esc="o.get_format_datetime(datetime_value=o.date_done,only_date=True)"/></td>
+                                <td class="no-border" style="width:50%;">Description</td>
+                            </tr>
+                            <tr>
+                                <td class="no-border" style="width:15%;">Transfer No.</td>
+                                <td class="no-border" style="width:1%;">:</td>
+                                <td class="no-border" style="width:34%;"><span t-field="o.name"/></td>
+                                <td class="no-border" rowspan="3">
+                                    <t t-if="o.note">
+                                        <span t-field="o.note"/><br/>
+                                    </t>
+                                    <t t-if="o.internal_sale_notes">
+                                        <span t-field="o.internal_sale_notes"/>
+                                    </t>
+                                    <t t-if="not o.note and not o.internal_sale_notes">
+                                        <span><![CDATA[&nbsp;]]></span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="no-border" style="width:15%;">Transfer From</td>
+                                <td class="no-border" style="width:1%;">:</td>
+                                <td class="no-border" style="width:34%;"><span t-field="o.location_id"/></td>
+                            </tr>
+                            <tr>
+                                <td class="no-border" style="width:15%;">Transfer To</td>
+                                <td class="no-border" style="width:1%;">:</td>
+                                <td class="no-border" style="width:34%;"><span t-field="o.location_dest_id"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <table class="table" style="width: 100%;border:1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 5%;">
+                                        No.
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Item
+                                    </th>
+                                    <th class="th-0" style="width: 60%;">
+                                        Item Description
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Quantity
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Unit
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-foreach="o.move_line_ids" t-as="line">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="idx"/> .
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            [<span t-field="line.product_id.default_code"/>]
+                                        </td>
+                                        <td class="td-4">
+                                            <span t-field="line.product_id.name"/>
+                                        </td>
+                                        <td class="td-4 text-right">
+                                            <span t-field="line.qty_done"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-field="line.product_uom_id"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="footer-report" style="font-size: 11px;">
+                    <style>
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                        tr { 
+                            page-break-inside:avoid; 
+                            page-break-after:auto 
+                        }
+                    </style>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td class="text-center">Prepare By</td>
+                            <td class="text-center">Transfer BY</td>
+                            <td class="text-center">Approved By</td>
+                            <td class="text-center">Received By</td>
+                            <td class="text-right"></td>
+                        </tr>
+                        <tr style="height: 40px;">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center"> (.................................) </td>
+                            <td class="text-center"> (.................................) </td>
+                            <td class="text-center"> (.................................) </td>
+                            <td class="text-center"> (.................................) </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="footer" style="font-size: 11px;">
+                    <div style="float:left;">
+                        Page: <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+    
+    <!-- <template id="report_internal_transfers">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <!-- <t t-set="lang" t-value="o.invoice_user_id.lang if o.type in ('in_invoice', 'in_refund') else o.partner_id.lang"/> -->
+                <t t-if="o.picking_type_code in ('internal')">
+                    <t t-call="sanqua_print.report_internal_transfers_document" t-lang="o.partner_id.lang"/>
+                </t>
+            </t>
+        </t>
+    </template> -->
+
+</odoo>

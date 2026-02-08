@@ -1,0 +1,20 @@
+<odoo>
+    <record model="ir.ui.view" id="collection_activity_views_inherited">
+        <field name="name">collection.activity.views.inherited</field>
+        <field name="model">collection.activity</field>
+        <field name="inherit_id" ref="invoice_collection.collection_activity_view_form" />
+        <field name="arch" type="xml">
+        
+            <xpath expr="//sheet//h2" position="before">
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" type="object" name="open_settlement" icon="fa-bars">
+                        <field string="Settlement Request" name="settlement_ids_count" widget="statinfo"/>
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//header/button[last()]" position="after">
+                <button string="Transfer" type="object" name="open_settlement_request_form" states="done" class="oe_highlight" groups="settlement_request.group_settlement_user" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

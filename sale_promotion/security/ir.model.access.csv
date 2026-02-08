@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sale_order_promotion_approver,access.sale.order.promotion.approver,model_sale_order_promotion,sale_promotion.group_sale_order_promotion_approver,1,1,0,0
+access_sale_order_promotion_line_approver,access.sale.order.promotion.line.approver,model_sale_order_promotion_line,sale_promotion.group_sale_order_promotion_approver,1,1,0,0
+access_sale_order_promotion_user,access.sale.order.promotion.user,model_sale_order_promotion,sale_promotion.group_sale_order_promotion_user,1,1,1,1
+access_sale_order_promotion_manager,access.sale.order.promotion.manager,model_sale_order_promotion,sale_promotion.group_sale_order_promotion_manager,1,1,1,1
+access_sale_order_promotion_line_user,access.sale.order.promotion.line.user,model_sale_order_promotion_line,sale_promotion.group_sale_order_promotion_user,1,1,1,1
+access_sale_order_promotion_line_manager,access.sale.order.promotion.line.manager,model_sale_order_promotion_line,sale_promotion.group_sale_order_promotion_manager,1,1,1,1

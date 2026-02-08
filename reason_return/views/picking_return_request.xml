@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo> 
+    <record model="ir.ui.view" id="picking_return_request_tree_view">
+        <field name="name">picking.return.request.tree.view</field>
+        <field name="model">picking.return.request</field>
+        <field name="arch" type="xml">
+            <tree string="Tree Return Barang" decoration-success="state=='approved'" decoration-muted="state=='rejected'">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="company_id"/>
+                <field name="partner_id"/>
+                <field name="team_id"/>
+                <field name="sale_id"/>
+                <field name="picking_id"/>
+                <field name="total_qty_return"/>
+                <field name="return_type"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="picking_return_request_form_view">
+        <field name="name">picking.return.request.form.view</field>
+        <field name="model">picking.return.request</field>
+        <field name="arch" type="xml">
+            <form string="Form Return Barang">
+                <header>
+                    <button name="btn_submit" states="draft" type="object" string="Submit" class="btn-primary" />
+                    <button name="btn_draft" type="object" string="Set to Draft" />
+                    <button name="btn_reject" type="object" string="Reject"  attrs="{'invisible':['|',('state','not in',['needapproval','need approval']),('user_can_approve','=',False)]}"/>
+                    <button name="btn_approve" type="object" string="Approve"  class="btn-primary" attrs="{'invisible':['|',('state','not in',['needapproval','need approval']),('user_can_approve','=',False)]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,needapproval,approved" />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                                <field name="user_id" attrs="{'readonly':[('state','not in',['draft'])]}" options="{'no_create':True}"/>
+                                <field name="sale_id" attrs="{'readonly':[('state','not in',['draft'])]}" options="{'no_create':True}"/>
+                                <field name="partner_id" attrs="{'readonly':[('state','not in',['draft'])]}" options="{'no_create':True}"/>
+                                <field name="sale_company_id" invisible="0" options="{'no_create':True}"/>
+                                <field name="company_id" attrs="{'readonly':[('state','not in',['draft'])]}" options="{'no_create':True}"/>
+                                <field name="team_id" attrs="{'readonly':[('state','not in',['draft'])]}" options="{'no_create':True}"/>
+                                <field name="picking_id" attrs="{'readonly':[('state','not in',['draft'])]}" options="{'no_create':True}"/>
+                                <field name="line_ids" context="{'allowed_company_ids':[sale_company_id],'force_company':sale_company_id}" attrs="{'readonly':[('state','not in',['draft'])]}" invisible="1" widget="many2many_tags"/>
+                            </group>
+                            <group>
+                                <field name="return_type" attrs="{'readonly':[('state','not in',['draft'])]}" />
+                                <!-- <field name="date_order" nolabel="1" groups="base.group_no_one" attrs="{'invisible': [('state', 'in', ['needapproval', 'approved', 'rejected'])]}"/> -->
+                                <field name="return_picking_id" attrs="{'invisible':[('return_picking_id','=',False)]}" />
+                                <field name="total_qty_return"/>
+                            </group>
+                    </group>
+                    <group>
+                        <field name="reason" attrs="{'readonly':[('state','not in',['draft'])]}" />
+                    </group>
+                    <notebook>
+                        <page id="page_item_return" string="Detailed Operations">
+                            <field name="item_ids" attrs="{'readonly':[('state','not in',['draft'])]}">
+                                <tree editable="bottom">
+                                    <field name="request_id" invisible="1"/>
+                                    <field name="sale_line_id" domain="[('id', 'in', parent.line_ids)]" options="{'no_create':True}"/>
+                                    <field name="product_id" options="{'no_create':True}" />
+                                    <field name="lot_id" options="{'no_create':True}" />
+                                    <field name="delivered_qty" />
+                                    <field name="qty"/>
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="request_id" invisible="1"/>
+                                            <field name="sale_line_id" />
+                                            <field name="product_id" />
+                                            <field name="lot_id" />
+                                            <field name="delivered_qty" />
+                                            <field name="qty"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page id="page_approval" string="Approvals">
+                            
+                            <button string="Approve Matrix" type="object" name="test_approve_matrix" class="oe_highlight" attrs="{'invisible':[('user_can_approve','=',False)]}" />
+                            
+                            <field name="user_can_approve" invisible="0" />
+                            <field name="approval_ids"/>
+                            <group><field name="approved" /></group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!--<footer></footer>-->
+                
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_picking_return_request">
+        <field name="name">Return Request</field>
+        <field name="res_model">picking.return.request</field>
+        <field name='view_mode'>tree,form</field>
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('reason_return.picking_return_request_tree_view'), 'sequence':1}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('reason_return.picking_return_request_form_view'), 'sequence':2})
+                ]"/>
+    </record>
+
+    <menuitem action="action_picking_return_request" id="picking_return_request_menu" name="Return Request Form" sequence="11" groups="group_picking_return_request_user" parent="sale.sale_order_menu" />
+</odoo>

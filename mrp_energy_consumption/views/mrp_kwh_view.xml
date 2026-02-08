@@ -1,0 +1,77 @@
+<odoo>
+    <record id="mrp_kwh_view_form" model="ir.ui.view">
+        <field name="name">mrp.kwh.view.form</field>
+        <field name="model">mrp.kwh</field>
+        <field name="arch" type="xml">
+            <form string="KwH">
+                <header>
+                    <button name="btn_submit" type="object" states="draft" string="Submit" class="oe_highlight" id="submit"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submit" readonly="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" required="1" force_save="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="company_id" readonly="1"/>
+                        <field name="date" attrs="{'readonly':[('state','!=','draft')]}"/>
+                    </group>
+                    <notebook>
+                        <page string="KwH Usage">
+                            <group attrs="{'readonly':[('state','!=','draft')]}">
+                                <field name="lwbp" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="bwp" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="kvarh" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="kwh_terpakai_di_meteran_pln"/>
+                                <field name="lwbp_bwp"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mrp_kwh_view_tree" model="ir.ui.view">
+        <field name="name">mrp.kwh.view.tree</field>
+        <field name="model">mrp.kwh</field>
+        <field name="arch" type="xml">
+            <tree string="KwH">
+                <field name="company_id"/>
+                <field name="date"/>
+                <field name="lwbp"/>
+                <field name="bwp"/>
+                <field name="kvarh"/>
+                <field name="lwbp_bwp"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="mrp_kwh_action" model="ir.actions.act_window">
+        <field name="name">KwH</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.kwh</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new KwH.
+            </p>
+        </field>
+    </record>
+    
+
+    <menuitem id="mrp_energy_consumption"
+        name="Energy Consumption"
+        sequence="999"
+        parent="mrp.menu_mrp_manufacturing"/>
+
+
+    <menuitem
+        id="mrp_kwh"
+        name="KwH"
+        action="mrp_kwh_action"
+        sequence="1"
+        parent="mrp_energy_consumption"/>
+</odoo>

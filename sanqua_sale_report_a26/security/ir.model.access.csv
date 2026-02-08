@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_plant_summary_customer_report,access_plant_summary_customer_report,sale_enterprise.model_sale_report,sanqua_sale_report_a26.group_plant_summary_customer_report,1,0,0,0

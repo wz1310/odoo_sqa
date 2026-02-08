@@ -1,0 +1,70 @@
+<odoo>
+    <data>
+        <record id="etax_series_form_view" model="ir.ui.view">
+            <field name="name">etax.series.form.view</field>
+            <field name="model">etax.series</field>
+            <field name="arch" type="xml">
+            	<form string="E-Tax Series">
+                    <header>
+                        <button name="generate_number" type="object" string="Generate" class="btn-primary" attrs="{'invisible': [('next_avail_no', '!=',False)]}"/>
+                    </header>
+	                <sheet string="E-Tax Series">
+	                	<group>
+		                    <group>
+		                        <field name="register_date"/>
+								<field name="end_date"/>
+								<field name="next_avail_no" readonly="1"/>
+                                <field name="start_number"/>
+								<field name="end_number"/>
+		                    </group>
+		                    <group>
+		                    	<field name="state_number"/>
+								<field name="company_id"/>
+			                </group>
+		                </group>
+                        <notebook>
+                            <page id="faktur_tab" string="Faktur Number">
+                                <field name="line_ids" readonly="1">
+                                </field>
+                            </page>
+                        </notebook>
+	                </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+       	</record>
+
+    <record id="etax_series_tree_view" model="ir.ui.view">
+            <field name="name">etax.series.tree.view</field>
+            <field name="model">etax.series</field>
+            <field name="arch" type="xml">
+                <tree string="E-Tax Series">
+                    <field name="register_date"/>
+					<field name="end_date"/>
+					<field name="next_avail_no"/>
+                    <field name="start_number"/>
+					<field name="end_number"/>
+		            <field name="state_number"/>
+                </tree>
+            </field>
+        </record>
+
+    <record id="master_faktur_action" model="ir.actions.act_window">
+        <field name="name">E-Tax Series</field>
+        <field name="res_model">etax.series</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new E-Tax Series.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_etax_series" name="E-Tax Series"
+        parent="account.menu_finance_receivables"
+        action="master_faktur_action"/>
+    </data>
+</odoo>

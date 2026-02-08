@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="weekly_sale_ratio_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">weekly.sale.ratio.report.wizard.view.form</field>
+        <field name="model">weekly.sale.ratio.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Weekly Sale Ratio">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id" domain="[('state', '=', 'approved')]" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="user_id" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="month"/>
+                            <field name="year"/>
+                            <field name="factor_day_1" invisible="1"/>
+                            <field name="factor_day_2" invisible="1"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="btn_confirm" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_weekly_sale_ratio_report_wizard" model="ir.actions.act_window">
+        <field name="name">A6 - Weekly Sale Ratio Report Wizard</field>
+        <field name="res_model">weekly.sale.ratio.report.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_weekly_sale_ratio_report_wizard"
+            name="A6 - Weekly Sale Ratio Report"
+            action="action_weekly_sale_ratio_report_wizard"
+            parent="sale.menu_sale_report"
+            groups="sanqua_sale_report_a6.group_weekly_sale_ratio_report"  sequence="115"/>
+
+</odoo>

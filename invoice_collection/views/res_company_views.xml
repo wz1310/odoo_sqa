@@ -1,0 +1,50 @@
+<odoo>
+    <!-- Inherit view for res company -->
+    <record model="ir.ui.view" id="view_company_form_inherited">
+        <field name="name">View Company Form INherited</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <field name="website" position="after">
+                <field name="default_discount_support_journal_id"/>
+                <field name="default_discount_target_journal_id"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Inherit View for res config settings -->
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.account</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="40"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='invoicing_settings']" position="inside">
+                <div class="col-12 col-lg-6 o_setting_box">
+                    <div class="o_setting_left_pane"/>
+                    <div class="o_setting_right_pane">
+                        <span class="o_form_label">Discount Support Journal</span>
+                            <!-- <div class="text-muted">
+                                Default Incoterm of your company
+                            </div> -->
+                            <div class="text-muted">
+                                <field name="discount_support_journal_id"/>
+                            </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 o_setting_box">
+                    <div class="o_setting_left_pane"/>
+                    <div class="o_setting_right_pane">
+                        <span class="o_form_label">Discount Target Journal</span>
+                            <!-- <div class="text-muted">
+                                Default Incoterm of your company
+                            </div> -->
+                            <div class="text-muted">
+                                <field name="discount_target_journal_id"/>
+                            </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

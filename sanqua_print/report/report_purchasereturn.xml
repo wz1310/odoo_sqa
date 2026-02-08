@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_purchasereturns_document">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div class="row">
+                        <table style="width: 100%;border-bottom: solid 2px black;">
+                            <tr>
+                                <td rowspan="2" style="width: 10%;">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                                </td>
+                                <td rowspan="2" style="font-size: 12px; width: 60%;">
+                                    <span style="font-size: 14px;" t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["adress", "name", "phone"], "no_marker": true}'/>
+                                    <span t-field="o.company_id.partner_id.street"/>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Telp. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Fax. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.vat">
+                                        NPWP. <span t-field="o.company_id.partner_id.vat"/> 
+                                    </t>
+                                </td>
+                                <td style="width: 30%;">
+                                    <t t-if="o.company_id.iso_purchase_order">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            Doc. No. : <t t-esc="o.company_id.iso_purchase_order"/><br/>
+                                        </span>
+                                    </t>
+                                    <!-- <t t-if="o.state not in ['purchase','done']">
+                                         <span class="text-left" style="font-size: 10px;">
+                                            <t t-esc="dict(o._fields['state'].selection).get(o.state)"/>
+                                        </span>
+                                    </t> -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                   <span><![CDATA[&nbsp;]]></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="page" style="font-size: 11px;">
+                    <style>
+                        .table th,
+                        .table td {
+                            padding: 5px;
+                        }
+                        .th-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            text-align:center;
+                        }
+                        .td-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-5 {
+                            border-top: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            border-bottom: none !important;
+                        }
+                        .td-6 {
+                            border-top: none !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <div class="row">
+                        <div style="width:60%">
+                            <table class="table" style="width:100%;">
+                                <tr>
+                                    <td class="no-border" style="width:29%;">Tanggal</td>
+                                    <td class="no-border" style="width:1%;">:</td>
+                                    <td class="no-border" style="width:70%;"><span t-field="o.scheduled_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="no-border" style="width:29%;">Return No.</td>
+                                    <td class="no-border" style="width:1%;">:</td>
+                                    <td class="no-border" style="width:70%;"><span t-field="o.display_name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="no-border" style="width:29%;">No. Faktur / Terima</td>
+                                    <td class="no-border" style="width:1%;">:</td>
+                                    <td class="no-border" style="width:70%;"><span t-field="o.origin_returned_picking_id"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="width:40%;">
+                            <div> 
+                                <h6>Retur Pembelian</h6>
+                            </div>
+                            <div>
+                                Kepada Yth,<br/>
+                                <span t-field="o.partner_id"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <table class="table" style="width: 100%;border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 5%;">
+                                        No.
+                                    </th>
+                                    <th class="th-0" style="width: 70%;">
+                                        Keterangan
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Qty
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Satuan
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="total" t-value="0"/>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-foreach="o.move_ids_without_package" t-as="line">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="idx"/> .
+                                        </td>
+                                        <td class="td-4">
+                                            <span t-esc="line.name"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="o.get_format_currency(line.quantity_done)"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.product_uom.name"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                    <t t-set="total" t-value="total + line.quantity_done"/>
+                                </t>
+                                <t t-set="blank_space" t-value="5 - len(o.move_ids_without_package)"/>
+                                <t t-if="blank_space > 0">
+                                    <t t-set="blank_space" t-value="5 - len(o.move_ids_without_package)"/>
+                                </t>
+                                <t t-else="">
+                                    <t t-set="blank_space" t-value="0"/>
+                                </t>
+                                <t t-foreach="blank_space" t-as="a">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2" class="td-0 text-right">Total Qty</td>
+                                    <td class="td-0 text-center"><span t-esc="total"/></td>
+                                    <td class="td-0 text-center"><span><![CDATA[&nbsp;]]></span></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <table class="table" style="width: 100%; border: 1px solid black;">
+                            <tr>
+                                <td class="td-4" rowspan="4" style="width:40%">Keterangan:
+                                    <br />
+                                    <t t-if="o.note">
+                                        <span t-field="o.note"/><br/>
+                                    </t>
+                                    <t t-if="o.internal_sale_notes">
+                                        <span t-field="o.internal_sale_notes"/>
+                                    </t>
+                                    <t t-if="not o.note and not o.internal_sale_notes">
+                                        <span><![CDATA[&nbsp;]]></span>
+                                    </t>
+                                </td>
+                                <td class="td-0" colspan="3">*validasi disertai ttd &amp; nama jelas</td>
+                            </tr>
+                            <tr>
+                                <td class="td-0 text-center" style="width:30%">Hormat Kami</td>
+                                <td class="td-0 text-center" style="width:30%">Yang menerima</td>
+                            </tr>
+                            <tr>
+                                <td class="td-4 text-center" style="height:50px;"><span><![CDATA[&nbsp;]]></span></td>
+                                <td class="td-4 text-center"><span><![CDATA[&nbsp;]]></span></td>
+                            </tr>
+                            <tr>
+                                <td class="td-0 text-center">Gudang</td>
+                                <td class="td-0 text-center"><span><![CDATA[&nbsp;]]></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="footer" style="font-size: 11px;">
+                    <div style="float:left;">
+                        Page: <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    
+    <template id="report_purchasereturns">
+        <t t-call="web.html_container">
+            <t t-foreach="docs.mapped('picking_ids').filtered(lambda r:r.picking_type_code == 'outgoing')" t-as="o">
+                <t t-call="sanqua_print.report_purchasereturns_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_purchasereturns_picking">
+        <t t-call="web.html_container">
+            <t t-foreach="docs.filtered(lambda r:r.picking_type_code == 'outgoing' and r.origin_returned_picking_id)" t-as="o">
+                <t t-call="sanqua_print.report_purchasereturns_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

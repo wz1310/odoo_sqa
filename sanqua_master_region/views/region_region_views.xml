@@ -1,0 +1,58 @@
+<odoo>
+    <record id="region_region_view_form" model="ir.ui.view">
+        <field name="name">region.region.view.form</field>
+        <field name="model">region.region</field>
+        <field name="arch" type="xml">
+            <form string="Region">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="name"/>
+                            <field name="region_master_id"/>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="region_region_view_tree" model="ir.ui.view">
+        <field name="name">region.region.view.tree</field>
+        <field name="model">region.region</field>
+        <field name="arch" type="xml">
+            <tree string="Region">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="region_master_id"/>
+                <field name="company_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="region_region_action" model="ir.actions.act_window">
+        <field name="name">Region</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">region.region</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new Region.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="wilayah_menu"
+        name="Region"
+        parent="sale.menu_sale_config"
+        groups="base.group_user"
+        sequence="4"/>
+    <menuitem
+        id="menu_region_region"
+        name="Region"
+        action="region_region_action"
+        groups="base.group_user"
+        parent="wilayah_menu"/>
+</odoo>

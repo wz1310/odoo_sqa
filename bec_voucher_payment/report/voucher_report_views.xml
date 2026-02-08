@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<report string="Voucher Payment"
+			id="action_bec_voucher_payment" model="voucher.payment"
+			report_type="qweb-html"
+			name="bec_voucher_payment.report_bec_voucher_payment"
+			file="bec_voucher_payment.report_bec_voucher_payment"
+			print_report_name="
+			(object.state in ('draft') and 'Draft Bill -%s' %(object.partner_id.name) or
+			 'Payment Voucher - %s' % (object.name).replace('/',''))" />
+
+		<record id="action_bec_voucher_payment" model="ir.actions.report">
+			<field name="paperformat_id"
+				ref="bec_voucher_payment.paperformat_bec_voucher_payment" />
+		</record>
+
+	</data>
+</odoo>

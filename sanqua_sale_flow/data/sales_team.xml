@@ -1,0 +1,16 @@
+<odoo>
+	<record id="gallon_crm_team" model="crm.team">
+	    <field name="name">Gallon</field>
+	    <!-- <field name="company_id" ref="" /> -->
+	</record>
+
+	<record id="amdk_crm_team" model="crm.team">
+	    <field name="name">AMDK</field>
+	    <!-- <field name="company_id" ref="" /> -->
+	</record>
+
+	<record id="beverage_crm_team" model="crm.team">
+	    <field name="name">Beverage</field>
+	    <!-- <field name="company_id" ref="" /> -->
+	</record>
+</odoo>

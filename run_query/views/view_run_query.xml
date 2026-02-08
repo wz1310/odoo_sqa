@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <act_window id="action_run_query"
+        name="Run Query"
+        res_model="run.query"
+        view_mode="tree,form" />
+    <menuitem id="menu_run_query"
+        name="Run Query"
+        action="action_run_query"
+        parent="base.menu_administration" sequence="111" />
+
+    <record model="ir.ui.view" id="run_query_view_form">
+        <field name="name">run_query.view.form</field>
+        <field name="model">run.query</field>
+        <field name="arch" type="xml">
+        <form>
+            <header>
+                <button name="execute" type="object" string="Excecute" class="oe_highlight" />
+            </header>
+            <sheet>
+                <group>
+                    <group name="group">                      
+                        <field name="result"/>
+                        <field name="name"/>
+                    </group>
+                </group>
+            </sheet>
+        </form>
+    </field>
+    </record>
+
+    <record  model="ir.ui.view" id="run_query_view_tree">
+        <field name="name">run.query.view.tree</field>
+        <field name="model">run.query</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="id"/>
+                <field name="result"/>
+                <field name="name"/>
+                
+            </tree>
+        </field>
+    </record>
+</odoo>

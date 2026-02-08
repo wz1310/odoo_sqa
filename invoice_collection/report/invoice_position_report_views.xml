@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="invoice_position_report_view_form" model="ir.ui.view">
+        <field name="name">report.invoice.position.view.form</field>
+        <field name="model">report.invoice.position</field>
+        <field name="arch" type="xml">
+            <form string="Invoice Report">
+                <sheet>
+                    <group>
+                        <field name="invoice_id"  readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page name="lines" string="Activity Lines">
+                            <field name="collection_activity_line_ids">
+                                <tree create="0" edit="0" delete="0">
+                                    <field name="activity_id"/>
+                                    <field name="state" invisible="1" readonly="1"/>
+                                    <field name="partner_id" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="invoice_id" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="invoice_date"/>
+                                    <field name="invoice_origin"/>
+                                    <field name="amount_total"/>
+                                    <field name="pay_amount"/>
+                                    <field name="amount_residual"/>
+                                    <field name="payment_status"/>
+                                    <field name="attachment"/>
+                                    <field name="doc_status"/>
+                                    <field name="check_1" invisible="1"/>
+                                </tree>
+                                <form string="">
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="state" invisible="1"/>
+                                                <field name="partner_id" options="{'no_quick_create':True,'no_create':True}"/>
+                                                <field name="amount_total"/>
+                                                <field name="amount_residual"/>
+                                                <field name="payment_status" attrs="{'required':[('state','in',['collecting'])]}"/>
+                                                <field name="check_1" widget="boolean_button" options='{"terminology": "active"}' attrs="{'invisible':[('id','=',False)]}"/>
+                                            </group>
+                                            <group>
+                                                <field name="invoice_id" options="{'no_quick_create':True,'no_create':True}" readonly="1"/>
+                                                <field name="invoice_state"/>
+                                                <field name="pay_amount" attrs="{'required':[('state','in',['collecting','finance_review'])]}"/>
+                                                <field name="attachment"/>
+                                                <field name="doc_status" attrs="{'required':[('state','in',['finance_review'])],'readonly':[('state','not in',['finance_review'])]}"/>
+                                                <field name="invoice_origin"/>
+                                                <field name="approved_by" readonly="1"/>
+                                            </group>
+                                        </group>
+                                        <notebook>
+                                            <page string="Payment Method" name="payment_method">
+                                                <field name="payment_ids">
+                                                    <tree editable="bottom">
+                                                        <field name="partner_id" invisible="1"/>
+                                                        <field name="allowed_discount_ids" invisible="1"/>
+                                                        <field name="journal_id"/>
+                                                        <field name="discount_id" domain="[('id','in', allowed_discount_ids),('partner_id','=',partner_id)]"  options="{'no_quick_create':True,'no_create':True}"/>
+                                                        <field name="amount"/>
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                            <page string="Note" name="notes">
+                                                <field name="notes" attrs="{'required':[('doc_status','=','not_returned')],'readonly':[('state','not in',['collecting','finance_review'])]}"/>
+                                            </page>
+                                        </notebook>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="invoice_position_report_tree" model="ir.ui.view">
+        <field name="name">report.invoice.position.tree</field>
+        <field name="model">report.invoice.position</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="invoice_id"/>
+                <field name="partner_id"/>
+                <field name="amount_total"/>
+                <field name="amount_residual"/>
+                <field name="activity_id"/>
+                <field name="collector_id"/>
+                <field name="line_id"/>
+                <field name="payment_status"/>
+                <field name="doc_status"/>
+                <field name="state"/>
+                <field name="activity_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_invoice_position_report_search" model="ir.ui.view">
+        <field name="name">report.invoice.position.view</field>
+        <field name="model">report.invoice.position</field>
+        <field name="arch" type="xml">
+            <search string="Report Invoice Position">
+                <field name="invoice_id"/>
+                <field name="partner_id"/>
+                <field name="activity_id"/>
+                <field name="collector_id"/>
+                <filter name="returned" string="Returned"
+                        domain="[('doc_status', '=', 'returned')]"/>
+                <filter name="not_returned" string="Not Returned"
+                        domain="[('doc_status', '=', 'not_returned')]"/>
+                <separator/>
+                <separator/>
+                <filter name="paid" string="Paid"
+                        domain="[('payment_status', '=', 'paid')]"/>
+                <filter name="partial_paid" string="Partial Paid"
+                        domain="[('payment_status', '=', 'partial_paid')]"/>
+                <filter name="unpaid" string="Unpaid"
+                        domain="[('payment_status', '=', 'unpaid')]"/>
+                <filter name="partner_id" string="Customer" icon="terp-partner" context="{'group_by':'partner_id'}"/>    
+                <filter name="activity_id" string="Collection" icon="terp-partner" context="{'group_by':'activity_id'}"/>    
+                <filter name="collector_id" string="Collector" icon="terp-partner" context="{'group_by':'collector_id'}"/>    
+            </search>
+        </field>
+    </record>
+
+    <record id="action_invoice_position_report" model="ir.actions.act_window">
+        <field name="name">Invoice Position Report</field>
+        <field name="res_model">report.invoice.position</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_invoice_position_report"
+            name="Invoice Position Report"
+            action="action_invoice_position_report"
+            parent="account.menu_finance_reports"/>
+</odoo>

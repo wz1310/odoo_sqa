@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mrp_production_form_view_inherit" model="ir.ui.view">
+        <field name="name">mrp.production.form.view.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@class='oe_title']/h1" position="after">
+        		<h2>
+                    <field name="code_production" nolabel="1" readonly="1" force_save="1"/>
+                </h2>
+            </xpath>
+            <field name="origin" position="before">
+                <field name="shift_id" domain="[('company_id', '=', company_id)]" attrs="{'readonly':[('state','not in',('draft'))]}"/>
+            </field>
+            <button name="action_cancel" position="attributes">
+                <attribute name="groups">mrp.group_mrp_manager</attribute>
+            </button>
+            <!-- <button name="button_scrap" position="attributes">
+                <attribute name="groups">mrp.group_mrp_manager</attribute>
+            </button> -->
+            <button name="post_inventory" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
+            <field name="date_deadline" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+            </field>
+            <field name="mesin_id" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'not in', ('draft'))]}</attribute>
+            </field>
+            <field name="move_raw_ids" position="replace">
+				<field name="move_raw_ids" context="{'final_lots': show_final_lots, 'tree_view_ref': 'mrp.view_stock_move_raw_tree', 'form_view_ref': 'mrp.view_stock_move_lots', 'default_location_id': location_src_id, 'default_location_dest_id': production_location_id, 'default_state': 'draft', 'default_raw_material_production_id': id, 'default_picking_type_id': picking_type_id}" readonly="1"  force_save="1"/>
+            </field>
+            <button name="button_mark_done" position="attributes">
+                <attribute name="attrs">{'invisible': [('state', 'not in', ('progress','to_close'))]}</attribute>
+                <attribute name="groups">mrp.group_mrp_manager</attribute>
+            </button>
+            <xpath expr="//form/sheet/notebook/page[3]/group/group/field[@name='location_dest_id']" position='attributes'>
+                <attribute name="domain">['|', ('company_id', '=', False), ('company_id', '=', company_id)]</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/notebook" position="inside">
+                <page string="Notes" name='notes'>
+                    <field name="note"/>
+                </page>
+            </xpath>
+            
+        </field>
+    </record>
+
+    <record id="mrp_production_tree_view_inherit" model="ir.ui.view">
+        <field name="name">mrp.production.tree.view.inherit</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_tree_view"/>
+        <field name="arch" type="xml">
+            <field name='name' position='after'>
+                <field name="code_production"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_stock_move_lots_inherit" model="ir.ui.view">
+        <field name="name">stock.move.lots.form.inherit</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="mrp.view_stock_move_lots"/>
+        <field name="arch" type="xml">
+            <field name='move_line_ids' position='replace'>
+                <field name="move_line_ids" attrs="{'invisible': [('parent.state', '=', 'draft')], 'readonly': [('parent.state','not in',('draft','confirmed'))]}" context="{'default_workorder_id': workorder_id, 'default_product_uom_id': product_uom, 'default_product_id': product_id,  'default_location_id': location_id, 'default_location_dest_id': location_dest_id, 'default_production_id': production_id or raw_material_production_id}">
+                        <tree editable="bottom" decoration-success="product_uom_qty==qty_done" decoration-danger="(product_uom_qty &gt; 0) and (qty_done&gt;product_uom_qty)">
+                            <field name="lot_id" attrs="{'column_invisible': [('parent.has_tracking', '=', 'none')]}" context="{'default_product_id': parent.product_id}"/>
+                            <field name="lot_produced_ids" widget="many2many_tags" options="{'no_open': True, 'no_create': True}" domain="[('id', 'in', parent.order_finished_lot_ids)]" invisible="not context.get('final_lots')"/>
+                            <field name="owner_id" groups="stock.group_tracking_owner" options="{'no_open': True, 'no_create': True}" optional="hide"/>
+                            <field name="package_id" groups="stock.group_tracking_lot" options="{'no_open': True, 'no_create': True}" optional="hide"/>
+                            <field name="product_uom_qty" string="Reserved" readonly="1" optional="show"/>
+                            <field name="qty_done"/>
+                            <field name="workorder_id" invisible="1"/>
+                            <field name="product_id" invisible="1"/>
+                            <field name="product_uom_id" invisible="1"/>
+                            <field name="location_id" invisible="1"/>
+                            <field name="location_dest_id" invisible="1"/>
+                            <field name="production_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </tree>
+                    </field>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,61 @@
+<odoo>
+
+	<record model="ir.ui.view" id="sale_flow_stock_picking_form_inherited">
+		<field name="name">Sale Flow Stock Picking Form Inherited</field>
+		<field name="model">stock.picking</field>
+		<field name="inherit_id" ref="sanqua_sale_flow.stock_picking_form_inherited"/>
+		<field name="arch" type="xml">
+			<field name="avail_to_cancel" position="after">
+				<field name="origin_returned_picking_id" groups="base.group_system" />
+			</field>
+		</field>
+	</record>
+    <record model="ir.ui.view" id="stock_picking_form_inherited">
+		<field name="name">stock.picking.form.inherited</field>
+		<field name="model">stock.picking</field>
+		<field name="inherit_id" ref="stock.view_picking_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//header/button[@name='%(stock.act_stock_return_picking)d']" position="replace">
+				<button name="direct_return_picking" string="Return" attrs="{'invisible': ['|', ('state', '!=', 'done'), ('is_locked', '=', False)]}" type="object" groups="stock.group_stock_user" context="{'check_sent':1}"/>
+			</xpath>
+			<xpath expr="//div[hasclass('oe_button_box')]" position="after">
+				<widget name="web_ribbon" text="Received" bg_color="bg-danger" attrs="{'invisible':[('sent','=',False)]}" />
+			</xpath>
+			<field name="origin" position="after">
+				
+                <field name="return_reason" attrs="{'invisible':[('is_return_picking', '=', False)]}"/>
+                <field name="return_type" attrs="{'invisible':[('is_return_picking', '=', False)]}"/>
+            </field>
+			<xpath expr="//header/button[@name='button_validate']" position="before">
+				<button string="Approve" type="object" name="approving_matrix" class="oe_highlight" attrs="{'invisible':[('user_can_approve','=',False)]}" />
+                <button string="Reject" type="object" name="rejecting_matrix" attrs="{'invisible':[('user_can_approve','=',False)]}" />
+			</xpath>
+			<xpath expr="//page[last()]" position="after">
+                <page id="page_approval" string="Approvals">
+                	<field name="user_can_approve" invisible="1" />
+                    <field name="approval_ids" readonly="1"/>
+                    <group><field name="approved"/></group>
+                </page>
+            </xpath>
+		</field>
+	</record>
+
+    <record model="ir.ui.view" id="stock_return_picking_form_inherited">
+		<field name="name">stock.return.picking.form.inherited</field>
+		<field name="model">stock.return.picking</field>
+		<field name="inherit_id" ref="stock.view_stock_return_picking_form" />
+		<field name="arch" type="xml">
+			<field name="location_id" position="before">
+                <field name="reason" required="1"/>
+                <field name="return_type" required="1"/>
+            </field>
+			<xpath expr="//footer" position="replace">
+				<footer>
+                    <button name="create_returns" string="Return" type="object" class="btn-primary" attrs="{'invisible':['|',('return_type','=','after_sales'),('return_type','=',False)]}"/>
+                    <button name="create_returns" string="Request Approval" type="object" class="btn-primary" attrs="{'invisible':['|',('return_type','=','delivery'),('return_type','=',False)]}"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+			</xpath>
+		</field>
+	</record>
+</odoo>

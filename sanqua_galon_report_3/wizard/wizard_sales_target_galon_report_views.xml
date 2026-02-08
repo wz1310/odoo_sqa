@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="sales_target_galon_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">report.sales.target.galon.wizard.view.form</field>
+        <field name="model">report.sales.target.galon.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Sales Target Galon Report">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="year"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="btn_confirm" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_sales_target_galon_report_wizard" model="ir.actions.act_window">
+        <field name="name">Sales Target Galon Report Wizard</field>
+        <field name="res_model">report.sales.target.galon.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    
+    <menuitem id="menu_sales_target_galon_report"
+            name="Sales Target Galon Report"
+            action="action_sales_target_galon_report_wizard"
+            parent="sanqua_galon_report_1.menu_galon_report"
+            sequence="1"/>
+
+</odoo>

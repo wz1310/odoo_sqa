@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_baverage_division_summary_sales_report,access_baverage_division_summary_sales_report,sanqua_sale_report_a21.model_report_global_division_summary_sales,sanqua_sale_report_a24.group_baverage_division_summary_sales_report,1,0,0,0

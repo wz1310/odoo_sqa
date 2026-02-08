@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="invoice_due_tree_view" model="ir.ui.view">
+        <field name="name">invoice.due.tree.view</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" string="Invoice" create="0" delete="0">
+                <field name="partner_id" groups="base.group_user" string="Customer"/>
+                <!--<field name="number"/>  TUTUP KARENA MIGRASI-->
+                <!--<field name="date_invoice"/>  TUTUP KARENA MIGRASI-->
+                <!--<field name="date_due"/>   TUTUP KARENA MIGRASI-->
+                <!--<field name="origin"/>   TUTUP KARENA MIGRASI-->
+                <field name="user_id"/>
+                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                <field name="team_id"/>
+                <!--<field name="residual_signed" string="Amount Due" sum="Amount Due"/> TUTUP KARENA MIGRASI-->
+                <field name="company_currency_id" invisible="1"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+	<record id="action_invoice_due_tree" model="ir.actions.act_window">
+        <field name="name">Invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="invoice_due_tree_view"/>
+        <field name="domain">[('type','in', ['out_invoice', 'out_refund']), ('state', 'not in', ['draft', 'cancel'])]</field>
+        <field name="context">{'default_type':'out_invoice', 'type':'out_invoice', 'journal_type': 'sale','search_default_sales_channel': 1}</field>
+        <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+    </record>
+	<record id="view_partner_property_form" model="ir.ui.view">
+        <field name="name">view.partner.property.form</field>
+        <field name="model">res.partner</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <group name="sale" position="inside">
+                <field name="credit_limit" invisible="1"/>
+                <field name="current_credit" invisible="1"/>
+                <field name="remaining_limit" invisible="1"/>
+            </group>
+        </field>
+    </record>
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">view.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+        	<xpath expr="//notebook/page[1]" position="attributes">
+        		<attribute name="attrs">{'invisible': [('company_type', '=', 'person')]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='parent_id']" position="attributes">
+        		<attribute name="attrs">{'readonly': [('company_type', '=', 'company')]}</attribute>
+            </xpath>
+            <!--TUTUP KARENA MIGRASI-->
+            <div name="button_box" position="inside">
+                <button name="create_company" position="before">
+                    <button type="object" class="oe_stat_button" icon="fa-pencil-square-o" name="action_view_partner_invoices_due"
+                        context="{'default_partner_id': active_id}"
+                        groups="sales_team.group_sale_salesman">
+                        <div class="o_form_field o_stat_info">
+                            <span class="o_stat_text">Due Invoiced</span>
+                        </div>
+                    </button>
+                </button>
+            </div>
+            <!--MIGRASI KESINI-->
+            <!-- <div name="button_box" position="inside">
+                <button type="object" class="oe_stat_button" icon="fa-pencil-square-o" name="action_view_partner_invoices_due"
+                    context="{'default_partner_id': active_id}" groups="sales_team.group_sale_salesman">
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_text">Due Invoiced</span>
+                    </div>
+                </button>
+            </div> -->
+
+            <xpath expr="//sheet/div[2]/field[@name='company_type']" position="after">
+                <field name="over_due" widget="bullet_state" options="{'classes': {'not_overdue': 'success', 'overdue': 'danger'}}"/>
+                <field name="black_list" widget="black_list" attrs="{'invisible': [('black_list', '=', 'not_blacklist')]}" options="{'classes': {'not_blacklist': 'success', 'blacklist': 'danger'}}"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Division" attrs="{'invisible': [('company_type', '=', 'person')]}">
+                    <button name="btn_add_pricelist" type="object" string="Add Pricelist" class="btn-primary" groups="contact_flow.group_contact_field_manager"/>
+                    <field name="partner_pricelist_ids" nolabel="1" mode="tree" context="{'default_partner_id': id}">
+                        <tree string="Pricelist Lines" editable="bottom" decoration-danger="black_list=='blacklist'">
+                            <field name="team_id" required="1"/>
+                            <field name="team_member_ids" invisible="1" widget="many2many_tags"/>
+                            <field name="user_id" required="1" domain="[('id','in',team_member_ids)]"/>
+                            <field name="credit_limit" required="1"/>
+                            <field name="current_credit"/>
+                            <field name="over_due"/>
+                            <field name="remaining_limit"/>
+                            <field name="black_list" readonly="1"/>
+                            <field name="pricelist_id" required="1"/>
+                            <button name="set_black_list" type="object" class="oe_highlight" string="Add / Remove Blacklist" groups="partner_credit_limit.group_blacklist"/>
+                            <button name="btn_update_pricelist" type="object" string="Update" class="btn-primary" groups="contact_flow.group_contact_field_manager"/>
+                        </tree>
+                    </field>
+                </page>
+                <page string="Pricelist Discount Lines" invisible="1" attrs="{'invisible': [('company_type', '=', 'person')]}">
+                    <field name="partner_pricelist_discount_ids" nolabel="1" mode="tree" context="{'default_partner_id': id}">
+                        <tree string="Pricelist Discount Lines" editable="bottom">
+                            <field name="categ_id"/>
+                            <field name="pricelist_discount_id"/>
+                            <field name="discount_percent" placeholder="10+5+2"/>
+                            <field name="discount_amount"/>
+                            <field name="total_discount_percent"/>
+                            <field name="total_discount_amount"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="partner_pricelist_view_form" model="ir.ui.view">
+        <field name="name">partner.pricelist.view.form</field>
+        <field name="model">partner.pricelist</field>
+        <field name="arch" type="xml">
+            <form string="Partner Pricelist">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id" readonly="1" string="Customer"/>
+                            <field name="team_id" required="1"/>
+                            <field name="team_member_ids" invisible="1" widget="many2many_tags"/>
+                            <field name="user_id" required="1" domain="[('id','in',team_member_ids)]"/>
+                            <field name="credit_limit" required="1"/>
+                            <field name="current_credit"/>
+                            <field name="over_due"/>
+                        </group>
+                        <group>
+                            <field name="remaining_limit"/>
+                            <field name="black_list" readonly="1"/>
+                            <field name="pricelist_id" required="1"/>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="confirm" type="object" string="Confirm" class="oe_highlight" attrs="{'invisible': [('id', '=', False)]}"/>
+                        <button name="confirm" type="object" string="Save" class="oe_highlight"  attrs="{'invisible': [('id', '!=', False)]}"/>
+                        <button string="Cancel" class="btn-default" special="cancel" attrs="{'invisible': [('id', '!=', False)]}"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- <record id="res_partner_kanban_view" model="ir.ui.view">
+        <field name="name">res.partner.kanban.view</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban/field[@name='city']" position="after">
+                <field name="over_due"/>
+                <field name="black_list"/>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_kanban_details')]" position="inside">
+            <div class="o_kanban_record_bottom">
+                <div class="oe_kanban_bottom_left">
+                    <field name="over_due" widget="label_selection" options="{'classes': {'not_overdue': 'success', 'overdue': 'danger'}}"/>
+                </div>
+                <div class="oe_kanban_bottom_right">
+                    <field name="black_list" widget="label_selection"  options="{'classes': {'not_blacklist': 'success', 'blacklist': 'danger'}}"/>
+                </div>
+            </div>
+            </xpath>
+        </field>
+    </record> -->
+</odoo>

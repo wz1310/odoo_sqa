@@ -1,0 +1,6 @@
+<odoo>
+    
+    <record id="group_monthly_sale_ratio_report" model="res.groups">
+        <field name="name">A7 - Monthly Sale Ratio Report</field>
+    </record>
+</odoo>

@@ -1,0 +1,7 @@
+<odoo>
+    <template id="assets_backend" inherit_id="web.assets_backend" name="Pop Up Print Asset">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/pop_up_print/static/src/js/action_manager.js"></script>
+        </xpath>
+    </template>
+</odoo>

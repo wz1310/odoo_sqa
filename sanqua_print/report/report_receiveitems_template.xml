@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_receiveitems_document_template">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div class="row">
+                        <table style="width: 100%;border-bottom: solid 2px black;">
+                            <tr>
+                                <td rowspan="2" style="width: 10%;">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                                </td>
+                                <td rowspan="2" style="font-size: 12px; width: 60%;">
+                                    <span style="font-size: 14px;" t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["adress", "name", "phone"], "no_marker": true}'/>
+                                    <span t-field="o.company_id.partner_id.street"/><br/>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Telp. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Fax. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.vat">
+                                        NPWP. <span t-field="o.company_id.partner_id.vat"/> 
+                                    </t>
+                                </td>
+                                <td style="width: 30%;">
+                                    <t t-if="o.company_id.iso_purchase_order">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            Doc. No. : <t t-esc="o.company_id.iso_receive_order"/><br/>
+                                        </span>
+                                    </t>
+                                    <t t-if="o.state not in ['purchase','done']">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            <t t-esc="dict(o._fields['state'].selection).get(o.state)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4  class="text-right" >
+                                    Penerimaan Barang</h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="text-danger" t-if="not o.date_done">CANT PRINT BEFORE CONFIRM!</div>
+                <div class="page" style="font-size: 11px;" t-if="o.date_done">
+                
+                    <style>
+                        .table th,
+                        .table td {
+                            padding: 5px;
+                        }
+                        .th-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            text-align:center;
+                        }
+                        .td-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .td-5 {
+                            border-top: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            border-bottom: none !important;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    
+                    <div class="row">
+                        <div style="width:60%">
+                            Diterima dari : <br/>
+                            <span t-field="o.partner_id.name"/>
+                        </div>
+                        <div style="width:40%">
+                            <table class="table" style="width:100%;">
+                                <tr>
+                                    <td class="no-border" style="width:25%;">No. PO</td>
+                                    <td class="no-border" style="width:1%;">:</td>
+                                    <td class="no-border" style="width:74%;"><span t-field="o.group_id"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="no-border">No. Form</td>
+                                    <td class="no-border">:</td>
+                                    <td class="no-border"><span t-field="o.no_sj_vendor"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="no-border">Tgl Terima</td>
+                                    <td class="no-border">:</td>
+                                    <td class="no-border"><span t-esc="o.get_format_datetime(datetime_value=o.date_done,only_date=True)"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div style="width:60%">
+                            No. Terima :
+                            <span t-field="o.name"/>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <table class="table" style="width: 100%; border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 5%;">
+                                        No.
+                                    </th>
+                                    <th class="th-0" style="width: 75%;">
+                                        Keterangan
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Qty
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Satuan
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="total" t-value="0"/>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-foreach="o.move_line_ids" t-as="line">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="idx"/> .
+                                        </td>
+                                        <td class="td-4">
+                                            <span t-field="line.product_id.display_name"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-field="line.qty_done"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-field="line.product_uom_id"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                    <t t-set="total" t-value="total + line.qty_done"/>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2" class="td-0 text-right">Total Qty</td>
+                                    <td class="td-0 text-center"><span t-esc="total"/></td>
+                                    <td class="td-0 text-center"><span><![CDATA[&nbsp;]]></span></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <table class="table" style="width: 100%; border: 1px solid black;">
+                            <tr>
+                                <td class="td-4" rowspan="4" style="width:40%">Notes:</td>
+                                <td class="td-0" colspan="3">*validasi disertai ttd &amp; nama jelas</td>
+                            </tr>
+                            <tr>
+                                <td class="td-0 text-center" style="width:20%">Diserahkan oleh,</td>
+                                <td class="td-0 text-center" style="width:20%">Diterima oleh,</td>
+                                <td class="td-0 text-center" style="width:20%">Mengetahui,</td>
+                            </tr>
+                            <tr>
+                                <td class="td-4 text-center" style="height:50px;"><span><![CDATA[&nbsp;]]></span></td>
+                                <td class="td-4 text-center"><span><![CDATA[&nbsp;]]></span></td>
+                                <td class="td-4 text-center"><span><![CDATA[&nbsp;]]></span></td>
+                            </tr>
+                            <tr>
+                                <td class="td-0 text-center">Vendor</td>
+                                <td class="td-0 text-center">Gudang</td>
+                                <td class="td-0 text-center">QC</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="footer" style="font-size: 11px;">
+                    <div style="float:left;">
+                        Page: <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+    
+    <template id="report_receiveitems_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <!-- <t t-set="lang" t-value="o.invoice_user_id.lang if o.type in ('in_invoice', 'in_refund') else o.partner_id.lang"/> -->
+                <t t-if="o.picking_type_code in ('incoming')">
+                    <t t-call="sanqua_print.report_receiveitems_document_template" t-lang="o.partner_id.lang"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

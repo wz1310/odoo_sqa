@@ -1,0 +1,191 @@
+<odoo>
+    <data>
+        <record id="etax_invoice_merge_form_view" model="ir.ui.view">
+            <field name="name">etax.invoice.merge.form.view</field>
+            <field name="model">etax.invoice.merge</field>
+            <field name="arch" type="xml">
+                <form string="Invoice Commercial">
+                    <header>
+                        <button name="btn_posted" string="Post" type="object" attrs="{'invisible': [('state','!=','draft')]}" class="btn-primary"/>
+                        <button name="open_reset_message_wizard" string="Rev-Faktur" type="object" attrs="{'invisible': ['|',('e_tax_invoice_id', '=',False)]}"/>
+                        <button name="btn_register_next_e_tax_no" string="Faktur Number" type="object" attrs="{'invisible': ['|',('e_tax_invoice_id', '!=',False),('state','=','cancel')]}"/>
+                        <button name="btn_cancel" string="Cancel" type="object" attrs="{'invisible': [('state','=','cancel')]}"/>
+                        <button name="btn_draft" string="Set to Draft" type="object" attrs="{'invisible': [('state','!=','cancel')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted" />
+                    </header>
+                    <sheet string="Invoice Commercial">
+                        <span style="font-size: 11px;" attrs="{'invisible': ['|', ('e_tax_invoice_validated', '=', True), ('e_tax_invoice_id', '=', False)]}" class="label label-danger">
+                            <strong >
+                                e-Faktur: Not yet Uploaded
+                            </strong>
+                        </span>
+                        <span style="font-size: 11px;" attrs="{'invisible': [('e_tax_invoice_validated', '=', False)]}" class="label label-success">
+                            <strong >
+                                e-Faktur: Uploaded
+                            </strong>
+                        </span>
+                        <div >
+                            <h1>
+                                <span attrs="{'invisible': ['|',('state', '!=', 'draft'), ('name', '!=', '/')]}">Draft Invoice</span>
+                            </h1>
+                            <h1 class="mt0">
+                                <field name="name" readonly="True" attrs="{'invisible':[('name', '=', '/')]}"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="partner_shipping_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="ref" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="e_tax_invoice_validated" invisible="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="partner_tax_digit"/>
+                                <field name="tax_number" invisible="1"/>
+                                <label for="e_tax_invoice_id"/>
+                                <div class="o_row">
+                                    <field name="e_tax_invoice_id" attrs="{'readonly': [('state', '!=', 'draft')]}" domain="[('e_tax_invoice_merge_id','=', False)]"/>
+                                    <button name="btn_view_next_e_tax_no" string="Show Next Tax Number" type="object" class="oe_inline btn-primary" attrs="{'invisible': ['|',('e_tax_invoice_id', '!=',False),('state','=','cancel')]}"/>
+                                    <button name="action_cancel" string="Cancel" type="object" class="oe_inline btn-primary" attrs="{'invisible': ['|',('e_tax_invoice_id', '=',False),('state','!=','cancel')]}"/>
+                                </div>
+                                <field name="tgl_upload" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            </group>
+                            <group>
+                                <field name="invoice_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <label for="invoice_payment_term_id" />
+                                <div class="d-flex">
+                                    <field name="invoice_payment_term_id" placeholder="Terms" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                    <span class="o_form_label mx-3 oe_edit_only"> or </span>
+                                    <field name="invoice_date_due" force_save="1" placeholder="Date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                </div>
+
+
+                                <field name="company_id" groups="base.group_multi_company" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+
+                                <field name="currency_id" groups="base.group_multi_currency" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Summary Invoice">
+                                <field name="invoice_merge_line_ids" readonly="1">
+                                    <tree>
+                                        <field name="product_id"/>
+                                        <field name="name"/>
+                                        <field name="account_id"/>
+                                        <field name="analytic_account_id"/>
+                                        <field name="quantity"/>
+                                        <field name="product_uom_id"/>
+                                        <field name="price_unit"/>
+                                        <field name="discount" invisible="1"/>
+                                        <field name="display_discount"/>
+                                        <field name="tax_ids" widget="many2many_tags"/>
+                                        <field name="price_subtotal"/>
+                                    </tree>
+                                </field>
+                                <group class="oe_right">
+                                    <group class="oe_subtotal_footer">
+                                        <field name="amount_undiscount"/>
+                                        <field name="amount_discount"/>
+                                        <field name="amount_untaxed"/>
+                                        <field name="amount_tax"/>
+                                        <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                                    </group>
+                                    <newline/>
+                                </group>
+                            </page>
+                            <page id="invoice_tab" string="Invoice Lines" groups="base.group_no_one">
+                                <field name="invoice_line_ids" domain="[('hide_commercial','=', False)]">
+                                    <tree editable="bottom">
+                                        <field name="move_name" invisible="1"/>
+                                        <field name="hide_commercial" invisible="1"/>
+                                        <field name="product_id" optional="show"/>
+                                        <field name="name"/>
+                                        <field name="account_id" groups="account.group_account_user" />
+                                        <field name="analytic_account_id" groups="analytic.group_analytic_accounting" optional="show"/>
+                                        <field name="analytic_tag_ids" groups="analytic.group_analytic_tags" optional="show" widget="many2many_tags"/>
+                                        <field name="quantity"/>
+                                        <field name="product_uom_id" string="UoM" groups="uom.group_uom" optional="show"/>
+                                        <field name="price_unit" string="Price"/>
+                                        <field name="discount" string="Disc.%" groups="base.group_no_one" optional="show"/>
+                                        <field name="discount_fixed_line" string="Disc.(Rp/qty)" groups="base.group_no_one" optional="show"/>
+                                        <field name="display_discount" string="Total Disc." groups="base.group_no_one" optional="show"/>
+                                        <field name="tax_ids" widget="many2many_tags" options="{'no_create': True}" optional="show"/>
+                                        <field name="price_subtotal" string="Subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                                        <field name="price_total" string="Total" groups="account.group_show_line_subtotals_tax_included"/>
+                                    </tree>
+                                </field>
+                                <group class="oe_left">
+                                    <field name="show_all_invoice"/>
+                                </group>
+                                <!-- Totals (only invoices / receipts) -->
+                                <group class="oe_right">
+                                    <group class="oe_subtotal_footer">
+                                        <field name="amount_untaxed"/>
+                                        <field name="amount_tax"/>
+                                        <field name="amount_total" class="oe_subtotal_footer_separator"/>
+                                    </group>
+                                    <newline/>
+                                </group>
+                            </page>
+                            <page string="Invoices SO">
+                                <field name="invoice_ids" domain="[('partner_id','=',partner_id), ('commercial_ids','=',False), ('e_tax_invoice_id','=',False),('type','in',['out_invoice','out_refund']),('state','not in',['draft','cancel'])]" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="invoice_date"/>
+                                        <field name="amount_total"/>
+                                        <field name="state"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="etax_invoice_merge_tree_view" model="ir.ui.view">
+            <field name="name">etax.invoice.merge.tree.view</field>
+            <field name="model">etax.invoice.merge</field>
+            <field name="arch" type="xml">
+                <tree string="Invoice Commercial">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="invoice_date"/>
+                    <field name="e_tax_invoice_id"/>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" optional="show"/>
+                    <field name="invoice_date_due" optional="show"/>
+                    <field name="amount_untaxed" string="Tax Excluded" sum="Total" optional="show"/>
+                    <field name="amount_tax" string="Tax" sum="Total" optional="hide"/>
+                    <field name="amount_total" string="Total" sum="Total" optional="show"/>
+                    <field name="state" optional="show"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="etax_invoice_merge_action" model="ir.actions.act_window">
+            <field name="name">Invoice Commercial</field>
+            <field name="res_model">etax.invoice.merge</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+            Create a new Invoice Commercial.
+                </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_etax_invoice_merge" name="Invoice Commercial" parent="account.menu_finance_receivables" action="etax_invoice_merge_action"/>
+    </data>
+
+    <record id="etax_invoice_form_view_inherit" model="ir.ui.view">
+        <field name="model">etax.invoice</field>
+        <field name="inherit_id" ref="pci_efaktur_13.etax_invoice_form_view" />
+        <field name="arch" type="xml">
+            <field name="invoice_id" position="after">
+                <field name="e_tax_invoice_merge_id"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_form" model="ir.ui.view">
+        <field name="name">purchase.order.form</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='button_approve']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='button_cancel']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_rfq_send']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='button_cancel']" position="after">
+                <button string="Close PO" type="object" name="btn_close" confirm="Apakah Anda ingin Menutup PO ini?" attrs="{'invisible': ['|', '|' , ('is_shipped', '=', True), ('state','not in', ('purchase','done')), ('picking_count', '=', 0)]}" />
+            </xpath>
+            <xpath expr="//header/button[@name='button_approve']" position="before">
+                <!-- <button string="Close PO" type="object" name="btn_close" confirm="Apakah Anda ingin Menutup PO ini?" attrs="{'invisible': ['|', '|' , ('is_shipped', '=', True), ('state','not in', ('purchase','done')), ('picking_count', '=', 0)]}" /> -->
+				<button string="Approve" type="object" name="btn_approve" class="oe_highlight" attrs="{'invisible':['|',('user_can_approve','=',False),('state','!=','to approve')]}" />
+                <button string="Reject" type="object" name="open_reject_message_wizard" attrs="{'invisible':['|',('user_can_approve','=',False),('state','!=','to approve')]}" />
+			</xpath>
+        	<xpath expr="//group/group[1]/field[@name='currency_id']" position="after">
+        		<!-- <field name="asset" readonly="1"/> -->
+        		<field name="asset" invisible="1"/>
+                <field name="status_po" invisible="1"/>
+                <field name="non_asset_type" attrs="{'invisible':[('non_asset_type','=',False)]}"/>
+                <field name="purchase_order_type" attrs="{'readonly':[('state','not in',['draft'])]}"/>               
+        	</xpath>
+        	<xpath expr="//group/group[2]/field[@name='date_order']" position="after">
+        		<field name="request_id" widget="many2many_tags" readonly="1"/>
+        	</xpath>
+            <xpath expr="//form/sheet/div[hasclass('oe_button_box')]" position="after">
+                <widget name="web_ribbon" text="Done" bg_color="bg-success"
+                        attrs="{'invisible': [('status_po','!=','done')]}"/>
+            </xpath>
+            <xpath expr="//form/sheet/div[hasclass('oe_button_box')]" position="after">
+                <widget name="web_ribbon" text="In Progress" bg_color="bg-info"
+                        attrs="{'invisible': [('status_po','!=','open')]}"/>
+            </xpath>
+            <xpath expr="//form/sheet/div[hasclass('oe_button_box')]" position="after">
+                <widget name="web_ribbon" text="Close" bg_color="bg-danger"
+                        attrs="{'invisible': [('status_po','!=','close')]}"/>
+            </xpath>
+            <xpath expr="//page[@name='purchase_delivery_invoice']" position="after">
+                <page id="page_approval" string="Approvals">
+                	<field name="user_can_approve" invisible="1" />
+                    <field name="approval_ids" readonly="1"/>
+                    <group><field name="approved"/></group>
+                    <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

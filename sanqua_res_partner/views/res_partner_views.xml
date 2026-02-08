@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">res.partner.form.view</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="contact_flow.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Evaluasi Supplier">
+                    <field name="evaluasi_ids"/>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='operating_unit_id']" position="after">
+                <field name="current_rating"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

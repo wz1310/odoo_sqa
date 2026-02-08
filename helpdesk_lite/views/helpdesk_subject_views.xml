@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="helpdesk_subject_tree" model="ir.ui.view">
+        <field name="name">helpdesk_lite.subject.tree</field>
+        <field name="model">helpdesk_lite.subject</field>
+        <field name="arch" type="xml">
+            <tree string="subject" editable="bottom">
+                <field name="id" optional="hide"/>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="helpdesk_subject_action" model="ir.actions.act_window">
+        <field name="name">Subject</field>
+        <field name="res_model">helpdesk_lite.subject</field>
+        <field name="view_id" ref="helpdesk_lite.helpdesk_subject_tree"/>
+    </record>
+
+    <menuitem
+            id="menu_helpdesk_subject_act"
+            name="Subject"
+            sequence="30"
+            action="helpdesk_subject_action"
+            parent="menu_config"
+            groups="base.group_no_one"/>
+
+</odoo>

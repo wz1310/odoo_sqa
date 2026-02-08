@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+  <data>
+
+  <record id="inheriet_journal_payment_view_tree" model="ir.ui.view">
+            <field name="name">inheriet.journal.payment.tree</field>
+            <field name="model">inheriet.journal.payment</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="seq" string="Reference"/>
+                    <field name="date"/>
+                    <field name="vendor_code"/>
+                    <field name="vendor_desc"/>
+                    <field name="company_id"/>
+                    <field name="sheet_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+    <record id="inheriet_journal_payment_form_view" model="ir.ui.view">
+        <field name="name">inheriet.journal.payment.form.view</field>
+        <field name="model">inheriet.journal.payment</field>
+        <field name="arch" type="xml">
+            <form>
+              <sheet>
+                <group>
+                    <group><h1>
+                    <field name="seq" attrs="{'readonly': [('seq','!=', False)]}" force_save='True'/>
+                  </h1>
+                    <field name="name" invisible="1"/>                  
+                    <field name="id_ref_sheet" invisible="0" string="Reference"/>                  
+                    <field name="date"/>
+                    <field name="vendor_code"/>
+                    <field name="vendor_desc"/>
+                    <field name="remark"/>
+                    <field name="account_id"/>
+                    <field name="amount" attrs="{'readonly': [('amount','!=', False)]}" force_save='True'/>
+                    <field name="amount_p" string="Amount to be paid"/>
+                    <field name="rem_am" invisible="1"/>
+                    <field name="sheet_id" invisible="1"/>                    
+                    <field name="id_exp" invisible="1" />
+                    <field name="id_jpss" invisible="1" />
+                    <field name="cost_cnt"  string="Cost Center"/>
+                    <field name="cek_p" invisible="1" />
+              </group>
+                </group>
+        <notebook>
+          <page string="Journal" >
+            <field name="line_jp" nolabel="1" widget="section_and_note_one2many">
+                <tree editable="botttom" create="1">
+                    <field name="coa"/>
+                    <field name="name" string="Description"/>                    
+                    <field name="cost_cen" string="Cost center"/>                    
+                    <field name="pct"/>                    
+                    <field name="amount"/>                    
+                    <field name="jp_id" invisible="1"/>            
+                    <field name="id_jps" invisible="1"/>            
+              </tree>
+            </field>
+                <group class="oe_subtotal_footer oe_right" colspan="2">
+                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                        <label for="total_amount"/>
+                    </div>
+                    <field name="total_amount" nolabel="1" class="oe_subtotal_footer_separator"/>
+                </group>
+            </page>
+        </notebook>
+      </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inheriet_journal_payment" model="ir.actions.act_window">
+        <field name="name">Journal Payment</field>
+        <field name="res_model">inheriet.journal.payment</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+      <!-- =================================jurnal_child============================= -->
+
+  <record id="inheriet_journal_payment_child_view_tree" model="ir.ui.view">
+            <field name="name">inheriet.journal.payment.child.tree</field>
+            <field name="model">inheriet.journal.payment.child</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="coa"/>
+                    <field name="name"/>                    
+                    <field name="debit"/>                    
+                    <field name="credit"/>
+                    <field name="state"/>
+                    <!-- <field name="jp_id" invisible="1"/> -->
+                </tree>
+            </field>
+        </record>
+
+    <record id="inheriet_journal_payment_child_form_view" model="ir.ui.view">
+        <field name="name">inheriet.journal.payment.child.form.view</field>
+        <field name="model">inheriet.journal.payment.child</field>
+        <field name="arch" type="xml">
+            <form>
+              <sheet>
+                <group>
+                    <group>
+                    <field name="my_id" invisible="1"/>
+                    <field name="coa"/>
+                    <field name="name" attrs="{'readonly': [('name','!=', False)]}" force_save='True'/>                    
+                    <field name="debit" attrs="{'readonly': [('debit','!=', False)]}" force_save='True'/>                    
+                    <field name="credit" attrs="{'readonly': [('credit','!=', False)]}" force_save='True'/>
+                    <field name="state"/>
+                    <field name="in_pay" invisible="1"/>
+                    <field name="payed" invisible="1"/>
+                    <!-- <field name="jp_id" invisible="1"/>                     -->
+                    </group>
+                </group>
+        <notebook>
+          <page string="Journal Sheet" >
+            <field name="line_jps" nolabel="1" widget="section_and_note_one2many" readonly="True">
+                <tree editable="botttom" create="0" >
+                    <field name="coa"/>
+                    <field name="name" string="Description"/>                    
+                    <field name="cost_cen" string="Cost center"/>                    
+                    <field name="pct"/>                    
+                    <field name="amount"/>                    
+                    <field name="jps_id" invisible="1"/>            
+              </tree>
+            </field>
+                <group class="oe_subtotal_footer oe_right" colspan="2">
+                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                        <label for="total_sum"/>
+                    </div>
+                    <field name="total_sum" nolabel="1" class="oe_subtotal_footer_separator"/>
+                </group>
+            </page>
+        </notebook>
+              </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inheriet_journal_payment_child" model="ir.actions.act_window">
+        <field name="name">Journal Payment Child</field>
+        <field name="res_model">inheriet.journal.payment.child</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- <menuitem id="menu_inheriet_journal_payment" sequence="20" parent="account.menu_finance_entries_accounting_miscellaneous" action="action_inheriet_journal_payment"/>
+
+    <menuitem id="menu_inheriet_journal_payment_child" sequence="21" parent="account.menu_finance_entries_accounting_miscellaneous" action="action_inheriet_journal_payment_child"/> -->
+
+    <!-- ===============================memorial_journal================================= -->
+
+  <record id="memorial_journal_view_tree" model="ir.ui.view">
+            <field name="name">memorial.journal.tree</field>
+            <field name="model">memorial.journal</field>
+            <field name="arch" type="xml">
+                <tree>                    
+                    <field name="seq" invisible="1"/>
+                    <field name="name"/>                    
+                    <field name="ref"/>
+                </tree>
+            </field>
+        </record>
+
+    <record id="memorial_journal_form_view" model="ir.ui.view">
+        <field name="name">memorial.journal.form.view</field>
+        <field name="model">memorial.journal</field>
+        <field name="arch" type="xml">
+            <form>
+              <sheet>
+                <group>
+                    <group><h1>
+                    <field name="seq" attrs="{'readonly': [('seq','!=', False)]}" force_save='True'/>
+                  </h1>
+                    <field name="name" attrs="{'readonly': [('name','!=', False)]}" invisible="True" force_save='True'/>                    
+                    <field name="ref"/>                   
+                    </group>
+                </group>
+                <notebook>
+                  <page string="Journal Payment" widget="many2many" attrs="{'invisible': [('ref','!=', 'Journal Payment')]}">
+                    <field name="jpc" nolabel="1" widget="many2many">
+                      <tree editable="botttom">
+                        <field name="name"/>
+                        <field name="coa"/>
+                        <field name="debit" readonly="True"/>
+                        <field name="credit" readonly="True"/>
+                        <!-- <field name="jp_id" string="Journal Payment Ref" options="{'no_open': True,'no_create': True, 'no_create_edit':True}"/> -->
+                        <field name="mj_id" string="Memorial Journal Ref" invisible="True"/>
+                      </tree>
+                    </field>
+                  </page>
+                </notebook>
+              </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_memorial_journal" model="ir.actions.act_window">
+        <field name="name">Memorial Journal</field>
+        <field name="res_model">memorial.journal</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- =============================jurnal sheet========================================== -->
+
+  <record id="inheriet_journal_payment_sheet_view_tree" model="ir.ui.view">
+            <field name="name">inheriet.journal.payment.sheet.tree</field>
+            <field name="model">inheriet.journal.payment.sheet</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>                    
+                    <field name="coa"/>
+                    <field name="amount"/>
+                </tree>
+            </field>
+        </record>
+
+    <record id="inheriet_journal_payment_sheet_form_view" model="ir.ui.view">
+        <field name="name">inheriet.journal.payment.sheet.form.view</field>
+        <field name="model">inheriet.journal.payment.sheet</field>
+        <field name="arch" type="xml">
+            <form>
+              <sheet>
+                <group>
+                    <group>
+                    <field name="name"/>                  
+                    <field name="coa"/>
+                    <field name="amount"/>
+                    <field name="jp_id" invisible="1"/>
+                    <field name="mj_id" invisible="1"/>
+                    <field name="expenses_id" invisible="1" />
+                    <field name="cost_cen" />               
+                    </group>
+                </group>
+              </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inheriet_journal_payment_sheet" model="ir.actions.act_window">
+        <field name="name">Journal Payment Sheet</field>
+        <field name="res_model">inheriet.journal.payment.sheet</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <menuitem id="menu_inheriet_journal_payment" name="Journal Payment" sequence="12" parent="account.menu_finance_entries"/>
+
+    <menuitem id="sub_menu_inheriet_journal_payment" sequence="1" parent="menu_inheriet_journal_payment" action="action_inheriet_journal_payment"/>
+    
+    <menuitem id="sub_menu_inheriet_journal_payment_child" sequence="1" parent="menu_inheriet_journal_payment" action="action_inheriet_journal_payment_child"/>
+    
+    <menuitem id="sub_menu_inheriet_journal_payment_sheet" sequence="1" parent="menu_inheriet_journal_payment" action="action_inheriet_journal_payment_sheet"/>
+
+
+    <menuitem id="menu_memorial_journal" name="Memorial Journal" sequence="12" parent="account.menu_finance_entries"/>
+
+    <menuitem id="sub_menu_memorial_journal" sequence="1" parent="menu_memorial_journal" action="action_memorial_journal"/>
+
+  </data>
+
+</odoo>

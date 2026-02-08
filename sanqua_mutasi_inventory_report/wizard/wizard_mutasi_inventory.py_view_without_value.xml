@@ -1,0 +1,55 @@
+<odoo>
+    <data>
+        <record id="mutasi_inventory_wizard_form_view_without_value" model="ir.ui.view">
+            <field name="name">mutasi.inventory.wizard.form.view.without.value</field>
+            <field name="model">wizard.mutasi.inventory.report.value</field>
+            <field name="arch" type="xml">
+                <form string="Report Material Variance">
+                    <sheet>
+                        <field name="state" invisible="1"/>
+                        <group attrs="{'invisible':[('state','=','get')]}">
+                            <!-- <label for="product_classification_ids"/>
+                            <div class="o_row">
+                                <field name="product_classification_ids" widget="many2many_checkboxes"/>
+                            </div> -->
+                            <label for="company_id"/>
+                            <div class="o_row">
+                                <field name="company_id" readonly="1"/>
+                            </div>
+                            <label for="start_date" string="Periode"/>
+                            <div class="o_row">
+                                <field name="start_date" required="1" nolabel="1"/> -
+                                <field name="end_date" required="1" nolabel="1"/>
+                            </div>
+                        </group>
+                        <newline/>
+                        <group attrs="{'invisible':[('state','!=','get')]}">
+                            <separator colspan="4" string="Generate to Excel done. Download by click link below" attrs="{'invisible':[('state','=','choose')]}"/>
+                            <field name="name" invisible="1" width="100" attrs="{'invisible':[('state','=','choose')]}"/>
+                            <field name="data" nolabel="1" readonly="0" width="100" filename="name" attrs="{'invisible':[('state','=','choose')], 'readonly':[('state','=','get')]}"/>
+                        </group>
+                        <footer attrs="{'invisible':[('state','=','get')]}">
+                            <button name="generate_report_excel" type="object" string="Generate" class="btn-primary"/>
+                            <button special="cancel" string="Cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_mutasi_inventory_without_value" model="ir.actions.act_window">
+            <field name="name">Mutasi Inventory</field>
+            <field name="res_model">wizard.mutasi.inventory.report.value</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="mutasi_inventory_wizard_form_view_without_value"/>
+            <field name="context">{}</field>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_wizard_mutasi_inventory_without_value"
+            name="Mutasi Inventory"
+            parent="stock.menu_warehouse_report"
+            action="action_mutasi_inventory_without_value"
+            sequence="500" />
+    </data>
+</odoo>

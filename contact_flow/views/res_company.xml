@@ -1,0 +1,21 @@
+<odoo>
+    <record model="ir.ui.view" id="view_company_form_inherited">
+        <field name="name">View Company Form INherited</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//page[last()]" position="after">
+                <page name="page_configuration" string="Configuration">
+                    <group>
+                        <group>
+                            <label for="auto_delete_oustand_approval"/>
+                            <div class="o_row">
+                                <field name="auto_delete_oustand_approval" /> <span>Day(s)</span>
+                            </div>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

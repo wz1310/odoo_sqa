@@ -1,0 +1,53 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="mis_inher_m_bom">
+        <field name="name">Inherit BOM Form MIS</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">                
+                <button name="open_bom_line" class="oe_stat_button" icon="fa-arrows-v" type="object">
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_text">Line</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="open_bom_wizard">
+        <field name="name">Show BOM Wizard</field>
+        <field name="model">show.bom.wizard</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                <group>
+                <notebook>
+                    <page string="Components">
+                    <field name="bom_line_ids" readonly="False">
+                                <tree string="Components" editable="bottom">
+                                    <field name="boms_id" invisible="1"/>
+                                    <field name="product_id"/>
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="product_qty"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+                                    <field name="parent_product_tmpl_id" invisible="1"/>
+                                </tree>
+                    </field>
+                </page>
+                </notebook>
+                </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="confirm_reject" class="btn btn-warning"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+  </data>
+</odoo>

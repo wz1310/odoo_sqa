@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_report_purchase_return,access_report_purchase_return,model_report_purchase_return,sanqua_purchase_return_report.group_purchase_return_report,1,0,0,0

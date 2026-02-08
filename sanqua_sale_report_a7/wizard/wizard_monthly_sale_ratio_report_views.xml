@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="monthly_sale_ratio_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">monthly.sale.ratio.report.wizard.view.form</field>
+        <field name="model">monthly.sale.ratio.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Monthly Sale Ratio">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="year"/>
+                            <field name="free"/>
+                            <label for="month_1" string="Perbandingan"/>
+                            <div class="o_row">
+                                <field name="month_1" required="1" nolabel="1"/> - 
+                                <field name="month_2" required="1" nolabel="1"/>
+                            </div>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="btn_confirm" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_monthly_sale_ratio_report_wizard" model="ir.actions.act_window">
+        <field name="name">A7 - Monthly Sale Ratio Report Wizard</field>
+        <field name="res_model">monthly.sale.ratio.report.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_monthly_sale_ratio_report_wizard"
+            name="A7 - Monthly Sale Ratio Report"
+            action="action_monthly_sale_ratio_report_wizard"
+            parent="sale.menu_sale_report"
+            groups="sanqua_sale_report_a7.group_monthly_sale_ratio_report"  sequence="117"/>
+
+</odoo>

@@ -1,0 +1,63 @@
+<odoo>
+    <!-- add new context to action menu -->
+    <record id="account.res_partner_action_customer" model="ir.actions.act_window">
+        <field name="context" eval="{'default_customer':True,'default_is_company':True,'search_default_customer':1}"/>
+        <field name="domain">[]</field>
+        
+    </record> 
+    <record id="base.action_partner_supplier_form" model="ir.actions.act_window">
+        <field name="context" eval="{'default_supplier':True}"/>  
+    </record> 
+    <record id="account.res_partner_action_supplier" model="ir.actions.act_window">
+        <field name="context" eval="{'default_supplier':True,'search_default_supplier':1,'default_active':1}"/>
+        <field name="domain">[]</field>
+    </record> 
+
+    <!-- add new menu approval matrix -->
+    <record model="ir.actions.act_window" id="action_approval_matrix_contacts">
+        <field name="name">Contacts Aproval Matrix</field>
+        <field name="res_model">approval.matrix</field>
+        <!-- IF ODOO version <= 12 REQUIRE view_type (UNCOMMENT THIS) -->
+        <!-- <field name="view_type">form</field> -->
+        <field name='view_mode'>kanban,tree,form</field>
+        <!-- <field name='view_id' ref='ref_view_id'/> -->
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('approval_matrix.approval_matrix_kanban_view'), 'sequence':1}),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('approval_matrix.approval_matrix_tree_view'), 'sequence':2}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('approval_matrix.approval_matrix_form_view'), 'sequence':3})
+                ]"/>
+        <field name="context">{'default_res_model':'res.partner'}</field>
+        <field name="domain">[('res_model','=','res.partner')]</field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_approval_matrix_contact_change_request">
+        <field name="name">Contact Change Aproval Matrix</field>
+        <field name="res_model">approval.matrix</field>
+        <!-- IF ODOO version <= 12 REQUIRE view_type (UNCOMMENT THIS) -->
+        <!-- <field name="view_type">form</field> -->
+        <field name='view_mode'>kanban,tree,form</field>
+        <!-- <field name='view_id' ref='ref_view_id'/> -->
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('approval_matrix.approval_matrix_kanban_view'), 'sequence':1}),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('approval_matrix.approval_matrix_tree_view'), 'sequence':2}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('approval_matrix.approval_matrix_form_view'), 'sequence':3})
+                ]"/>
+        <field name="context">{'default_res_model':'contact.change.request'}</field>
+        <field name="domain">[('res_model','=','contact.change.request')]</field>
+    </record>
+    
+    <menuitem
+        id="contact_approval_matrix_menu"
+        name="Contact Approval Matrix"
+        action="action_approval_matrix_contacts"
+        parent="contacts.res_partner_menu_config" sequence="81"/>
+
+    <menuitem
+        id="contact_change_request_approval_matrix_menu"
+        name="Contact Change Request Approval Matrix"
+        action="action_approval_matrix_contact_change_request"
+        parent="contacts.res_partner_menu_config" sequence="82"/>
+</odoo>

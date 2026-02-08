@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_monthly_sale_ratio_report_wizard,access_monthly_sale_ratio_report_wizard,model_monthly_sale_ratio_report_wizard,sanqua_sale_report_a7.group_monthly_sale_ratio_report,1,0,0,0

@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_statistic_customer_report_wizard,access_statistic_customer_report_wizard,model_statistic_customer_report_wizard,sanqua_sale_report_a20.group_wizard_statistic_customer_report,1,0,0,0

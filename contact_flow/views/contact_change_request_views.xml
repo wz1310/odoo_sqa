@@ -1,0 +1,173 @@
+<odoo>
+    <record id="contact_change_request_view_form" model="ir.ui.view">
+        <field name="name">contact.change.request.view.form</field>
+        <field name="model">contact.change.request</field>
+        <field name="arch" type="xml">
+            <form string="Contact Change Request">
+                <header>
+                    <button name="btn_submit" states="draft" type="object" string="Submit" class="btn-primary"/>
+                    <button name="btn_approve" type="object" string="Approve"  class="btn-primary" attrs="{'invisible':['|',('user_can_approve','=',False), ('state','not in',['submited'])]}"/>
+                    <button name="btn_reject" type="object" string="Reject"  attrs="{'invisible':['|',('user_can_approve','=',False), ('state','!=','submited')]}"/>
+                    <button name="btn_draft" type="object" string="Set to Draft"  attrs="{'invisible':['|',('user_can_approve','=',False),('state','not in',['submited'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submited,approved" />
+                </header>
+                <sheet>
+                    <h2><field name="name"/></h2>
+                    <group>
+                        <group>
+                            <field name="create_uid"/>
+
+                            <field name="partner_id" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="field_id" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            
+                            <field name="old_value_m2o" widget="M2oReference" options="{'model_field':'model_name'}" invisible="1"/>
+                            <field name="old_value_display" attrs="{'invisible':[('field_type','==','one2many')]}" />
+                            <!-- INVISIBLE -->
+                            <!-- FIXME -->
+                            
+                            <!-- END FIXME -->
+
+                            <field name="new_value_char" attrs="{'readonly':[('state','!=','draft')],'invisible':[('field_type','in',['many2one','many2many','one2many'])]}"/>
+                            <field name="new_value_m2o" widget="M2oReference" options="{'model_field':'model_name'}" attrs="{'readonly':[('state','!=','draft')],'invisible':[('field_type','not in',['many2one','many2many'])]}" domain="[('id','!=',old_value_m2o)]"/>
+                            <field name="company_id" attrs="{'readonly':[('state','!=','draft')], 'invisible':['|', ('state','=','draft'), ('id','=',False)]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page id="page_o2m" string="Old Values One2many" attrs="{'readonly':[('state','!=','draft')],'invisible':[('field_type','!=','one2many')]}" >
+                            <button string="ADD" name="btn_open_new_line_form" type="object" class="oe_highlight"
+                                attrs="{'invisible':[('state','!=','draft')]}"/>
+                            <field name="line_ids" widget="one2many" mode="kanban">
+                                <kanban quick_create="false" create="false" delete="true">
+                                    <field name="color"/>
+                                    <field name="delete"/>
+                                    <field name="is_update"/>
+                                    <field name="state"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div t-attf-class="oe_kanban_card #{kanban_color(record.color.raw_value)}">
+                                                <div class="o_kanban_header">
+                                                        <div t-if="record.delete.raw_value == true" class="o_kanban_header_title">
+                                                            <span class="float-right" style="color:red;">Will be deleted.</span>
+                                                        </div>
+                                                        <div t-if="record.is_update.raw_value == true and record.state.raw_value == 'draft'" class="o_kanban_header_title">
+                                                            <span class="float-right" style="color:red;">Will be updated.</span>
+                                                        </div>
+                                                    <field name="values" invisible="1"/>
+                                                    <field name="model_name" invisible="1"/>
+                                                    <div class="oe_kanban_button">
+                                                        <a name="btn_update" t-if="record.delete.raw_value == false and record.state.raw_value == 'draft'" class="btn btn-secondary o-kanban-button-new" type="object" string="Update">
+                                                            Update
+                                                        </a>
+                                                        <a name="btn_delete" t-if="record.is_update.raw_value == false and record.delete.raw_value == false and record.state.raw_value == 'draft'" class="btn btn-secondary o-kanban-button-new" type="object" string="Delete">
+                                                            Delete
+                                                        </a>
+                                                        <a name="btn_undelete" t-if="record.is_update.raw_value == false and record.delete.raw_value == true and record.state.raw_value == 'draft'" class="btn btn-secondary o-kanban-button-new" type="object" string="Delete">
+                                                            Un-Delete
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div t-if="record.delete.raw_value == true" class="text-muted oe_kanban_details">
+                                                    <field name="values_html" widget="html"/>
+                                                </div>
+
+                                                <div t-if="record.delete.raw_value == false" class="oe_kanban_details">
+                                                    <field name="values_html" widget="html"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" invisible="1" />
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved"/></group>
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                        </page>
+                        <page id="page_tech" string="Technical Fields" groups="base.group_system">
+                            <group string="Relational Fields Info">
+                                <field name="model_name" groups="base.group_system" />
+                                <field name="field_type" groups="base.group_system"/>
+                                <field name="request_approval_expired" groups="base.group_system" />
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+				    <field name="message_follower_ids" widget="mail_followers"/>
+				    <field name="activity_ids" widget="mail_activity"/>
+				    <field name="message_ids" widget="mail_thread"/>
+				</div>
+            </form>
+        </field>
+    </record>
+
+    <record id="contact_change_request_view_tree" model="ir.ui.view">
+        <field name="name">contact.change.request.view.tree</field>
+        <field name="model">contact.change.request</field>
+        <field name="arch" type="xml">
+            <tree string="Contact Change Request">
+                <field name="partner_id"/>
+                <field name="field_id"/>
+                <field name="old_value_display"/>
+                <field name="new_value_char"/>
+                <field name="create_uid"/>
+                <field name="state"/>
+                <field name="request_approval_expired" groups="base.group_system" />
+            </tree>
+        </field>
+    </record>
+
+    <record id="contact_change_request_line_field_view_form" model="ir.ui.view">
+        <field name="name">contact.change.request.line.field.view.form</field>
+        <field name="model">contact.change.request.line.field</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="create_uid"/>
+
+                            <field name="field_id"/>
+                            <field name="field_type"/>
+                            
+                            <field name="old_value_m2o" widget="M2oReference" options="{'model_field':'model_name'}" invisible="1"/>
+                            <field name="old_value_display" attrs="{'invisible':[('field_type','==','one2many')]}" />
+                            <!-- INVISIBLE -->
+                            <!-- FIXME -->
+                            
+                            <!-- END FIXME -->
+                            <field name="model_name"/>
+                            <field name="new_value_char" attrs="{'invisible':[('field_type','in',['many2one','many2many','one2many'])]}"/>
+                            <field name="new_value_m2o" widget="M2oReference" options="{'model_field':'model_name'}" attrs="{'invisible':[('field_type','not in',['many2one'])]}" domain="[('id','!=',old_value_m2o)]"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="confirm" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="contact_change_request_action" model="ir.actions.act_window">
+        <field name="name">Contact Change Request</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">contact.change.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new contact change request.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="menu_contact_change_request"
+        name="Edit Customer"
+        action="contact_change_request_action"
+        parent="sale.sale_menu_root"
+        sequence="2"/>
+</odoo>

@@ -1,0 +1,53 @@
+<odoo>
+
+    <record id="sale_annual_forecast_view_tree" model="ir.ui.view">
+        <field name="name">sale.annual.forecast.view.tree</field>
+        <field name="model">sale.annual.forecast</field>
+        <field name="arch" type="xml">
+            <tree string="Forecast Tahunan" editable="bottom">
+                <field name="product_category_id" required="1"/>
+                <field name="product_id" required="1"/>
+                <!-- <field name="month" string="Bulan" required="1"/> -->
+                <field name="year" string="Tahun" required="1"/>
+                <field name="forecast_value" string="Total Value"/>
+                <field name="forecast_qty" string="Total Qty"/>
+                <field name="company_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="sale_annual_forecast_view_form" model="ir.ui.view">
+        <field name="name">sale.annual.forecast.view.form</field>
+        <field name="model">sale.annual.forecast</field>
+        <field name="arch" type="xml">
+            <form string="Forecast Tahunan">
+                <sheet>
+                    <group>
+                        <group name="annual_forecast_sale_details">
+                            <field name="product_category_id"/>
+                            <field name="product_id"/>
+                            <!-- <field name="month" string="Bulan"/> -->
+                            <field name="year" string="Tahun"/>
+                            <field name="forecast_value" string="Total Value"/>
+                            <field name="forecast_qty" string="Total Qty"/>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="sale_annual_forecast_action" model="ir.actions.act_window">
+        <field name="name">Forecast Tahunan</field>
+        <field name="res_model">sale.annual.forecast</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="mis_annual_forecast.sale_annual_forecast_view_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Forecast Tahunan
+            </p>
+        </field>
+    </record>
+
+</odoo>

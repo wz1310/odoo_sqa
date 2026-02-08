@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="mrp_shift_view_tree" model="ir.ui.view">
+        <field name="name">mrp.shift.view.tree</field>
+        <field name="model">mrp.shift</field>
+        <field name="arch" type="xml">
+            <tree string="Shift">
+                <field name="name" string='Shift'/>
+                <field name="company_id"/>
+                <field name="working_hours_start" widget='float_time' string='Working Hours'/>
+                <field name="working_hours_end" widget='float_time' string='To'/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="mrp_shift_view_form" model="ir.ui.view">
+        <field name="name">mrp.shift.view.form</field>
+        <field name="model">mrp.shift</field>
+        <field name="arch" type="xml">
+            <form string="Shift">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Name"/>
+                        <h1>
+                            <field name="name" required="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="responsible_id" required="1"/>
+                            <field name="create_date" required="1"/>
+                            <field name="company_id" required="1"/>
+                        </group>
+                        <group>
+                            <field name="code_shift"/>
+                            <label for="working_hours_start" string="Working Hours"/>
+                            <div>
+                                <field name="working_hours_start" widget='float_time' class="oe_inline"/>
+                                to
+                                <field name="working_hours_end" widget='float_time' class="oe_inline"/>
+                            </div>
+                            <field name="working_hours_total" widget='float_time'/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="mrp_shift_action" model="ir.actions.act_window">
+        <field name="name">Shift</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.shift</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="mrp_shift_view_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new Shift with status active True.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem id="mrp_planning_manufacturing_order"
+        name="Manufacturing Order"
+        sequence="100"
+        parent="mrp.menu_mrp_bom"/>
+
+    <menuitem
+        id="mrp_input_shift"
+        name="Input Shift"
+        action="mrp_shift_action"
+        sequence="1"
+        parent="mrp_planning_manufacturing_order"/>
+</odoo>

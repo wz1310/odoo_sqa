@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_report_kas_bank,access_report_kas_bank,model_kas_bank_report_wizard,sanqua_galon_report_10.group_kas_bank_report,1,0,0,0

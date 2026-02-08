@@ -1,0 +1,23 @@
+<odoo>
+    <record model="ir.rule" id="sale_truck_item_allowed_company_rule">
+        <field name="name">Sale Truck Item</field>
+        <field name="model_id" ref="sales_truck.model_sale_truck_item"/>
+        <field name="domain_force">['|', ('company_id','=',False), ('company_id','in',company_ids)]</field>
+        <field name="groups" eval="False"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+
+    <record model="ir.rule" id="sale_order_truck_allowed_company_rule">
+        <field name="name">Sale Truck Rules</field>
+        <field name="model_id" ref="sales_truck.model_sale_order_truck"/>
+        <field name="domain_force">['|', '|', ('company_id','in',company_ids),('plant_id','in',company_ids), ('state','=','refuse')]</field>
+        <field name="groups" eval="False"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+</odoo>

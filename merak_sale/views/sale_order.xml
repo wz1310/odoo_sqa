@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+        <record id="sale_order_view_form" model="ir.ui.view">
+            <field name="name">sale.order.view.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group/group/field[@name='partner_id']" position="attributes">
+                	<attribute name="domain">[('parent_id', '=', False )]</attribute>
+                </xpath>
+                <xpath expr="//sheet/group/group/field[@name='partner_invoice_id']" position="attributes">
+                	<attribute name="domain">['|',('id', '=', partner_id ),'&amp;',('parent_id', '=', partner_id ),('type', '=', 'invoice')]</attribute>
+                </xpath>
+                <xpath expr="//sheet/group/group/field[@name='partner_shipping_id']" position="attributes">
+                	<attribute name="domain">['|',('id', '=', partner_id ),'&amp;',('parent_id', '=', partner_id ),('type', '=', 'delivery')]</attribute>
+                </xpath>
+                <field name="team_id" position="after">
+                    <field nolabel="1" name="product_category_ids" invisible="1" force_save="1"/>
+                </field>
+                <xpath expr="//field[@name='order_line']/form/group/group/field[@name='product_id']" position="attributes">
+                    <attribute name="domain">[('sale_ok', '=', True), ('categ_id', 'in', parent.product_category_ids)]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="domain">[('sale_ok', '=', True), ('categ_id', 'in', parent.product_category_ids)]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='sale_order_option_ids']/form/group/field[@name='product_id']" position="attributes">
+                    <attribute name="domain">[('sale_ok', '=', True), ('categ_id', 'in', parent.product_category_ids)]</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="sale_order_management_view_form" model="ir.ui.view">
+            <field name="name">sale.order.management.view.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_management.sale_order_form_quote"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='sale_order_option_ids']/form/group/field[@name='product_id']" position="attributes">
+                    <attribute name="domain">[('sale_ok', '=', True), ('categ_id', 'in', parent.product_category_ids)]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='sale_order_option_ids']/tree/field[@name='product_id']" position="attributes">
+                    <attribute name="domain">[('sale_ok', '=', True), ('categ_id', 'in', parent.product_category_ids)]</attribute>
+                </xpath>
+            </field>
+        </record>
+
+	</data>
+</odoo>

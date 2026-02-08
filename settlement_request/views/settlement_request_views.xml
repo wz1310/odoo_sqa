@@ -1,0 +1,127 @@
+<odoo>
+    <record id="settlement_request_view_form" model="ir.ui.view">
+        <field name="name">settlement.request.view.form</field>
+        <field name="model">settlement.request</field>
+        <field name="arch" type="xml">
+            <form string="Settlement Request">
+                <header>
+                    <button name="btn_submit" states="draft" type="object" string="Submit" class="btn-primary" groups="settlement_request.group_settlement_user"/>
+                    <button name="btn_approve" type="object" string="Approve"  class="btn-primary" attrs="{'invisible':['|',('user_can_approve','=',False), ('state','not in',['waiting_approval'])]}"/>
+                    <button name="open_reject_message_wizard" type="object" string="Reject" attrs="{'invisible':['|',('user_can_approve','=',False), ('state','not in',['waiting_approval'])]}"/>
+                    <button name="btn_draft" type="object" string="Set to Draft"  attrs="{'invisible':[('state','not in',['cancel'])]}"  groups="settlement_request.group_settlement_user"/>
+                    <button name="btn_done" type="object" class="btn-primary" string="Done" attrs="{'invisible':[('state','not in',['approved'])]}"  groups="settlement_request.group_settlement_user"/>
+                    <button name="btn_cancel" type="object" string="Cancel" attrs="{'invisible':[('state','not in',['approved','done'])]}"  groups="settlement_request.group_settlement_user"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,waiting_approval,approved" />
+                </header>
+                <sheet>
+                    <h2><field name="name" attrs="{'invisible':[('id','=',False)],'readonly':[('state','not in',['draft'])]}"/></h2>
+                    <group>
+                        <group>
+                            <field name="partner_id" domain="[('customer','=',True)]" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                            <field name="request_date" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                            <field name="activity_id" domain="[('state','=','done')]" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Settlement Request Line">
+                            <field name="line_ids" attrs="{'readonly':[('state','not in',['draft'])]}" context="{'default_partner_id':partner_id}">
+                                <tree editable="bottom">
+                                    <field name="company_id" invisible="1" force_save="1" domain="[]"/>
+                                    <field name="account_id" invisible="1" force_save="1" domain="[]"/>
+                                    <field name="is_down_payment" invisible="1" force_save="1" domain="[]"/>
+                                    <field name="partner_id" invisible="1" force_save="1" domain="[]"/>
+                                    <field name="line_payment_id"  force_save="1" domain="[('state','=','done')]" attrs="{'column_invisible':[('parent.activity_id','=',False)]}" options="{'no_quick_create':True,'no_create':True}" />
+                                    <field name="date" required="1"/>
+                                    <field name="invoice_id"  force_save="1" domain="[('amount_residual','>',0), ('state','not in',['cancel']),('partner_id','=',partner_id)]" attrs="{'column_invisible':[('parent.activity_id','!=',False)], 'readonly':[('parent.activity_id','!=',False)]}" options="{'no_quick_create':True,'no_create':True}" />
+                                    <field name="divisi_id" />
+                                    <field name="discount_id" options="{'no_quick_create':True,'no_create':True}" domain="[('partner_id','=',partner_id)]" />
+                                    <field name="journal_id" options="{'no_quick_create':True,'no_create':True}" />
+                                    <field name="journal_entries_ids" options="{'no_quick_create':True,'no_create':True}" widget="many2many_tags" domain="[('type','=','entry'),('company_id','=',company_id),('partner_id','=',partner_id),('account_id','=',account_id),('parent_state','=','posted'),('amount_settlement_residual','>',0),('payment_id','=',False)]" attrs="{'invisible':[('is_down_payment', '!=', True)]}"/>
+                                    <field name="journal_entries_total" attrs="{'invisible':[('is_down_payment', '!=', True)]}"/>
+                                    <field name="invoice_total"/>
+                                    <field name="pay_amount"/>
+                                    <field name="amount_residual"/>
+                                    <field name="payment_id" force_save="1" domain="[]"/>
+                                    
+                                </tree>
+                            </field>
+                        </page>
+                        <page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" groups="base.group_system"/>
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved" groups="base.group_system"/></group>
+
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                        </page>
+                        
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+				    <field name="message_follower_ids" widget="mail_followers"/>
+				    <field name="activity_ids" widget="mail_activity"/>
+				    <field name="message_ids" widget="mail_thread"/>
+				</div>
+            </form>
+        </field>
+    </record>
+
+    <record id="settlement_request_view_tree" model="ir.ui.view">
+        <field name="name">settlement.request.view.tree</field>
+        <field name="model">settlement.request</field>
+        <field name="arch" type="xml">
+            <tree string="Settlement Request">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="request_date"/>
+                <field name="activity_id"/>
+                <field name="state"/>
+                <field name="company_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="settlement_request_action" model="ir.actions.act_window">
+        <field name="name">Settlement Request</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">settlement.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new settlement request.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="menu_settlement_request"
+        name="Settlement Request"
+        action="settlement_request_action"
+        parent="invoice_collection.collector_menu"
+        sequence="2"/>
+
+    
+    <record model="ir.actions.act_window" id="action_approval_matrix_settlement_request">
+        <field name="name">Settlement Request Approval Matrix</field>
+        <field name="res_model">approval.matrix</field>
+        <!-- IF ODOO version <= 12 REQUIRE view_type (UNCOMMENT THIS) -->
+        <!-- <field name="view_type">form</field> -->
+        <field name='view_mode'>kanban,tree,form</field>
+        <!-- <field name='view_id' ref='ref_view_id'/> -->
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('approval_matrix.approval_matrix_kanban_view'), 'sequence':1}),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('approval_matrix.approval_matrix_tree_view'), 'sequence':2}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('approval_matrix.approval_matrix_form_view'), 'sequence':3})
+                ]"/>
+        <field name="context">{'default_res_model':'settlement.request'}</field>
+        <field name="domain">[('res_model','=','settlement.request')]</field>
+    </record>
+
+
+    <menuitem
+        id="settlement_request_approval_matrix_menu"
+        name="Settlement Request Approval Matrix"
+        action="action_approval_matrix_settlement_request"
+        parent="invoice_collection.collector_menu" sequence="20"/>
+    
+</odoo>

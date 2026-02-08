@@ -1,0 +1,12 @@
+<odoo>
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.view.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='sales_purchases']/group/group[@name='sale']" position="inside">
+                <field name="delivery_lead_time"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

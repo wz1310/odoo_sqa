@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="assets_backend" name="Assets Backend" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/web_x2many_search/static/src/js/relational_fields.js"/>
+                <script type="text/javascript" src="/web_x2many_search/static/src/js/list_renderer.js"/>
+<!--                <link rel="stylesheet" href=""/>-->
+            </xpath>
+        </template>
+
+    </data>
+</odoo>

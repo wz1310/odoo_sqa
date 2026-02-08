@@ -1,0 +1,1 @@
+from . import inter_company_pricelist

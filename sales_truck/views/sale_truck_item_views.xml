@@ -1,0 +1,69 @@
+<odoo>
+    <record id="sale_truck_item_view_form" model="ir.ui.view">
+        <field name="name">sale.truck.item.view.form</field>
+        <field name="model">sale.truck.item</field>
+        <field name="arch" type="xml">
+            <form string="Sale Truck Item">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1" force_save="0"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            
+                            <field name="product_id" required="1"/>
+                            <field name="qty" required="1"/>
+                            <field name="product_qty_master" required="1"/>
+                        </group>
+                        <group>
+                            <field name="product_tmpl_id"/>
+                            <field name="uom_id"/>
+                            <field name="company_id"/>
+                        </group> 
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="sale_truck_item_view_tree" model="ir.ui.view">
+        <field name="name">sale.truck.item.view.tree</field>
+        <field name="model">sale.truck.item</field>
+        <field name="arch" type="xml">
+            <tree string="Sale Truck Item">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="qty"/>
+                <field name="product_qty_master"/>
+                <field name="uom_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="sale_truck_item_action" model="ir.actions.act_window">
+        <field name="name">Sale Truck Item</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.truck.item</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new Sale Truck Item.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="menu_sale_truck_item"
+        name="Sale Truck Item"
+        action="sale_truck_item_action"
+        parent="sale.sale_order_menu"
+        groups="group_sale_truck_sales"
+        sequence="2"/>
+</odoo>

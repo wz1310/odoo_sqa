@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="sale_margin_analysis_customer_report_wizard_form_view">
+        <field name="name">Wizard Sale Margin Analysis Customer Report</field>
+        <field name="model">wizard.sale.margin.analysis.customer.report</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="user_id" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="team_ids" widget="many2many_tags" options="{'no_open': True, 'no_create': True}"/>
+                            <field name="month"/>
+                            <field name="year" />
+                            <field name="hpp_percent_factor1"/>
+                            <field name="hpp_percent_factor2"/>
+                            <field name="hpp_amount_factor1"/>
+                            <field name="hpp_amount_factor2"/>
+                            <field name="company_id" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Generate Excel" type="object" name="button_print" class="oe_highlight" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_sale_margin_analysis_customer_report" model="ir.actions.act_window">
+        <field name="name">Sale Margin Analysis Customer Report</field>
+        <field name="res_model">wizard.sale.margin.analysis.customer.report</field>
+        <field name="view_mode">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="sale_margin_analysis_customer_report_wizard_form_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_sale_margin_analysis_customer_report" name="Sale Margin Analysis Customer Report" action="action_sale_margin_analysis_customer_report" parent="sale.menu_sale_report" sequence="200"/>
+</odoo>

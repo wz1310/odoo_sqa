@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="annual_sales_target_report_tree" model="ir.ui.view">
+        <field name="name">report.annual.sales.target.tree</field>
+        <field name="model">report.annual.sales.target</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="id" string="Nomor"/>
+                <field name="ref"/>
+                <field name="user_id"/>
+                <field name="partner_code"/>
+                <field name="partner_id"/>
+                <field name="region_id"/>
+                <field name="region_group_id"/>
+                <field name="product_code"/>
+                <field name="product_id"/>
+                <field name="januari"/>
+                <field name="februari"/>
+                <field name="maret"/>
+                <field name="april"/>
+                <field name="mei"/>
+                <field name="juni"/>
+                <field name="juli"/>
+                <field name="agustus"/>
+                <field name="september"/>
+                <field name="oktober"/>
+                <field name="november"/>
+                <field name="desember"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="annual_sales_target_report_search" model="ir.ui.view">
+        <field name="name">report.annual.sales.target.view</field>
+        <field name="model">report.annual.sales.target</field>
+        <field name="arch" type="xml">
+            <search string="Annual Sales Target">
+                <field name="ref"/>
+                <field name="user_id"/>
+                <field name="partner_code"/>
+                <field name="partner_id"/>
+                <field name="region_id"/>
+                <field name="product_code"/>
+                <field name="product_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_annual_sales_target_report" model="ir.actions.act_window">
+        <field name="name">Annual Sales Target</field>
+        <field name="res_model">report.annual.sales.target</field>
+        <field name="view_mode">tree</field>
+    </record>
+</odoo>

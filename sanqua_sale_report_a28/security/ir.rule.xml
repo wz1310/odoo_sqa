@@ -1,0 +1,16 @@
+<odoo>
+    
+    <record id="group_annually_summary_customer_report" model="res.groups">
+        <field name="name">A28 - Annually Summary Customer Report</field>
+    </record>
+
+    <record model="ir.rule" id="rule_annually_summary_customer_report_user">
+        <field name="name">Rule Annually Summary Customer Global User</field>
+        <field name="model_id" ref="sale.model_sale_report" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+    </record>
+</odoo>

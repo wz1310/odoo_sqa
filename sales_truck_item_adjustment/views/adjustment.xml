@@ -1,0 +1,186 @@
+<odoo>
+    <record model="ir.ui.view" id="sales_truck_item_adjustment_tree_view">
+        <field name="name">Sales Truck Item Adjustment Tree</field>
+        <field name="model">sales.truck.item.adjustment</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <tree string="Sales Truck Item Adjustment">
+                <field name="name"/>
+                <!-- <field name="partner_id"/> -->
+                <field name="source_picking_id"/>
+                <field name="adjustment_type"/>
+                <field name="qty"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="sales_truck_item_adjustment_galon_deposito_tree_view">
+        <field name="name">Sales Truck Item Adjustment Galon Deposito Tree</field>
+        <field name="model">sales.truck.item.adjustment</field>
+        <field name='priority'>30</field>
+        <field name="arch" type="xml">
+            <tree string="Deposito Galon">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="amount"/>
+                <field name="date_deposito"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="sales_truck_item_adjustment_form_view">
+        <field name="name">Sales Truck Item Adjusment Form</field>
+        <field name="model">sales.truck.item.adjustment</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Sales Truck Item Adjustment">
+                <header>
+                    <button name="btn_done" states="draft" type="object" string="Done" class="btn-primary"/>
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <div class="oe_title" attrs="{'invisible':['|', ('id','=',False), ('state','in',['draft'])]}">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="Doc Name" attrs="{'readonly':[('state','not in',['draft'])]}" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="source" string="Source Info">
+                            <label for="source_picking_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <div class="d-flex" >
+                                <field name="sale_truck_status_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'required': [('adjustment_type', '!=', 'deposit')],'readonly': [('state', '!=', 'draft')]}"/>
+                                <span class="o_form_label mx-3" > - </span>
+                                <field name="source_picking_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            </div>
+                            <field name="source_qty"/>
+                            <field name="qty_after"/>
+                        </group>
+                        <group name="adjustment_info" string="Adjusment Info">
+                            <field name="is_deposit" invisible="1"/>
+                            <field name="adjustment_type" attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('is_deposit','=',False)]}"/>
+                            <field name="adjustment_type_temp" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                            <field name="qty" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                        </group>
+                        <group name="return_info" string="Return Info" attrs="{'invisible': [('adjustment_type', 'not in', ['returned','change'])]}">
+                            <field name="product_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly': [('state', '!=', 'draft')],'required': [('adjustment_type', '=', 'returned')]}" domain="[('sale_truck','=',True)]"/>
+                            <field name="return_picking_id" options="{'no_quick_create':True,'no_create':True}" readonly="1"/>
+                            <field name="plant_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly': [('state', '!=', 'draft')],'required': [('adjustment_type', '=', 'returned')]}"/>
+                            <field name="location_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly': [('state', '!=', 'draft')],'required': [('plant_id', '!=', False)]}"/>
+                        </group>
+                        
+                        <group name="account_info" string="Accounting Info" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('adjustment_type', 'not in', ['deposit'])]}">
+                            <field name="amount" attrs="{'readonly': [('state', '!=', 'draft')],'required': [('adjustment_type', 'in', ['deposit','to_bill'])]}" domain="[('sale_truck','=',True)]"/>
+                            <field name="journal_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'required': [('adjustment_type', 'in', ['deposit'])],'invisible': [('adjustment_type', 'not in', ['deposit'])]}"/>
+                            <field name="move_id" options="{'no_quick_create':True,'no_create':True}" />
+                            <field name="debit_account_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'required': [('adjustment_type', 'in', ['deposit'])],'invisible': [('adjustment_type', 'not in', ['deposit'])]}"/>
+                            <field name="credit_account_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'required': [('adjustment_type', 'in', ['deposit'])],'invisible': [('adjustment_type', 'not in', ['deposit'])]}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <!--<footer></footer>-->
+                
+                <!-- UNCOMMENT IF USING Mail Track SYSTEM -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="sales_truck_item_adjustment_galon_deposito_form_view">
+        <field name="name">Sales Truck Item Adjusment galon deposito Form</field>
+        <field name="model">sales.truck.item.adjustment</field>
+        <field name='priority'>30</field>
+        <field name="arch" type="xml">
+            <form string="Galon Deposito">
+                <header>
+                    <button name="btn_done" states="draft" type="object" string="Done" class="btn-primary"/>
+                    <field name="state" widget="statusbar" />
+                </header>
+                <sheet>
+                    <div class="oe_title" attrs="{'invisible':['|', ('id','=',False), ('state','in',['draft'])]}">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="Doc Name" attrs="{'readonly':[('state','not in',['draft'])]}" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="source" string="Source Info">
+                            <field name="partner_id" attrs="{'readonly':[('state','not in',['draft'])]}" options="{'no_open': True, 'no_create': True}" required="1"/>
+                            <field name="final_stock"/>
+                            <field name="date_deposito" required="1"/>
+                        </group>
+                        <group name="adjustment_info" string="Adjusment Info">
+                            <field name="is_deposit" invisible="1"/>
+                            <field name="adjustment_type" attrs="{'invisible':[('is_deposit','=',False)]}" force_save="1" readonly="1"/>
+                            <field name="adjustment_type_temp" attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('is_deposit','=',True)]}"/>
+                            <field name="qty" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                        </group>
+                        <group name="return_info" string="Return Info" attrs="{'invisible': [('adjustment_type', 'not in', ['returned','change'])]}">
+                            <field name="product_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly': [('state', '!=', 'draft')],'required': [('adjustment_type', '=', 'returned')]}" domain="[('sale_truck','=',True)]"/>
+                            <field name="return_picking_id" options="{'no_quick_create':True,'no_create':True}" readonly="1"/>
+                            <field name="plant_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly': [('state', '!=', 'draft')],'required': [('adjustment_type', '=', 'returned')]}"/>
+                            <field name="location_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly': [('state', '!=', 'draft')],'required': [('plant_id', '!=', False)]}"/>
+                        </group>
+                        
+                        <group name="account_info" string="Accounting Info" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('adjustment_type', 'not in', ['deposit'])]}">
+                            <field name="amount" attrs="{'readonly': [('state', '!=', 'draft')],'required': [('adjustment_type', 'in', ['deposit','to_bill'])]}" domain="[('sale_truck','=',True)]"/>
+                            <field name="debit_amount" force_save="1" readonly="1"/>
+                            <field name="credit_amount" force_save="1" readonly="1"/>
+                            <field name="journal_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'required': [('adjustment_type', 'in', ['deposit'])],'invisible': [('adjustment_type', 'not in', ['deposit'])]}"/>
+                            <field name="move_id" options="{'no_quick_create':True,'no_create':True}" />
+                            <field name="debit_account_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'required': [('adjustment_type', 'in', ['deposit'])],'invisible': [('adjustment_type', 'not in', ['deposit'])]}"/>
+                            <field name="credit_account_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'required': [('adjustment_type', 'in', ['deposit'])],'invisible': [('adjustment_type', 'not in', ['deposit'])]}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <!--<footer></footer>-->
+                
+                <!-- UNCOMMENT IF USING Mail Track SYSTEM -->
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record model="ir.actions.act_window" id="action_sales_truck_item_adjustment">
+        <field name="name">Sales Truck Adjustment</field>
+        <field name="res_model">sales.truck.item.adjustment</field>
+        <!-- IF ODOO Version <= 12.0 REQUIRE view_type (UNCOMMENT THIS) -->
+        <!-- <field name="view_type">form</field> -->
+        <field name='view_mode'>tree,form</field>
+        <!-- <field name='view_id' ref='ref_view_id'/> -->
+        <!-- <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('module.kanban_ref_id'), 'sequence':1}),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('module.tree_ref_id'), 'sequence':2}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('module.form_ref_id'), 'sequence':3})
+                ]"/> -->
+    </record>
+
+    <record model="ir.actions.act_window" id="action_sales_truck_item_adjustment_deposito_galon">
+        <field name="name">Galon deposito</field>
+        <field name="res_model">sales.truck.item.adjustment</field>
+        <field name='view_mode'>tree,form</field>
+        <!-- <field name='view_id' ref='ref_view_id'/> -->
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('sales_truck_item_adjustment.sales_truck_item_adjustment_galon_deposito_tree_view'), 'sequence':2}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('sales_truck_item_adjustment.sales_truck_item_adjustment_galon_deposito_form_view'), 'sequence':3})
+                ]"/>
+        <field name="context">{'default_is_deposit':True,'default_adjustment_type':'deposit'}</field>
+    </record>
+
+    <menuitem action="action_sales_truck_item_adjustment" id="sales_truck_item_adjustment_menu" name="Galon Adjustment" sequence="31" groups="sales_truck_item_adjustment.group_adjustment_manager" parent="sale.product_menu_catalog" />
+    <menuitem action="action_sales_truck_item_adjustment_deposito_galon" id="sales_truck_item_adjustment_deposito_galon_menu" name="Deposito Galon" sequence="32" groups="sales_truck_item_adjustment.group_adjustment_manager" parent="sale.product_menu_catalog" />
+</odoo>

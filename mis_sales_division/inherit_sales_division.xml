@@ -1,0 +1,58 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="mis_inher_sales_tree_division">
+        <field name="name">Inherit Sales Division Tree MIS</field>
+        <field name="model">crm.team</field>
+        <field name="inherit_id" ref="sanqua_sale_flow.crm_team_view_tree_inherited" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                        <button string="Update Categories" class="btn-secondary" name="open_p_category_wizard" type="object"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="mis_inher_sales_division">
+        <field name="name">Inherit Sales Division Form MIS</field>
+        <field name="model">crm.team</field>
+        <field name="inherit_id" ref="sales_team.crm_team_view_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">                
+                <button name="open_p_category_line" class="oe_stat_button" icon="fa-arrows-v" type="object">
+                    <div class="o_form_field o_stat_info">
+                        <span class="o_stat_text">Product Categories Line</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="open_p_category_wizard">
+        <field name="name">Show Product Category Wizard</field>
+        <field name="model">show.p_category.wizard</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                <group>
+                <notebook>
+                    <page string="Allowed Categories">
+                    <field name="product_category_ids" readonly="False">
+                                <tree string="Categories" editable="bottom">
+                                    <field name="display_name"/>
+                                </tree>
+                    </field>
+                </page>
+                </notebook>
+                </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="confirm_reject" class="btn btn-warning"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+  </data>
+</odoo>

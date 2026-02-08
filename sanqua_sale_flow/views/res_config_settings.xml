@@ -1,0 +1,15 @@
+<odoo>
+	<record model="ir.ui.view" id="res_config_settings_view_form_inherited">
+		<field name="name">Inherit Inter Company Rules Res Config Settings View Form</field>
+		<field name="model">res.config.settings</field>
+		<field name="inherit_id" ref="inter_company_rules.res_config_settings_view_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//div[hasclass('mt16')]/div[hasclass('content-group')]" position="inside">
+                <div class="row ml32" attrs="{'invisible':[('rule_type', '!=', 'so_and_po')]}">
+                    <field name="using_interco_master_on_sale" class="col-1 col-lg-1" />
+                    <label for="using_interco_master_on_sale" class="o_light_label"/>
+                </div>
+			</xpath>
+		</field>
+	</record>
+</odoo>

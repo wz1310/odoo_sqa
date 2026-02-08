@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="wizard_mis_a9_report_form_view">
+        <field name="name">Wizard A9 Report</field>
+        <field name="model">wizard.mis.a9.report</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                    <group>
+                            <field name="customer_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        </group>
+                </sheet>
+                <footer>
+                    <button string="Generate Excel" type="object" name="btn_confirm" class="oe_highlight" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_mis_a9_report" model="ir.actions.act_window">
+        <field name="name">Wizard A9 Report</field>
+        <field name="res_model">wizard.mis.a9.report</field>
+        <field name="view_mode">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="wizard_mis_a9_report_form_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="mis_a9_report_menu" name="A9 - Credit Limit Report" action="action_mis_a9_report" parent="sale.menu_sale_report" sequence="119"/>
+</odoo>

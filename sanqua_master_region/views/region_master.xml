@@ -1,0 +1,59 @@
+<odoo>
+    <record model="ir.ui.view" id="region_master_form_view">
+        <field name="name">Area Form</field>
+        <field name="model">region.master</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Area">
+                <header></header>
+                <sheet>
+                    <h1>
+                        <field name="name" placeholder="Area Code" />
+                    </h1>
+                    <group>
+                        <!-- START HERE -->
+                        <!-- YOU CAN ERASE THIS SYNTAX -->
+                        <field name="region_list_ids" readonly="1" />
+                        
+                    </group>
+                </sheet>
+                <!--<footer></footer>-->
+                
+                <!-- UNCOMMENT IF USING Mail Track SYSTEM -->
+                <!--<div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>-->
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="region_master_tree_view">
+        <field name="name">Region Master Tree</field>
+        <field name="model">region.master</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <tree string="Region Master">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_region_master">
+        <field name="name">Area</field>
+        <field name="res_model">region.master</field>
+        <!-- IF ODOO Version <= 12.0 REQUIRE view_type (UNCOMMENT THIS) -->
+        <!-- <field name="view_type">form</field> -->
+        <field name='view_mode'>tree,form</field>
+        <!-- <field name='view_id' ref='ref_view_id'/> -->
+        <!-- <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('module.kanban_ref_id'), 'sequence':1}),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('module.tree_ref_id'), 'sequence':2}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('module.form_ref_id'), 'sequence':3})
+                ]"/> -->
+    </record>
+
+    <menuitem action="action_region_master" id="region_master_menu" name="Area" sequence="99" groups="sanqua_master_region.group_region_manager" parent="sanqua_master_region.wilayah_menu" />
+</odoo>

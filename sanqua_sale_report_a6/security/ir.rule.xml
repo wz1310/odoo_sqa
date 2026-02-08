@@ -1,0 +1,6 @@
+<odoo>
+    
+    <record id="group_weekly_sale_ratio_report" model="res.groups">
+        <field name="name">A6 - Weekly Sale Ratio Report</field>
+    </record>
+</odoo>

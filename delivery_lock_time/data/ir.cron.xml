@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="ir_cron_delete_over_lock_datetime" model="ir.cron">
+        <field name="name">Stock Picking : Canceling DO Overdate lock datetime</field>
+        <field name="active" eval="True"/>
+        <field name="interval_number">8</field>
+        <field name="interval_type">hours</field>
+        <field name="numbercall">-1</field>
+       
+        <field name="doall" eval="False"/>
+        <field name="priority">5</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="delivery_lock_time.model_stock_picking"/>
+        <field name="code">model._cronjob_lock_datetime()</field>
+    </record>
+</odoo>

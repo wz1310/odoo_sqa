@@ -1,0 +1,125 @@
+<odoo>
+  <data>
+
+<template id="profit_loss" inherit_id="account_reports.main_template" primary="True">
+    <xpath expr="//div[hasclass('alert')]" position="after">
+        <div><p></p></div>
+    <div class="col-4">
+        <h2><t t-esc="report.get('company_name')"/></h2>
+    </div>
+      <div class="col-4">
+      <span><h4>Laporan Profit and Loss</h4></span>
+    </div>
+  </xpath>
+</template>
+
+<template id="balance_sheet" inherit_id="account_reports.main_template" primary="True">
+    <xpath expr="//div[hasclass('alert')]" position="after">
+        <div><p></p></div>
+    <div class="col-4">
+        <h2><t t-esc="report.get('company_name')"/></h2>
+    </div>
+      <div class="col-4">
+      <span><h4>Laporan Balance Sheet</h4></span>
+    </div>
+  </xpath>
+</template>
+
+<template id="ex_summary" inherit_id="account_reports.main_template" primary="True">
+    <xpath expr="//div[hasclass('alert')]" position="after">
+        <div><p></p></div>
+    <div class="col-4">
+        <h2><t t-esc="report.get('company_name')"/></h2>
+    </div>
+      <div class="col-4">
+      <span><h4>Laporan Executive Summary</h4></span>
+    </div>
+  </xpath>
+</template>
+
+<template id="part_ledger" inherit_id="account_reports.main_template" primary="True">
+    <xpath expr="//div[hasclass('alert')]" position="after">
+        <div><p></p></div>
+    <div class="col-4">
+        <h2><t t-esc="report.get('company_name')"/></h2>
+    </div>
+      <div class="col-4">
+      <span><h4>Laporan Partner Ledger</h4></span>
+    </div>
+  </xpath>
+</template>
+
+<template id="age_receive" inherit_id="account_reports.main_template" primary="True">
+    <xpath expr="//div[hasclass('alert')]" position="after">
+        <div><p></p></div>
+    <div class="col-4">
+        <h2><t t-esc="report.get('company_name')"/></h2>
+    </div>
+      <div class="col-4">
+      <span><h4>Laporan Aged Receivable</h4></span>
+    </div>
+  </xpath>
+</template>
+
+<template id="age_pay" inherit_id="account_reports.main_template" primary="True">
+    <xpath expr="//div[hasclass('alert')]" position="after">
+        <div><p></p></div>
+    <div class="col-4">
+        <h2><t t-esc="report.get('company_name')"/></h2>
+    </div>
+      <div class="col-4">
+      <span><h4>Laporan Aged Payable</h4></span>
+    </div>
+  </xpath>
+</template>
+
+<template id="gen_bal" inherit_id="account_reports.main_template" primary="True">
+    <xpath expr="//div[hasclass('alert')]" position="after">
+        <div><p></p></div>
+    <div class="col-4">
+        <h2><t t-esc="report.get('company_name')"/></h2>
+    </div>
+      <div class="col-4">
+      <span><h4>Laporan General Ledger</h4></span>
+    </div>
+  </xpath>
+</template>
+
+<template id="tri_balance" inherit_id="account_reports.main_template" primary="True">
+    <xpath expr="//div[hasclass('alert')]" position="after">
+        <div><p></p></div>
+    <div class="col-4">
+        <h2><t t-esc="report.get('company_name')"/></h2>
+    </div>
+      <div class="col-4">
+      <span><h4>Laporan Trial Balance</h4></span>
+    </div>
+  </xpath>
+</template>
+
+<template id="cons_jurnal" inherit_id="account_reports.main_template" primary="True">
+    <xpath expr="//div[hasclass('alert')]" position="after">
+        <div><p></p></div>
+    <div class="col-4">
+        <h2><t t-esc="report.get('company_name')"/></h2>
+    </div>
+      <div class="col-4">
+      <span><h4>Laporan Consolidated Journals</h4></span>
+    </div>
+  </xpath>
+</template>
+
+<template id="tax_report" inherit_id="account_reports.main_template" primary="True">
+    <xpath expr="//div[hasclass('alert')]" position="after">
+        <div><p></p></div>
+    <div class="col-4">
+        <h2><t t-esc="report.get('company_name')"/></h2>
+    </div>
+      <div class="col-4">
+      <span><h4>Laporan Tax Report</h4></span>
+    </div>
+  </xpath>
+</template>
+
+  </data>
+</odoo>

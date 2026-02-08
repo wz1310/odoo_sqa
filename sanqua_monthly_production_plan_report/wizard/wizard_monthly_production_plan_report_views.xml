@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="wizard_monthly_production_plan_report_form_view">
+        <field name="name">Wizard Monthly Production Plan Report</field>
+        <field name="model">wizard.monthly.production.plan.report</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="month" />
+                            <field name="year" />
+                            <field name="company_id" options="{'no_open': True, 'no_create': True}" readonly="1" force_save="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Generate Excel" type="object" name="button_print" class="oe_highlight" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_monthly_production_plan_report" model="ir.actions.act_window">
+        <field name="name">Wizard Monthly Production Plan Report</field>
+        <field name="res_model">wizard.monthly.production.plan.report</field>
+        <field name="view_mode">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="wizard_monthly_production_plan_report_form_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="monthly_production_plan_report_menu" name="Monthly Production Report" action="action_monthly_production_plan_report" parent="mrp.menu_mrp_reporting" sequence="10"/>
+
+</odoo>

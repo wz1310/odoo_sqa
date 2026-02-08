@@ -1,0 +1,52 @@
+<odoo>
+    <record id="stock_move_view_tree" model="ir.ui.view">
+        <field name="name">stock.move.view.tree</field>
+        <field name="model">stock.move</field>
+        <field name='priority'>100</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="vendor_id" />
+                <field name="no_sj_vendor" />
+                <field name="received_date_sj" />
+                <field name="picking_id" optional="show"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="origin" optional="hide"/>
+                <field name="date_expected" optional="hide" widget="date"/>
+                <field name="date" string="Creation date" widget="date" optional="hide"/>
+                <field name="location_id" optional="hide"/>
+                <field name="location_dest_id" optional="show"/>
+                <field name="description_picking" invisible="1"/>
+                <field name="interco_src_location_names" optional="hide"/>
+                <field name="product_id"/>
+                <field name="product_uom_qty"/>
+                <field name="return_qty"/>
+                <field name="quantity_done"/>
+                <field name="difference_qty" optional="hide"/>
+                <field name="product_uom"/>
+                <field name="state" optional="show"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="stock_move_action" model="ir.actions.act_window">
+        <field name="name">Detail Penerimaan</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.move</field>
+        <field name="view_mode">tree</field>
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('sanqua_report_purchase_and_stock.stock_move_view_tree'), 'sequence':2}),
+                ]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            </p>
+        </field>
+    </record>
+    
+    <menuitem id="stock_move_menu"
+            name="Detail Penerimaan"
+            parent="stock.menu_warehouse_report"
+            action="stock_move_action"
+            sequence="7"/>
+</odoo>

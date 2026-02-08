@@ -1,0 +1,79 @@
+<odoo>
+	<data noupdate="1">
+		<!-- <function model="stock.picking.type" name="adjust_global_rule"/> -->
+		<record model="ir.rule" id="operatingunit_sale.sale_order_per_warehouse">
+			<field name="active" eval="False"/>
+		</record>
+
+		<record model="ir.rule" id="operatingunit_sale.sale_order_line_per_warehouse">
+			<field name="active" eval="False"/>
+		</record>
+
+		<record model="ir.rule" id="operatingunit_warehouse.stock_picking_branch_rule">
+			<field name="active" eval="False"/>
+		</record>
+
+		<record model="ir.rule" id="rule_inventory_user_interco_proc_order">
+			<field name="name">Can See Stock Operation Other WH Can Read</field>
+			<field name="model_id" ref="stock.model_stock_picking_type"/>
+			<field name="domain_force">[('other_wh_can_read','=',True)]</field>
+			<field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+			<field name="perm_read" eval="True" />
+			<field name="perm_write" eval="False" />
+			<field name="perm_create" eval="False" />
+			<field name="perm_unlink" eval="False" />
+			<field name="active" eval="False"/>
+		</record>
+
+		<record model="ir.rule" id="rule_stock_picking_can_read_other_wh">
+			<field name="name">Can Read By Other WH</field>
+			<field name="model_id" ref="stock.model_stock_picking"/>
+			<field name="domain_force">['|',('other_wh_can_read','=',True),('company_id','in',company_ids)]</field>
+			<field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+			<field name="perm_read" eval="True" />
+			<field name="perm_write" eval="True" />
+			<field name="perm_create" eval="False" />
+			<field name="perm_unlink" eval="False" />
+			<field name="active" eval="False" />
+		</record>
+
+
+		<record model="ir.rule" id="rule_sale_order_intercompany_master">
+			<field name="name">Rule Sale Order Access by intercompany master</field>
+			<field name="model_id" ref="model_sale_order" />
+			<field name="perm_read" eval="True" />
+			<field name="perm_create" eval="True" />
+			<field name="perm_write" eval="True" />
+			<field name="perm_unlink" eval="True" />
+			<field name="domain_force">[('interco_master','=',True)]</field>
+			<field name="groups" eval="[(4, ref('stock.group_stock_user'))]" />
+		</record>
+
+
+		<record model="ir.rule" id="operatingunit_warehouse.stock_warehouse_branch_rule">
+			<field name="domain_force">['|',('id', 'in', user.warehouse_ids.ids),('other_wh_can_read','=',True)]</field>
+		</record>
+
+		<record model="ir.rule" id="stock.stock_picking_rule">
+			<field name="name">stock_picking multi-company</field>
+			<field name="model_id" search="[('model','=','stock.picking')]" model="ir.model"/>
+			<field name="global" eval="True"/>
+			<field name="domain_force">[('company_id', 'in', company_ids)]</field>
+		</record>
+
+		<record model="ir.rule" id="stock.stock_move_rule">
+			<field name="name">stock_move multi-company</field>
+			<field name="model_id" search="[('model','=','stock.move')]" model="ir.model"/>
+			<field name="global" eval="True"/>
+			<field name="domain_force">['|', ('company_id', 'in', company_ids), '&amp;', ('location_dest_id.company_id', '=', False), ('location_dest_id.usage', '=', 'transit')]</field>
+		</record>
+
+		<record model="ir.rule" id="stock.stock_move_line_rule">
+			<field name="name">stock_move_line multi-company</field>
+			<field name="model_id" search="[('model','=','stock.move.line')]" model="ir.model"/>
+			<field name="global" eval="True"/>
+			<field name="domain_force">['|','|',('company_id','=',False),('company_id', 'in', company_ids),'&amp;',('location_dest_id.company_id', '=', False), ('location_dest_id.usage', '=', 'transit')]</field>
+		</record>
+		
+	</data>
+</odoo>

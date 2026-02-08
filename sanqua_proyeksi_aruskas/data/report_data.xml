@@ -1,0 +1,26 @@
+<odoo>
+
+    <record id="action_report_aruskas_report_html" model="ir.actions.client">
+        <field name="name">Proyeksi Arus Kas Report</field>
+        <field name="tag">stock_card_report_backend</field>
+        <field name="context" eval="{'active_model': 'report.aruskas.report'}" />
+    </record>
+
+    <report string="Proyeksi Arus Kas PDF"
+            id="action_aruskas_report_pdf"
+            model="report.aruskas.report"
+            name="sanqua_proyeksi_aruskas.report_aruskas_report_pdf"
+            file="sanqua_proyeksi_aruskas.report_aruskas_report_pdf"
+            report_type="qweb-pdf"
+            print_report_name="Proyeksi Arus Kas Report"
+            paperformat="sanqua_proyeksi_aruskas.paperformat_stock_card"/>
+
+    <report string="Proyeksi Arus Kas XLSX"
+            id="action_aruskas_report_xlsx"
+            model="report.aruskas.report"
+            name="sanqua_proyeksi_aruskas.report_aruskas_report_xlsx"
+            file="Proyeksi Arus Kas Report"
+            report_type="xlsx"
+            attachment_use="False"/>
+
+</odoo>

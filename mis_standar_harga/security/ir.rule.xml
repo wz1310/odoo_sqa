@@ -1,0 +1,12 @@
+<odoo>
+    
+    <record model="ir.rule" id="rule_standar_harga">
+        <field name="name">Rule Standar Harga</field>
+        <field name="model_id" ref="model_standar_harga" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_unlink" eval="False" />
+    </record>
+</odoo>
+

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_competitor_tree_view" model="ir.ui.view">
+        <field name="name">res.partner.competitor.tree.view</field>
+        <field name="model">res.partner.competitor</field>
+        <field name="arch" type="xml">
+        	<tree string="Competitor">
+                <field name="partner_id"/>
+                <field name="sales_id" string="Sales Name"/>
+                <field name="external_customer"/>
+                <field name="brand"/>
+                <field name="product_volume"/>
+                <field name="qty"/>
+                <field name="base_price"/>
+                <field name="double_price"/>
+                <field name="medium_truck_price"/>
+                <field name="retail_price"/>
+                <field name="description"/>
+                <field name="warehouse_capacity"/>
+                <field name="date"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="state" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="res_partner_competitor_form_view" model="ir.ui.view">
+        <field name="name">res.partner.competitor.form.view</field>
+        <field name="model">res.partner.competitor</field>
+        <field name="arch" type="xml">
+            <form string="Competitor">
+                <header>
+                    <button name="btn_post" type="object" string="Post" states="draft" class="btn-primary"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="competitor_name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="competitor_name" readonly="0" attrs="{'readonly':['|',('state','!=','draft'),('partner_id','!=',False)]}"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_create': True}"/>
+                            <field name="sales_id" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_create': True}"/>
+                            <field name="external_customer" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="brand" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="product_volume" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="qty" attrs="{'readonly':[('state','!=','draft')]}"/> 
+                            <field name="base_price" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="double_price" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="medium_truck_price" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="retail_price" attrs="{'readonly':[('state','!=','draft')]}"/>
+                        </group>
+                        <group>
+                            <field name="date" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="warehouse_capacity" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="description" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="company_id" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_create': True}"/>
+                        </group> 
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_res_partner_competitor" model="ir.actions.act_window">
+        <field name="name">Competitors</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.partner.competitor</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" eval="res_partner_competitor_tree_view"/>
+    </record>
+
+    <menuitem
+        id="menu_res_partner_competitor"
+        name="Competitors"
+        parent="sale.sale_menu_root"
+        action="action_res_partner_competitor"
+        sequence="2"/>
+</odoo>

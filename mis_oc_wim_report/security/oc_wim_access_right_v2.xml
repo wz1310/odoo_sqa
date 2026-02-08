@@ -1,0 +1,15 @@
+<odoo>
+    <record model="ir.rule" id="rule_oc_wim_report_realisasi_filter_by_logged_company_id">
+        <field name="name">OC WIM: Allowed-plant only </field>
+        <field name="model_id" ref="mis_oc_wim_report.model_oc_wim_report_realisasi"/>
+        <field name="domain_force">['|',('plant_id','=',False),('plant_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+
+    <record model="ir.rule" id="rule_oc_wim_plant_report_filter_by_logged_company_id">
+        <field name="name">OC WIM Plant: Allowed-plant only </field>
+        <field name="model_id" ref="mis_oc_wim_report.model_oc_wim_plant_report"/>
+        <field name="domain_force">['|',('plant_id','=',False),('plant_id', 'in', company_ids)]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+</odoo>

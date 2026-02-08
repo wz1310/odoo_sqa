@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_purchaseorders_document">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div class="row">
+                        <table style="width: 100%;border-bottom: solid 2px black;">
+                            <tr>
+                                <td rowspan="2" style="width: 10%;">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 60px;" alt="Logo"/>
+                                </td>
+                                <td rowspan="2" style="font-size: 12px; width: 70%;text-align:center;">
+	                                    <span style="font-size: 20px;text-transform: uppercase;font-weight:bolder;" t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["adress", "name", "phone"], "no_marker": true}'/>
+                                    <span t-field="o.company_id.partner_id.street"/>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Telp. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Fax. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.vat">
+                                        NPWP. <span t-field="o.company_id.partner_id.vat"/> 
+                                    </t>
+                                </td>
+                                <td style="width: 20%;">
+                                    <t t-if="o.company_id.iso_purchase_order">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            Doc. No. : <t t-esc="o.company_id.iso_purchase_order"/><br/>
+                                        </span>
+                                    </t>
+                                    <t t-if="o.state not in ['purchase','done']">
+                                         <span class="text-left" style="font-size: 10px;">
+                                            <t t-esc="dict(o._fields['state'].selection).get(o.state)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span><![CDATA[&nbsp;]]></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="page" style="font-size: 13px;">
+                   <style>
+                        .table th,
+                        .table td {
+                            padding: 2px;
+                        }
+                        .th-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            text-align:center;
+                        }
+                        .td-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-5 {
+                            border-top: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            border-bottom: none !important;
+                        }
+                        .td-6 {
+                            border-top: none !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <div class="row">
+                        <div style="width:60%">
+                            <div>
+                                <span style="font-size: 16px;"><strong>Pesanan Pembelian</strong></span>
+                            </div>
+                            <table class="table" style="width:100%;">
+                                <tr>
+                                    <td class="no-border" style="width:29%;">No. PO</td>
+                                    <td class="no-border" style="width:1%;">:</td>
+                                    <td class="no-border" style="width:70%;"><span t-field="o.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="no-border" style="width:29%;">Mata Uang</td>
+                                    <td class="no-border" style="width:1%;">:</td>
+                                    <td class="no-border" style="width:70%;"><span t-field="o.currency_id"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="no-border" style="width:29%;">Kadaluarsa PO</td>
+                                    <td class="no-border" style="width:1%;">:</td>
+                                    <td class="no-border" style="width:70%;">
+					<!--span t-esc="o.get_format_datetime(datetime_value=o.date_order,only_date=True)"/-->
+				   	<span t-esc="o.validity_so_date"/>
+				    </td>
+                                </tr	>
+                                <tr>
+                                    <td class="no-border" style="width:29%;">TOP</td>
+                                    <td class="no-border" style="width:1%;">:</td>
+                                    <td class="no-border" style="width:70%;"><span t-field="o.payment_term_id"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="no-border" style="width:29%;">Tujuan Pengiriman</td>
+                                    <td class="no-border" style="width:1%;">:</td>
+                                    <td class="no-border" style="width:70%;">
+                                         <span t-field="o.picking_type_id"/><br/>
+                                        <span t-field="o.picking_type_id.warehouse_id.partner_id.street"/>
+                                        <t t-if="o.picking_type_id.warehouse_id.partner_id.street2">
+                                            <br/><span t-field="o.picking_type_id.warehouse_id.partner_id.street2"/>, 
+                                        </t>
+                                        <span t-field="o.picking_type_id.warehouse_id.partner_id.city"/>
+                                        , <span t-field="o.picking_type_id.warehouse_id.partner_id.country_id"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div style="width:40%;">
+                            <div>
+                                <span>Tgl PO <span t-esc="o.get_format_datetime(datetime_value=o.date_order,only_date=True)"/></span>
+                            </div><br/>
+                            <div>
+                                Kepada Yth,<br/>
+                                <span t-field="o.partner_id"/>
+                            </div>
+			    <div>
+			   	<span t-field="o.partner_id.street" />
+ 			    </div>
+			   <div>
+			   	<span t-field="o.partner_id.street2" />
+			   </div>
+			   <div>
+			   	Telp.<![CDATA[&nbsp;]]><span t-field="o.partner_id.phone" />
+			   </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <table class="table" style="width: 100%;border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 5%;">
+                                        No.
+                                    </th>
+                                    <th class="th-0" style="width: 20%;">
+                                        Nama Barang
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Qty
+                                    </th>
+                                    <th class="th-0" style="width: 5%;">
+                                        Satuan
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Harga Satuan
+                                    </th>
+                                    <th class="th-0" style="width: 5%;">
+                                        Diskon
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Jumlah
+                                    </th>
+                                    <th class="th-0" style="width: 20%;">
+                                        Keterangan
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-foreach="o.order_line" t-as="line">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="idx"/> .
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.name"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="o.get_format_currency(line.product_qty)"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.product_uom.name"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.price_unit)"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.discount)"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span t-esc="o.get_format_currency(line.price_subtotal)"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                </t>
+                                <t t-set="blank_space" t-value="13 - len(o.order_line)"/>
+                                <t t-if="blank_space > 0">
+                                    <t t-set="blank_space" t-value="13 - len(o.order_line)"/>
+                                </t>
+                                <t t-else="">
+                                    <t t-set="blank_space" t-value="0"/>
+                                </t>
+                                <t t-foreach="blank_space" t-as="a">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="td-5" rowspan="4" colspan="4">
+                                        <span><![CDATA[&nbsp;]]></span>
+                                    </td>
+                                    <td class="td-5" colspan="2">Total Sub</td>
+                                    <td class="text-right td-5">
+                                        <span t-esc="o.get_format_currency(o.amount_untaxed,total=True)"/>
+                                    </td>
+                                    <td class="td-5" ><span><![CDATA[&nbsp;]]></span></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-4" colspan="2">Diskon</td>
+                                    <td class="text-right td-4">
+                                        <span t-esc="o.get_format_currency(o.total_discount_amount,total=True)"/>
+                                    </td>
+                                    <td class="td-4"><span><![CDATA[&nbsp;]]></span></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-4" colspan="2">PPN 10%</td>
+                                    <td class="text-right td-4">
+                                        <span t-esc="o.get_format_currency(o.amount_tax,total=True)"/>
+                                    </td>
+                                    <td class="td-4"><span><![CDATA[&nbsp;]]></span></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-4" colspan="2">Grand Total</td>
+                                    <td class="text-right td-4">
+                                        <span t-esc="o.get_format_currency(o.amount_total,total=True)"/>
+                                    </td>
+                                    <td class="td-4"><span><![CDATA[&nbsp;]]></span></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+		    <div class="row" style="font-weight:bolder;">
+                        Terbilang # <span t-esc="o.get_terbilang(o.amount_total)"/> #<br/>
+                    </div>
+                    <div class="row" style="font-size:11px;">
+                        Catatan:<br/>
+                        1. Barang Tidak sesuai dengan pesanan akan dikembalikan<br/>
+                        2. Dalam Nota/Surat Jalan harap dicantumkan No. PO ini<br/>
+                        3. Tukar Faktur, Po asli/copy harap dilampirkan<br/>
+                        4. Untuk pengiriman sesuai konfirmasi atau jadwal<br/>
+                        5. NPWP Perusahaan : 02.381.555.8-431.000<br/>
+                    </div>
+                    <div class="row" style="float:right;padding-right:50px;">
+                        Hormat Kami,
+                        <br/>
+                        <br/>
+                        <br/>	
+			<br/>
+			<br/>
+                        (.....................)
+                    </div>
+                    <div class="row">
+                        <table class="table" style="width:100%;border: 1px solid black;">
+                            <tr>
+                                <td class="td-5" style="width:45%;">Konfirmasi PO</td>
+                                <td class="td-0" rowspan="2" style="width:45%;">Note PO:</td>
+                            </tr>
+                            <tr>
+                                <td class="td-6">PO Supplier &amp; Tanggal Persetujuan PO</td>
+                            </tr>
+                            <tr>
+                                <td class="td-0" style="height:80px;"><span><![CDATA[&nbsp;]]></span></td>
+                               
+                                <td class="td-0"><span><![CDATA[&nbsp;]]></span></td>
+                            </tr>
+                            
+                        </table>
+                    </div>
+                </div>
+                <div class="footer" style="font-size: 11px;">
+                    <div style="float:left;">
+                        Page: <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    
+    <template id="report_purchaseorders">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="sanqua_print.report_purchaseorders_document" t-lang="o.partner_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

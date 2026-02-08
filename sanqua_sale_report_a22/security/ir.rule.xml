@@ -1,0 +1,16 @@
+<odoo>
+    
+    <record id="group_sanqua_division_summary_sales_report" model="res.groups">
+        <field name="name">A22 - SanQua Division Summary Sales Report</field>
+    </record>
+
+    <record model="ir.rule" id="rule_sanqua_division_summary_sales_report_user">
+        <field name="name">Rule SanQua Division Summary Sales Global User</field>
+        <field name="model_id" ref="sale.model_sale_report" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+    </record>
+</odoo>

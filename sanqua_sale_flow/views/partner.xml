@@ -1,0 +1,231 @@
+<odoo>
+	<record model="ir.ui.view" id="inherited_view_partner_form">
+		<field name="name">Inherited View Partner Form</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='region_id']" position="after">
+				<field name="allowed_product_category_ids" widget="many2many_tags" readonly="1" groups="base.group_system"/>
+				<field name="payment_method"/>
+				<field name="collection_method"/>
+			</xpath>
+			<xpath expr="//page[@name='sales_purchases']/group[last()]" position="after">
+				<group name="group_sale_flow" groups="base.group_system">
+					<field name="team_id"/>
+				</group>
+			</xpath>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="inherited_res_partner_view_form">
+		<field name="name">Inherited res partner view form</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="account_accountant.res_partner_view_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//group[@name='accounting_entries']" position="attributes">
+				<attribute name="groups">account.group_account_invoice</attribute>
+			</xpath>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="inherited_partner_pricelist_view_form">
+		<field name="name">Inherited Partner Pricelist View Form</field>
+		<field name="model">partner.pricelist</field>
+		<field name="inherit_id" ref="partner_credit_limit.partner_pricelist_view_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='team_id']" position="attributes">
+				<attribute name="domain">[('state','=','done')]</attribute>
+			</xpath>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="view_partner_form_partner_credit_limit_inherited">
+		<field name="name">View Partner Form Partner Credit Limit Inherited</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="partner_credit_limit.view_partner_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='partner_pricelist_ids']/tree/field[@name='team_id']" position="attributes">
+				<attribute name="domain">[('state','=','done')]</attribute>
+			</xpath>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="inherited_view_partner_tree">
+		<field name="name">Inherited View Partner Tree</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_tree"/>
+		<field name="arch" type="xml">
+			<xpath expr="//tree" position="replace">
+				<tree>
+					<field name="code"/>
+					<field name="display_name"/>
+					<field name="user_id"/>
+					<field name="join_date"/>
+					<field name="first_sales_transaction_date"/>
+					<field name="contact_address_complete"/>
+					<field name="state"/>
+					<field name="create_uid"/>
+					<field name="company_id"/>
+					<field name="active" optional="hide"/>
+					<field name="approved" optional="hide"/>
+					<field name="can_direct_pickup" optional="hide"/>
+					<field name="collector" optional="hide"/>
+					<field name="customer" optional="hide"/>
+					<field name="employee" optional="hide"/>
+					<!-- <field name="has_unrenconciled_entries" optional="hide"/> -->
+					
+					<field name="is_blacklisted" optional="hide"/>
+					<field name="is_company" optional="hide"/>
+					<field name="message_has_error" optional="hide"/>
+					<field name="message_has_sms_error" optional="hide"/>
+					<field name="message_is_follower" optional="hide"/>
+					<field name="message_needaction" optional="hide"/>
+					<field name="message_unread" optional="hide"/>
+					<field name="partner_share" optional="hide"/>
+					<field name="phone_blacklisted" optional="hide"/>
+					<!-- <field name="plant_tochange_car" optional="hide"/> -->
+					<field name="signup_valid" optional="hide"/>
+					<field name="supplier" optional="hide"/>
+					<field name="taxable_enterprise" optional="hide"/>
+					<field name="user_can_approve" optional="hide"/>
+					<field name="activity_exception_icon" optional="hide"/>
+					<field name="activity_summary" optional="hide"/>
+					<field name="additional_info" optional="hide"/>
+					<field name="citizen_id_no" optional="hide"/>
+					<field name="city" optional="hide"/>
+					<field name="commercial_company_name" optional="hide"/>
+					<field name="company_name" optional="hide"/>
+					<field name="contact_address" optional="hide"/>
+					<field name="email" optional="hide"/>
+					<field name="email_formatted" optional="hide"/>
+					<field name="email_normalized" optional="hide"/>
+					<field name="function" optional="hide"/>
+					<field name="im_status" optional="hide"/>
+					<field name="mobile" optional="hide"/>
+					<field name="name" optional="hide"/>
+					<field name="national_id" optional="hide"/>
+					<field name="online_partner_bank_account" optional="hide"/>
+					<field name="online_partner_vendor_name" optional="hide"/>
+					<field name="owner_file_name" optional="hide"/>
+					<field name="parent_name" optional="hide"/>
+					<field name="phone" optional="hide"/>
+					<field name="phone_sanitized" optional="hide"/>
+					<field name="ref" optional="hide"/>
+					<field name="signup_token" optional="hide"/>
+					<field name="signup_type" optional="hide"/>
+					<field name="signup_url" optional="hide"/>
+					<field name="street" optional="hide"/>
+					<field name="street2" optional="hide"/>
+					<field name="tax_holder_address" optional="hide"/>
+					<field name="tax_holder_name" optional="hide"/>
+					<field name="tax_reg_no" optional="hide"/>
+					<field name="tz_offset" optional="hide"/>
+					<field name="vat" optional="hide"/>
+					<field name="warehouse_file_name" optional="hide"/>
+					<field name="website" optional="hide"/>
+					<field name="zip" optional="hide"/>
+					<field name="activity_date_deadline" optional="hide"/>
+					<field name="date" optional="hide"/>
+					<field name="date_localization" optional="hide"/>
+					<field name="payment_next_action_date" optional="hide"/>
+					<field name="__last_update" optional="hide"/>
+					<field name="create_date" optional="hide"/>
+					<field name="last_time_entries_checked" optional="hide"/>
+					<field name="signup_expiration" optional="hide"/>
+					<field name="write_date" optional="hide"/>
+					<field name="credit_limit" optional="hide"/>
+					<field name="current_credit" optional="hide"/>
+					<field name="partner_latitude" optional="hide"/>
+					<field name="partner_longitude" optional="hide"/>
+					<field name="remaining_limit" optional="hide"/>
+					<field name="active_lang_count" optional="hide"/>
+					<field name="bank_account_count" optional="hide"/>
+					<field name="color" optional="hide"/>
+					<field name="customer_rank" optional="hide"/>
+					<field name="id" optional="hide"/>
+					<field name="journal_item_count" optional="hide"/>
+					<field name="message_attachment_count" optional="hide"/>
+					<field name="message_bounce" optional="hide"/>
+					<field name="message_has_error_counter" optional="hide"/>
+					<field name="message_needaction_counter" optional="hide"/>
+					<field name="message_unread_counter" optional="hide"/>
+					<field name="minimum_approved" optional="hide"/>
+					<field name="partner_gid" optional="hide"/>
+					<field name="payment_token_count" optional="hide"/>
+					<field name="purchase_order_count" optional="hide"/>
+					<field name="remaining_approval" optional="hide"/>
+					<!-- <field name="sales_order_count" optional="hide"/> -->
+					<field name="supplier_invoice_count" optional="hide"/>
+					<field name="allowed_product_category_ids" optional="hide" widget="many2many_tags"/>
+					<field name="approved_by_ids" optional="hide" widget="many2many_tags"/>
+					<field name="approvers_ids" optional="hide" widget="many2many_tags"/>
+					<field name="approvers_user_ids" optional="hide" widget="many2many_tags"/>
+					<field name="category_id" optional="hide" widget="many2many_tags"/>
+					<field name="channel_ids" optional="hide" widget="many2many_tags"/>
+					<field name="message_channel_ids" optional="hide" widget="many2many_tags"/>
+					<field name="message_partner_ids" optional="hide" widget="many2many_tags"/>
+					<field name="rejected_by_ids" optional="hide" widget="many2many_tags"/>
+					<field name="team_ids" optional="hide" widget="many2many_tags"/>
+					<field name="activity_type_id" optional="hide"/>
+					<field name="activity_user_id" optional="hide"/>
+					<field name="commercial_partner_id" optional="hide"/>
+					<field name="country_id" optional="hide"/>
+					<field name="currency_id" optional="hide"/>
+					<field name="followup_level" optional="hide"/>
+					<field name="industry_id" optional="hide"/>
+					<field name="message_main_attachment_id" optional="hide"/>
+					<field name="parent_id" optional="hide"/>
+					<field name="payment_responsible_id" optional="hide"/>
+					<field name="property_account_payable_id" optional="hide"/>
+					<field name="property_account_position_id" optional="hide"/>
+					<field name="property_account_receivable_id" optional="hide"/>
+					<field name="property_delivery_carrier_id" optional="hide"/>
+					<field name="property_payment_term_id" optional="hide"/>
+					<field name="property_product_pricelist" optional="hide"/>
+					<field name="property_purchase_currency_id" optional="hide"/>
+					<field name="property_stock_customer" optional="hide"/>
+					<field name="property_stock_supplier" optional="hide"/>
+					<field name="property_supplier_payment_term_id" optional="hide"/>
+					<field name="region_id" optional="hide"/>
+					<field name="region_master_id" optional="hide"/>
+					<field name="region_group_id" optional="hide"/>
+					<field name="same_vat_partner_id" optional="hide"/>
+					<field name="self" optional="hide"/>
+					<field name="state_id" optional="hide"/>
+					<field name="team_id" optional="hide"/>
+					<field name="title" optional="hide"/>
+					<field name="write_uid" optional="hide"/>
+					<field name="credit" optional="hide"/>
+					<field name="debit" optional="hide"/>
+					<field name="debit_limit" optional="hide"/>
+					<field name="direct_pickup_reduction_amount" optional="hide"/>
+					<field name="total_due" optional="hide"/>
+					<field name="total_invoiced" optional="hide"/>
+					<field name="total_overdue" optional="hide"/>
+					<field name="activity_exception_decoration" optional="hide"/>
+					<field name="activity_state" optional="hide"/>
+					<field name="black_list" optional="hide"/>
+					<field name="collection_method" optional="hide"/>
+					<field name="company_type" optional="hide"/>
+					<field name="digit2" optional="hide"/>
+					<field name="followup_status" optional="hide"/>
+					<field name="invoice_warn" optional="hide"/>
+					<field name="lang" optional="hide"/>
+					<field name="over_due" optional="hide"/>
+					<field name="payment_method" optional="hide"/>
+					<field name="picking_warn" optional="hide"/>
+					<field name="purchase_warn" optional="hide"/>
+					<field name="sale_warn" optional="hide"/>
+					<field name="trust" optional="hide"/>
+					<field name="type" optional="hide"/>
+					<field name="tz" optional="hide"/>
+					<field name="comment" optional="hide"/>
+					<field name="invoice_warn_msg" optional="hide"/>
+					<field name="picking_warn_msg" optional="hide"/>
+					<field name="purchase_warn_msg" optional="hide"/>
+					<field name="sale_warn_msg" optional="hide"/>
+				</tree>
+			</xpath>
+		</field>
+	</record>
+</odoo>

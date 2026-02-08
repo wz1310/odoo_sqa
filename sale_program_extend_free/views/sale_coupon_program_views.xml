@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<odoo>
+    <record model="ir.ui.view" id="sale_coupon_program_inherited_tree_view">
+        <field name="name">Sale Coupon Program Inherited Tree View</field>
+        <field name="model">sale.coupon.program</field>
+        <field name="inherit_id" ref="sale_coupon.sale_coupon_program_view_tree" />
+        <field name="arch" type="xml">
+            <field name="company_id" position="after">
+                <field name="state" />
+            </field>
+
+            <xpath expr="//tree" position="attributes">
+                <attribute name="decoration-muted">state!='done'</attribute>
+            </xpath>
+        </field>
+    </record>
+    <data>
+        <record id="sale_coupon_program_view_form_common_inherit" model="ir.ui.view">
+            <field name="name">sale.coupon.program.view.form.common.inherit</field>
+            <field name="model">sale.coupon.program</field>
+            <field name="inherit_id" ref="sale_coupon.sale_coupon_program_view_form_common"/>
+            <field name="arch" type="xml">
+                <!-- <header position="inside">
+                    <field name="state" widget="selection"/>
+                </header> -->
+                <xpath expr="//form/sheet" position="before">
+                    <header>
+                        <field name="state" widget="statusbar" clickable="1" groups="base.group_system,sale_program_extend_free.group_promotion_manager"/>
+                    </header>
+                </xpath>
+
+                <field name="reward_product_id" position="before">
+                    <field name="free_product_method" attrs="{'invisible':[('reward_type', 'in', ['discount','free_shipping'])]}"/>
+                    <field name="free_product_selection" attrs="{'invisible':['|',('reward_type', 'in', ['discount', 'free_shipping']),('free_product_method', '=', 'base')], 'required': [('reward_type','=','product'),('free_product_method', '=', 'extended')]}"/>
+                </field>
+                <label for="discount_fixed_amount" position="before">
+                    <field name="fix_amount_method" attrs="{'invisible':['|',('reward_type', 'in', ['product','free_shipping']),('discount_type','!=','fixed_amount')], 'required': [('reward_type', '=', 'discount'),('discount_type','=','fixed_amount')]}"/>
+                </label>
+                <field name="reward_product_id" position="replace">
+                    <field name="reward_product_id" attrs="{'invisible':['|',('reward_type', 'in', ['discount', 'free_shipping']),('free_product_selection', '=', 'same_on_line')], 'required': ['|',('free_product_selection', '=', 'custom'),('free_product_method', '=', 'base')]}"/>
+                </field>
+                <label for="reward_product_quantity" position="replace">
+                    <label string="Quantity" for="reward_product_quantity" attrs="{'invisible': [('reward_type', 'in', ['discount', 'free_shipping'])]}"/>
+                </label>
+                <xpath expr="//sheet/group[2]/group[2]/div" position="attributes">
+                    <attribute name="attrs">{'invisible': [('reward_type', 'in', ['discount', 'free_shipping'])]}</attribute>
+                </xpath>
+                <xpath expr="//label[@for='rule_min_quantity']" position="before">
+                    <field name="rule_sale_domain" placeholder="Select product" widget="domain" options="{'model': 'sale.order', 'in_dialog': true}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

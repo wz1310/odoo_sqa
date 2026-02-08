@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="annual_sales_target_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">annual.sales.target.report.wizard.view.form</field>
+        <field name="model">annual.sales.target.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Annual Sales Target">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="year"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="btn_confirm" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_annual_sales_target_report_wizard" model="ir.actions.act_window">
+        <field name="name">A13 - Monthly Sale Ratio Report Wizard</field>
+        <field name="res_model">annual.sales.target.report.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_annual_sales_target_report_wizard"
+            name="A13 - Annual Sales Target Report"
+            action="action_annual_sales_target_report_wizard"
+            parent="sale.menu_sale_report"
+            groups="sanqua_sale_report_a13.group_annual_sales_target_report" sequence="123"/>
+
+</odoo>

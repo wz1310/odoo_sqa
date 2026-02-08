@@ -1,0 +1,128 @@
+<odoo>
+
+    <template id="assets_backend"
+              name="aruskas_report assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link href="/sanqua_proyeksi_aruskas/static/src/css/report.css" rel="stylesheet"/>
+            <script type="text/javascript"
+                    src="/sanqua_proyeksi_aruskas/static/src/js/aruskas_report_backend.js"/>
+        </xpath>
+    </template>
+
+    <template id="sanqua_proyeksi_aruskas.internal_layout">
+        <div class="article">
+            <link href="/aruskas_report/static/src/css/report.css" rel="stylesheet"/>
+            <t t-raw="0"/>
+        </div>
+        <div class="footer">
+            <div class="row">
+                <div class="col-6 custom_footer">
+                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>
+                </div>
+                <div class="col-6 text-right custom_footer">
+                    <span class="page"/>/<span class="topage"/>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="report_buttons">
+        <div class="button_row">
+            <button class="o_aruskas_reports_print btn btn-sm oe_button"><span class="fa fa-print"/>Print</button>
+            <button class="o_aruskas_reports_export btn btn-sm oe_button"><span class="fa fa-download"/>Export</button>
+        </div>
+    </template>
+
+    <template id="report_aruskas_report_html">
+        <div class="o_aruskas_reports_page">
+            <t t-call="sanqua_proyeksi_aruskas.report_buttons"/>
+            <t t-call="sanqua_proyeksi_aruskas.report_aruskas_report_base"/>
+        </div>
+    </template>
+
+    <template id="sanqua_proyeksi_aruskas.report_aruskas_report_pdf">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="sanqua_proyeksi_aruskas.internal_layout">
+                    <t t-call="sanqua_proyeksi_aruskas.report_aruskas_report_base"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="sanqua_proyeksi_aruskas.report_aruskas_report_base">
+        <!-- <t t-foreach="o.product_ids" t-as="product"> -->
+            <div class="page" style="padding-left:30px;padding-right:30px;">
+                <div class="row">
+                    <h4 class="mt0" style="text-align: center;">Proyeksi Arus Kas - <span t-field="o.date_from"/></h4>
+                    <!-- <h4 class="mt0" t-esc="title" style="text-align: center;"/> -->
+                </div>
+                <!-- Display filters -->
+                <!-- <t t-call="sanqua_proyeksi_aruskas.report_aruskas_report_filters"/> -->
+                <!-- Display stock card table -->
+                <div class="act_as_table data_table mt4" style="width: 80%;">
+                    <!-- Display each lines -->
+                    <t t-call="sanqua_proyeksi_aruskas.report_aruskas_lines_header"/>
+                    <t t-set="product_balance" t-value="initial"/>
+                    <t t-foreach="o.results" t-as="product_line">
+                        <t t-call="sanqua_proyeksi_aruskas.report_aruskas_lines"/>
+                    </t>
+                </div>
+                <p style="page-break-before:always;"></p>
+            </div>
+        <!-- </t> -->
+    </template>
+
+    <template id="sanqua_proyeksi_aruskas.report_aruskas_report_filters">
+        <div class="act_as_table data_table" style="width: 100%;">
+            <div class="act_as_row labels">
+                <div class="act_as_cell">Date From</div>
+               
+            </div>
+            <div class="act_as_row">
+                <div class="act_as_cell">
+                    <span t-field="o.date_from"/>
+                </div>
+                
+            </div>
+        </div>
+    </template>
+
+    <template id="sanqua_proyeksi_aruskas.report_aruskas_lines_header">
+        <div class="act_as_thead">
+            <div class="act_as_row labels">
+                <div class="act_as_cell">Company</div>
+                <div class="act_as_cell">Bank / Cash</div>
+                <div class="act_as_cell">Piutang Overdue</div>
+                <div class="act_as_cell">Hutang Overdue</div>
+                <div class="act_as_cell">Budget</div>
+                <div class="act_as_cell">Saldo Akhr</div>
+            </div>
+        </div>
+    </template>
+
+    <template id="sanqua_proyeksi_aruskas.report_aruskas_lines">
+        <div class="act_as_row lines">
+            <div class="act_as_cell left">
+                <t t-esc="product_line.company_id.name"/>
+            </div>
+            <div class="act_as_cell right">
+                <t t-esc="'{0:,.0f}'.format(product_line.bank_kas)"/>
+            </div>
+            <div class="act_as_cell right">
+                <t t-esc="'{0:,.0f}'.format(product_line.piutang)"/>
+            </div>
+             <div class="act_as_cell right">
+                <t t-esc="'{0:,.0f}'.format(product_line.hutang)"/>
+            </div>
+            <div class="act_as_cell right">
+                <t t-esc="'{0:,.0f}'.format(product_line.budget)"/>
+            </div>
+            <div class="act_as_cell right">
+                <t t-esc="'{0:,.0f}'.format(product_line.akhir)"/>
+            </div>
+            
+        </div>
+   </template>
+
+</odoo>

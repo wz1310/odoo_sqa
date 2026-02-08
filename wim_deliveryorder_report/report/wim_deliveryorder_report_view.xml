@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="wim_delivery_order_report_tree" model="ir.ui.view">
+        <field name="name">wim.delivery.order.report.tree</field>
+        <field name="model">mis.report.delivery.order</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="location_id"/>
+                <field name="picking_no"/>
+                <field name="sj_no"/>
+                <field name="sales_team_id"/>
+                <field name="fleet_vehicle_id" optional="hide"/>
+                <field name="fleet_driver_id" optional="hide"/>
+                <field name="contact_code"/>
+                <field name="contact"/>
+                <field name="sub_contact"/>
+                <field name="do_date"/>
+                <field name="do_receive_date"/>
+                <field name="so_no"/>
+                <field name="plant_id"/>
+                <field name="company_id"/>
+                <field name="product_code"/>
+                <field name="desc_product"/>
+
+                <field name="qty_demand"/>
+                <field name="qty_done"/>
+                <field name="qty_return"/>
+                <field name="qty_net"/>
+                <field name="state"/>
+                <field name="uom_name"/>
+
+                <field name="invoice_no" groups="account.group_account_manager"/>
+                <field name="invoice_date" groups="account.group_account_manager"/>
+                <field name="price_pfi" groups="account.group_account_manager"/>
+                <field name="invoice_commercial_no" groups="account.group_account_manager"/>
+                <field name="e_tax_invoice_id" groups="account.group_account_manager"/>
+                <field name="price_before_tax" groups="account.group_account_manager"/>
+
+            </tree>
+        </field>
+    </record>
+    <record id="wim_delivery_order_report_search" model="ir.ui.view">
+        <field name="name">wim.delivery.order.report.search</field>
+        <field name="model">mis.report.delivery.order</field>
+        <field name="arch" type="xml">
+            <search string="WIM Delivery Order Report">
+                <field name="sj_no"/>
+                <field name="contact"/>
+                <field name="sub_contact"/>
+                <field name="so_no"/>
+                <field name="plant_id"/>
+                <field name="so_no"/>
+                <field name="product_code"/>
+                <field name="desc_product"/>
+                <filter name="source_location" string="Kirim dari Gudang WIM" domain="[('plant_id','=', False)]"></filter>
+                <filter name="source_location" string="Kirim dari Plant" domain="['!',('plant_id','=', False)]"></filter>
+                <filter name="invoice_id" string="Sudah Terinvoice" domain="['!',('invoice_id','=', False)]"></filter>
+                <filter name="invoice_id" string="Belum Terinvoice" domain="[('invoice_id','=', False)]"></filter>
+            </search>
+        </field>
+    </record>
+    <record id="action_wim_delivery_order_report" model="ir.actions.act_window">
+        <field name="name">Laporan Rincian Penjualan Bersih</field>
+        <field name="res_model">mis.report.delivery.order</field>
+        <field name="view_mode">tree,pivot</field>
+    </record>
+
+    <menuitem id="menu_mis_deliveryorder_report"
+              name="WIM Delivery Order Report"
+              action="action_wim_delivery_order_report"
+              parent="sale.menu_sale_report"
+              sequence="202"/>
+</odoo>

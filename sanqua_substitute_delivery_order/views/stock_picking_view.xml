@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="substitute_items_view_form" model="ir.ui.view">
+        <field name="name">substitute.items.view.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header/button[@name='action_toggle_is_locked']" position="after">
+                <button name="open_stockpick_substitute_wizard" type="object" string="Substitute Items"  class="btn-info" attrs="{'invisible':['|', '|', ('sale_substitute_id','!=',False), ('sale_id','=',False), ('state','not in',['plant-confirmed','confirmed'])]}" />
+            </xpath>
+            <xpath expr="//field[@name='location_id']" position="after">
+            	<field name="sale_id" readonly="1" force_save="1"/>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']" position="after">
+                <group>
+                    <field name="sale_substitute_id" attrs="{'invisible':[('sale_substitute_id','=',False)]}" />
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="sale_flow_stock_picking_form_inherited">
+        <field name="name">Sale Flow Stock Picking Form Inherited</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="sanqua_sale_flow.stock_picking_form_inherited" />
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='btn_plant_refuse']" position="attributes">
+                <attribute name="attrs">
+                    {'invisible':['|', '|', '|', ('sale_substitute_id','!=',False), ('interco_master','=', False), '&amp;', ('interco_master','=', True), ('state','not in',['confirmed', 'assigned']), ('is_locked','=',False)]}
+                </attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='btn_plant_confirm']" position="attributes">
+                <attribute name="attrs">
+                    {'invisible':['|', '|', '|', ('sale_substitute_id','!=',False), ('interco_master','=', False), '&amp;', ('interco_master','=', True), ('state','not in',['confirmed', 'assigned']), ('is_locked','=',False)]}
+                </attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

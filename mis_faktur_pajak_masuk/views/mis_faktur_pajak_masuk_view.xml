@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="faktur_pajak_masuk_form_view" model="ir.ui.view">
+            <field name="name">faktur.pajak.masuk.form.view</field>
+            <field name="model">faktur.pajak.masuk</field>
+            <field name="arch" type="xml">
+                <form string="Faktur Pajak Masukan" >
+                <header>
+                      <field name="state_fpm" widget="statusbar"/>
+                      <button name="submit_" string="Submit" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state_fpm', 'in', ('wait','approved','rejected'))]}"/>
+                      <button name="approved_" string="Approve" type="object" class="btn btn-primary"
+                        attrs="{'invisible': ['|',('user_can_approve','=',False),('state_fpm', 'not in', ('wait'))]}"/>
+                      <button name="rejected_" string="Reject" type="object" class="btn btn-primary"
+                        attrs="{'invisible': [('state_fpm', 'not in', ('wait','approved'))]}"/>
+                      <button name="draft_" string="Set to draft" type="object" class="btn btn-primary" attrs="{'invisible': [('state_fpm', 'not in', ('rejected'))]}"/>
+                </header>
+                    <sheet string="Faktur Pajak Masukan">
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="v_bill"/>
+                                <field name="fg_pengganti"/>
+                                <field name="no_faktur"/>
+                                <field name="tanggal_faktur"/>
+                                <field name="nama_vendor"/>
+                                <field name="alamat" readonly="1"/>
+                                <field name="npwp"/>
+                            </group>
+                            <group>                                
+                                <field name="kode_jenis"/>
+                                <field name="masa_pajak"/>
+                                <field name="tahun_pajak"/>
+                                <field name="jumlah_dpp"/>
+                                <field name="jumlah_ppn"/>
+                                <field name="jumlah_ppnbm"/>
+                                <field name="is_creditable"/>                                
+                                <field name="company_id"/>                                
+                            </group>
+                        </group>
+                        <group>
+                            <field name="fpml_line" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="fpm_move_id"/>
+                                <field name="hrg_satuan"/>
+                                <field name="jlm_barang"/>
+                                <field name="hrg_total"/>
+                                <field name="f_disc"/>
+                                <field name="dpp"/>
+                                <field name="ppn"/>
+                                <field name="trf_ppnbm"/>
+                                <field name="ppnbm"/>
+                                <field name="company_id"/>
+                            </tree>
+                            </field>
+                        </group>
+                        <group>
+                            <field name="reject_note"></field>
+                        </group>
+                        <notebook>
+                            <page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" invisible="1"/>
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved"/></group>
+
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="faktur_pajak_masuk_tree_view" model="ir.ui.view">
+            <field name="name">faktur.pajak.masuk.tree.view</field>
+            <field name="model">faktur.pajak.masuk</field>
+            <field name="arch" type="xml">
+                <tree string="Faktur Pajak Masukan">
+                    <field name="name"/>
+                    <field name="no_faktur"/>
+                    <field name="tanggal_faktur"/>
+                    <field name="nama_vendor"/>
+                    <field name="alamat"/>                   
+                    <field name="npwp"/>
+                    <field name="jumlah_dpp"/>                  
+                    <field name="jumlah_ppn"/>
+                    <field name="jumlah_ppnbm"/>
+                    <field name="is_creditable"/>          
+                    <field name="state_fpm"/>          
+                </tree>
+            </field>
+        </record>
+
+        <record id="faktur_pajak_masuk_line_form_view" model="ir.ui.view">
+            <field name="name">faktur.pajak.masuk.line.form.view</field>
+            <field name="model">faktur.pajak.masuk.line</field>
+            <field name="arch" type="xml">
+                <form string="Faktur Pajak Masukan Line">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="fpm_move_id"/>
+                                <field name="hrg_satuan"/>
+                                <field name="jlm_barang"/>
+                            </group>
+                            <group>
+                                <field name="hrg_total"/>
+                                <field name="f_disc"/>
+                                <field name="dpp"/>
+                                <field name="ppn"/>                                
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="trf_ppnbm"/>
+                                <field name="ppnbm"/>
+                                <field name="company_id"/>
+                            </group> 
+                        </group>                
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="faktur_pajak_masuk_line_tree_view" model="ir.ui.view">
+            <field name="name">faktur.pajak.masuk.line.tree.view</field>
+            <field name="model">faktur.pajak.masuk.line</field>
+            <field name="arch" type="xml">
+                <tree string="Faktur Pajak Masukan">
+                    <field name="name"/>
+                    <field name="hrg_satuan"/>
+                    <field name="jlm_barang"/>
+                    <field name="hrg_total"/>
+                    <field name="f_disc"/>
+                    <field name="dpp"/>                   
+                    <field name="ppn"/>
+                    <field name="trf_ppnbm"/>                  
+                    <field name="ppnbm"/>
+                    <field name="company_id"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id='faktur_pajak_masuk_action' model='ir.actions.act_window'>
+            <field name="name">Faktur Pajak Masukan</field>
+            <field name="res_model">faktur.pajak.masuk</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="faktur_pajak_masuk_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Faktur Pajak Masukan
+                </p>    
+            </field>
+        </record>
+        
+        <record id='faktur_pajak_masuk_line_action' model='ir.actions.act_window'>
+            <field name="name">Faktur Pajak Masukan Line</field>
+            <field name="res_model">faktur.pajak.masuk.line</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="faktur_pajak_masuk_line_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Faktur Pajak Masukan Line
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_faktur_pajak_masuk_action"
+            name="Faktur Pajak Masukan"
+            parent="account.menu_finance_payables"
+            action="faktur_pajak_masuk_action"
+            sequence="112"
+            groups="base.group_erp_manager"/>
+        
+        <menuitem id="menu_faktur_pajak_masuk_line_action"
+            name="Faktur Pajak Masukan Line"
+            parent="account.menu_finance_payables"
+            action="faktur_pajak_masuk_line_action"
+            sequence="113"
+            groups="base.group_erp_manager"/>
+
+
+    <record id="fpm_view_move_form" model="ir.ui.view">
+        <field name="name">fpm.move.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@id='other_tab']" position="before">
+                <page string="Faktur Pajak Masukan" name="fp_masukan" attrs="{'invisible': [('state', 'not in', ('posted'))]}" groups="mis_faktur_pajak_masuk.group_faktur_pajak_masuk_user,mis_faktur_pajak_masuk.group_faktur_pajak_masuk_manager">
+                        <!-- <header attrs="{'invisible': [('state_fpm', 'not in', ('draft','closed'))]}"> -->
+                        <div class="container">
+                            <div class="row">
+                                <div class="col align-self-end">
+                                    <header
+                                        attrs="{'invisible': [('fpm_move_id', '=', False)]}">
+                                <button name="set_submit" string="Submit" type="object" class="btn btn-primary" attrs="{'invisible': [('state_fpm', 'in', ('wait','approved','rejected'))]}" />
+                                <button name="set_approve" string="Approve" type="object" class="btn btn-primary" attrs="{'invisible': ['|',('user_can_approve','=',False),('state_fpm', 'not in', ('wait'))]}"/>
+                                <button name="set_reject" string="Reject" type="object" class="btn btn-primary" attrs="{'invisible': [('state_fpm', 'not in', ('wait','approved'))]}" groups="mis_faktur_pajak_masuk.group_faktur_pajak_masuk_manager"/>
+                                <button name="set_draft" string="Set to draft" type="object" class="btn btn-primary" attrs="{'invisible': [('state_fpm', 'not in', ('rejected'))]}"/>
+                                <field name="state_fpm" widget="statusbar"/>
+                                </header>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- </header
+                        <div>> -->
+                        <tree>
+                            <group>
+                            <group>
+                                <label for="fpm_barcode" string="Barcode" style="font-weight: bold;"/>
+                                <div >
+                                <!-- <script>
+                                    $('.focus_field').focus()
+                                </script> -->
+                                <field name="fpm_barcode" colspan="2" attrs="{'readonly': [('state_fpm', 'not in', ('draft')),('fpm_move_id', '!=', False)]}" />
+                                <button name="scan_barcode" string="Scan" type="object" class="btn btn-warning" attrs="{'invisible': [('state_fpm', 'in', ('wait','approved','rejected'),('fpm_move_id', '!=', False))]}"/>
+                                </div>
+                                <label for="fpm_move_id" string="Faktur Pajak Masukan" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="fpm_move_id" options="{'no_open': True}" readonly="1"/>
+                                </div>
+                            <!-- <div>
+                                <label for="v_bill" string="Vendor Bills :" style="font-weight: bold;"/>
+                                <field name="v_bill"/>
+                            </div> -->
+                                <label for="fm" string="FM" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="fm"/>
+                                </div>
+                                <label for="kode_jenis" string="Kode Jenis Transaksi" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="kode_jenis" readonly="1" force_save="1"/>
+                                </div>
+                                <label for="fg_pengganti" string="FG Pengganti" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="fg_pengganti"/>
+                                </div>
+                                <label for="no_faktur" string="Nomor Faktur" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="no_faktur" readonly="1" force_save="1"/>
+                                </div>
+                                <label for="masa_pajak" string="Masa Pajak" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="masa_pajak" readonly="1" force_save="1"/>
+                                </div>
+                                <label for="tahun_pajak" string="Tahun Pajak" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="tahun_pajak" readonly="1" force_save="1"/>
+                                </div>
+                            </group>
+                            <group>
+                                <label for="tanggal_faktur" string="Tanggal Faktur" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="tanggal_faktur" readonly="1" force_save="1"/>
+                                </div>
+                                <label for="npwp" string="NPWP" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="npwp" readonly="1" force_save="1"/>
+                                </div>
+                                <label for="nama_vendor" string="Vendor" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="nama_vendor" readonly="1" force_save="1"/>
+                                </div>
+                                <label for="alamat" string="Alamat Lengkap" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="alamat" readonly="1" force_save="1"/>
+                                </div>
+                                <label for="jumlah_dpp" string="Jumlah DPP" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="jumlah_dpp"/>
+                                </div>
+                                <label for="jumlah_ppn" string="Jumlah PPN" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="jumlah_ppn" readonly="1" force_save="1"/>
+                                </div>
+                                <label for="jumlah_ppnbm" string="Jumlah PPNBM" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="jumlah_ppnbm" readonly="1" force_save="1"/>
+                                </div>
+                                <label for="is_creditable" string="Is creditable" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="is_creditable" attrs="{'readonly': [('state_fpm', 'not in', ('draft'))]}"/>
+                                </div>
+                                <!-- <label for="company_id" string="Company" style="font-weight: bold;"/>
+                                <div class="o_row" col="4">
+                                <field name="company_id" invisible="1"/>
+                                </div> -->
+                            </group>
+                        </group>
+                        <group>
+                        <notebook>
+                            <page string="FPM Line">
+                            <field name="fpml_line" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="fpm_move_id"/>
+                                <field name="name"/>
+                                <field name="hrg_satuan"/>
+                                <field name="jlm_barang"/>
+                                <field name="hrg_total"/>
+                                <field name="f_disc"/>
+                                <field name="dpp"/>
+                                <field name="ppn"/>
+                                <field name="trf_ppnbm"/>
+                                <field name="ppnbm"/>
+                                <field name="company_id" invisible="1"/>
+                            </tree>
+                            </field>
+                        </page>
+                        <page string="Approval">
+                            <field name="approval_ids" readonly="1"/>
+                            <field name="user_can_approve" invisible="1"/>
+                        </page>
+                        </notebook>
+                        </group>
+                        <group>
+                            <field name="reject_note"></field>
+                        </group>
+                </tree>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="open_post_wizard_fpm_view">
+        <field name="name">Show FPM Wizard</field>
+        <field name="model">show.fpm.wizard</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                <group>
+                    <group>
+                        <field name="fm" readonly="1"/>
+                        <field name="kode_jenis" readonly="1"/>
+                        <field name="fg_pengganti" readonly="1"/>
+                        <field name="no_faktur" readonly="1"/>
+                        <field name="tanggal_faktur" readonly="1"/>
+                        <field name="npwp" readonly="1"/>
+                        <field name="nama_vendor" readonly="1"/>                    
+                    </group>
+                    <group>
+                        <field name="alamat" readonly="1"/>
+                        <field name="jumlah_dpp" readonly="1"/>
+                        <field name="jumlah_ppn" readonly="1"/>
+                        <field name="jumlah_ppnbm" readonly="1"/>
+                        <!-- <field name="is_creditable" readonly="1"/>                         -->
+                    </group>
+                </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="confirm" class="btn btn-warning"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="open_reject_wizard">
+        <field name="name">Show Reject Wizard</field>
+        <field name="model">show.reject.wizard</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                <group>
+                    <group>
+                        <field name="reject_detail" placeholder="Add detail..."/>                    
+                    </group>
+                </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="confirm_reject" class="btn btn-warning"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    </data>
+</odoo>

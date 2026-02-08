@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="performa_customer_report_tree" model="ir.ui.view">
+        <field name="name">report.performa.customer.tree</field>
+        <field name="model">report.performa.customer</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="id" string="Nomor"/>
+                <field name="year"/>
+                <field name="month"/>
+                <field name="ref" optional="hide"/>
+                <field name="user_id"/>
+                <field name="partner_code" optional="show"/>
+                <field name="partner_name" optional="show"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="region_master_id"/>
+                <field name="customer_group_id"/>
+                <field name="invoice_90"/>
+                <field name="payment"/>
+                <field name="payment_unpaid"/>
+                <field name="payment_progress"/>
+                <field name="invoice_unpaid"/>
+                <field name="total_quantity"/>
+                <field name="discount"/>
+                <field name="net_sales"/>
+                <field name="qty_delivered"/>
+                <field name="qty_tip"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="performa_customer_report_search" model="ir.ui.view">
+        <field name="name">report.performa.customer.view</field>
+        <field name="model">report.performa.customer</field>
+        <field name="arch" type="xml">
+            <search string="performa Customer Report">
+                <field name="year"/>
+                <field name="month"/>
+                <field name="user_id"/>
+                <field name="partner_id"/>
+                <field name="region_master_id"/>
+                <field name="customer_group_id"/>
+            </search>
+        </field>
+    </record>
+</odoo>

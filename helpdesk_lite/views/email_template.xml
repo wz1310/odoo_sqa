@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">        
+
+        <record id="help_template" model="mail.template">
+            <field name="name">New Ticket Notification</field>
+            <field name="model_id" ref="model_helpdesk_lite_ticket"/>
+            <field name="email_from">&lt;helpdeskmis26@gmail.com&gt;</field>
+            <field name="email_to">${object.partner_id.email}</field>
+            <!-- <field name="partner_to">${object.partner_id.id}</field> -->
+            <field name="subject">New Ticket Notification</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-family: 'sans-serif'; padding: 10px; max-width:700px; background-color: #f0f0f0; border: 4px solid #88a6f2;">
+    <h1 style="background-color: #88a6f2; color: white; text-align: center; padding: 40px 0px; margin-bottom: 10px;">
+        ${object.stage_id.name} Ticket#${object.code}
+    </h1>
+    <!-- <h4>Kepada ${object.partner_id.name}</h4> -->
+      <table>
+        <tr>
+          <th>Kami informasikan untuk tiket anda</th>
+          <th>:</th>
+        </tr>
+        <tr>
+          <td>Subject</td>
+          <td>:</td>
+          <td>${object.name}</td>
+        </tr>
+        <tr>
+          <td>Kategori</td>
+          <td>:</td>
+          <td>${object.category_id.name if object.category_id else '-'}</td>
+        </tr>
+        <tr>
+          <td>Sub Kategori</td>
+          <td>:</td>
+          <td>${object.sub_category_id.name}</td>
+        </tr>
+        <tr>
+          <td>Customer</td>
+          <td>:</td>
+          <td>${object.partner_id.name}</td>
+        </tr>
+        <tr>
+          <td>Company</td>
+          <td>:</td>
+          <td>${object.company_id.name}</td>
+        </tr>
+        <tr>
+          <td>Department</td>
+          <td>:</td>
+          <td>${(object.department if object.department else '-')}</td>
+        </tr>
+        <tr>
+          <td>Create date</td>
+          <td>:</td>
+          <td>${(object.create_date.strftime('%d/%m/%Y') if object.create_date else '-')}</td>
+        </tr>
+        <!-- <tr>
+          <td>Start date</td>
+          <td>:</td>
+          <td>${object.start_date.strftime('%d/%m/%Y')}</td>
+        </tr> -->
+        <tr>
+          <td>Description</td>
+          <td>:</td>
+          <td>${(object.description if object.description else '-')}</td>
+        </tr>
+        <tr>
+          <td>Request date</td>
+          <td>:</td>
+          <td>${(object.create_date.strftime('%d/%m/%Y') if object.create_date else '-')}</td>
+        </tr>
+</table><!--     
+        <p>Kami informasikan untuk tiket anda</p>
+        <p>Subject       : ${object.name}</p>
+        <p>Kategori      : ${object.category_id.name}</p>
+        <p>Sub Kategori  : ${object.sub_category_id.name}</p>
+        <p>Customer      : ${object.partner_id.name}</p>
+        <p>Company       : ${object.company_id.name}</p>
+        <p>Department    : ${object.department}</p>
+        <p>Create date   : ${object.create_date.strftime('%d/%m/%Y')}</p>
+        <p>Start date    : ${object.start_date.strftime('%d/%m/%Y')}</p> -->
+
+
+    <p></p>
+    <p></p>
+    <p><strong>Best regards,</strong></p>
+    <p><strong>( MIS SANQUA )</strong></p>
+  </div>
+</field>
+</record>
+
+  <record id="help_template_assign" model="mail.template">
+            <field name="name">Assigned Ticket Notification</field>
+            <field name="model_id" ref="model_helpdesk_lite_ticket"/>
+            <field name="email_from">&lt;helpdeskmis26@gmail.com&gt;</field>
+            <!-- <field name="email_to">${object.user_id.login}</field> -->
+            <!-- <field name="partner_to">${object.user_id.partner_id.id}</field> -->
+            <field name="subject">Assigned Ticket Notification</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-family: 'sans-serif'; padding: 10px; max-width:700px; background-color: #f0f0f0; border: 4px solid #d99cff;">
+    <h1 style="background-color: #d99cff; color: white; text-align: center; padding: 40px 0px; margin-bottom: 10px;">
+        ${object.stage_id.name} Ticket#${object.code}
+    </h1>
+    <!-- <h4>Kepada ${object.partner_id.name}</h4> -->
+      <table>
+        <tr>
+          <th>Kami informasikan untuk tiket anda</th>
+          <th>:</th>
+        </tr>
+        <tr>
+          <td>Subject</td>
+          <td>:</td>
+          <td>${object.name}</td>
+        </tr>
+        <tr>
+          <td>Kategori</td>
+          <td>:</td>
+          <td>${object.category_id.name}</td>
+        </tr>
+        <tr>
+          <td>Sub Kategori</td>
+          <td>:</td>
+          <td>${object.sub_category_id.name}</td>
+        </tr>
+        <tr>
+          <td>Customer</td>
+          <td>:</td>
+          <td>${object.partner_id.name}</td>
+        </tr>
+        <tr>
+          <td>Company</td>
+          <td>:</td>
+          <td>${(object.company_id.name if object.company_id else '-')}</td>
+        </tr>
+        <tr>
+          <td>Department</td>
+          <td>:</td>
+          <td>${(object.department if object.department else '-')}</td>
+        </tr>
+        <tr>
+          <td>Create date</td>
+          <td>:</td>
+          <td>${(object.create_date.strftime('%d/%m/%Y') if object.create_date else '-')}</td>
+        </tr>
+        <tr>
+          <td>Start date</td>
+          <td>:</td>
+          <td>${(object.start_date.strftime('%d/%m/%Y') if object.start_date else '-')}</td>
+        </tr>
+        <tr>
+          <td>Assigned to</td>
+          <td>:</td>
+          <td>${(object.user_id.name if object.user_id else '-')}</td>
+        </tr>
+        <tr>
+          <td>Description</td>
+          <td>:</td>
+          <td>${(object.description if object.description else '-')}</td>
+        </tr>
+        <tr>
+          <td>Assigned date</td>
+          <td>:</td>
+          <td>${(object.start_date.strftime('%d/%m/%Y') if object.start_date else '-')}</td>
+        </tr>
+</table><!--     
+        <p>Kami informasikan untuk tiket anda</p>
+        <p>Subject       : ${object.name}</p>
+        <p>Kategori      : ${object.category_id.name}</p>
+        <p>Sub Kategori  : ${object.sub_category_id.name}</p>
+        <p>Customer      : ${object.partner_id.name}</p>
+        <p>Company       : ${object.company_id.name}</p>
+        <p>Department    : ${object.department}</p>
+        <p>Create date   : ${object.create_date.strftime('%d/%m/%Y')}</p>
+        <p>Start date    : ${object.start_date.strftime('%d/%m/%Y')}</p> -->
+
+
+    <p></p>
+    <p></p>
+    <p><strong>Best regards,</strong></p>
+    <p><strong>( MIS SANQUA )</strong></p>
+    
+</div>
+            </field>
+        </record>
+
+  <record id="help_template_solved" model="mail.template">
+            <field name="name">Solved Ticket Notification</field>
+            <field name="model_id" ref="model_helpdesk_lite_ticket"/>
+            <field name="email_from">&lt;helpdeskmis26@gmail.com&gt;</field>
+            <!-- <field name="email_to">${object.user_id.login}</field> -->
+            <!-- <field name="partner_to">${object.user_id.partner_id.id}</field> -->
+            <field name="subject">Solved Ticket Notification</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-family: 'sans-serif'; padding: 10px; max-width:700px; background-color: #f0f0f0; border: 4px solid #2db576;">
+    <h1 style="background-color: #2db576; color: white; text-align: center; padding: 40px 0px; margin-bottom: 10px;">
+        ${object.stage_id.name} Ticket#${object.code}
+    </h1>
+    <!-- <h4>Kepada ${object.partner_id.name}</h4> -->
+      <table>
+        <tr>
+          <th>Kami informasikan untuk tiket anda</th>
+          <th>:</th>
+        </tr>
+        <tr>
+          <td>Subject</td>
+          <td>:</td>
+          <td>${object.name}</td>
+        </tr>
+        <tr>
+          <td>Kategori</td>
+          <td>:</td>
+          <td>${object.category_id.name}</td>
+        </tr>
+        <tr>
+          <td>Sub Kategori</td>
+          <td>:</td>
+          <td>${object.sub_category_id.name}</td>
+        </tr>
+        <tr>
+          <td>Customer</td>
+          <td>:</td>
+          <td>${object.partner_id.name}</td>
+        </tr>
+        <tr>
+          <td>Company</td>
+          <td>:</td>
+          <td>${object.company_id.name}</td>
+        </tr>
+        <tr>
+          <td>Department</td>
+          <td>:</td>
+          <td>${object.department}</td>
+        </tr>
+        <tr>
+          <td>Create date</td>
+          <td>:</td>
+          <td>${object.create_date.strftime('%d/%m/%Y')}</td>
+        </tr>
+        <tr>
+          <td>Start date</td>
+          <td>:</td>
+          <td>${object.start_date.strftime('%d/%m/%Y')}</td>
+        </tr>
+        <tr>
+          <td>Done time</td>
+          <td>:</td>
+          <td>${object.date_done.strftime('%d/%m/%Y')}</td>
+        </tr>
+        <tr>
+          <td>Assigned to</td>
+          <td>:</td>
+          <td>${object.user_id.name}</td>
+        </tr>
+        <tr>
+          <td>Description</td>
+          <td>:</td>
+          <td>${(object.description if object.description else '-')}</td>
+        </tr>
+        <tr>
+          <td>Action</td>
+          <td>:</td>
+          <td>${(object.explain if object.explain else '-')}</td>
+        </tr>
+        <tr>
+          <td>Solved date</td>
+          <td>:</td>
+          <td>${(object.date_done.strftime('%d/%m/%Y') if object.date_done else '-')}</td>
+        </tr>
+</table><!--     
+        <p>Kami informasikan untuk tiket anda</p>
+        <p>Subject       : ${object.name}</p>
+        <p>Kategori      : ${object.category_id.name}</p>
+        <p>Sub Kategori  : ${object.sub_category_id.name}</p>
+        <p>Customer      : ${object.partner_id.name}</p>
+        <p>Company       : ${object.company_id.name}</p>
+        <p>Department    : ${object.department}</p>
+        <p>Create date   : ${object.create_date.strftime('%d/%m/%Y')}</p>
+        <p>Start date    : ${object.start_date.strftime('%d/%m/%Y')}</p> -->
+
+
+    <p></p>
+    <p></p>
+    <p><strong>Best regards,</strong></p>
+    <p><strong>( MIS SANQUA )</strong></p>
+    
+</div>
+            </field>
+        </record>
+
+  <record id="help_template_cancel" model="mail.template">
+            <field name="name">Cancel Ticket Notification</field>
+            <field name="model_id" ref="model_helpdesk_lite_ticket"/>
+            <field name="email_from">&lt;helpdeskmis26@gmail.com&gt;</field>
+            <!-- <field name="email_to">${object.user_id.login}</field> -->
+            <!-- <field name="partner_to">${object.user_id.partner_id.id}</field> -->
+            <field name="subject">Cancel Ticket Notification</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+<div style="font-family: 'sans-serif'; padding: 10px; max-width:700px; background-color: #f0f0f0; border: 4px solid #ff7575;">
+    <h1 style="background-color: #ff7575; color: white; text-align: center; padding: 40px 0px; margin-bottom: 10px;">
+        ${object.stage_id.name} Ticket#${object.code}
+    </h1>
+    <!-- <h4>Kepada ${object.partner_id.name}</h4> -->
+      <table>
+        <tr>
+          <th>Kami informasikan untuk tiket anda</th>
+          <th>:</th>
+        </tr>
+        <tr>
+          <td>Subject</td>
+          <td>:</td>
+          <td>${object.name}</td>
+        </tr>
+        <tr>
+          <td>Kategori</td>
+          <td>:</td>
+          <td>${object.category_id.name}</td>
+        </tr>
+        <tr>
+          <td>Sub Kategori</td>
+          <td>:</td>
+          <td>${object.sub_category_id.name}</td>
+        </tr>
+        <tr>
+          <td>Customer</td>
+          <td>:</td>
+          <td>${object.partner_id.name}</td>
+        </tr>
+        <tr>
+          <td>Company</td>
+          <td>:</td>
+          <td>${object.company_id.name}</td>
+        </tr>
+        <tr>
+          <td>Department</td>
+          <td>:</td>
+          <td>${object.department}</td>
+        </tr>
+        <tr>
+          <td>Create date</td>
+          <td>:</td>
+          <td>${object.create_date.strftime('%d/%m/%Y')}</td>
+        </tr>
+        <tr>
+          <td>Start date</td>
+          <td>:</td>
+          <td>${object.start_date.strftime('%d/%m/%Y')}</td>
+        </tr>
+        <tr>
+          <td>Assigned to</td>
+          <td>:</td>
+          <td>${object.user_id.name}</td>
+        </tr>
+        <tr>
+          <td>Description</td>
+          <td>:</td>
+          <td>${(object.description if object.description else '-')}</td>
+        </tr>
+        <tr>
+          <td>Action</td>
+          <td>:</td>
+          <td>${(object.explain if object.explain else '-')}</td>
+        </tr>
+        <tr>
+          <td>Cancel date</td>
+          <td>:</td>
+          <td>${context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')}</td>
+        </tr>
+</table><!--     
+        <p>Kami informasikan untuk tiket anda</p>
+        <p>Subject       : ${object.name}</p>
+        <p>Kategori      : ${object.category_id.name}</p>
+        <p>Sub Kategori  : ${object.sub_category_id.name}</p>
+        <p>Customer      : ${object.partner_id.name}</p>
+        <p>Company       : ${object.company_id.name}</p>
+        <p>Department    : ${object.department}</p>
+        <p>Create date   : ${object.create_date.strftime('%d/%m/%Y')}</p>
+        <p>Start date    : ${object.start_date.strftime('%d/%m/%Y')}</p> -->
+
+
+    <p></p>
+    <p></p>
+    <p><strong>Best regards,</strong></p>
+    <p><strong>( MIS SANQUA )</strong></p>
+    
+</div>
+            </field>
+        </record>
+
+
+        <template id="message_no_odoo_branding">
+            <div t-raw="message.body"/>
+        </template>
+    </data>
+</odoo>

@@ -1,0 +1,88 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="report_energy_consumption_dashboard.list">
+      <field name="name">report_energy_consumption_dashboard list</field>
+      <field name="model">report.energy.consumption.dashboard</field>
+      <field name="arch" type="xml">
+        <tree create="0" edit="0" delete="0">
+            <field name="company_id"/>
+            <field name="machine_name"/>
+            <field name="date_deadline"/>
+            <field name="consumption"/>
+            <field name="total_produced"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="report_energy_consumption_dashboard_pivot" model="ir.ui.view">
+      <field name="name">report.energy.consumption.dashboard.pivot</field>
+      <field name="model">report.energy.consumption.dashboard</field>
+      <field name="arch" type="xml">
+        <pivot string="Report Energy Consumption" disable_linking="true">
+            <field name="company_id" type="row"/>
+            <field name="machine_name" type="row"/>
+            <field name="consumption" type="measure"/>    
+            <field name="total_produced" type="measure"/>    
+        </pivot>
+      </field>
+    </record>
+
+    <record id="report_energy_consumption_dashboard_search" model="ir.ui.view">
+        <field name="name">report.energy.consumption.dashboard.view</field>
+        <field name="model">report.energy.consumption.dashboard</field>
+        <field name="arch" type="xml">
+            <search string="Report Energy Consumption">
+                <field name="company_id"/>
+                <field name="machine_name"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="report_energy_consumption_dashboard.action_window">
+      <field name="name">report_energy_consumption_dashboard window</field>
+      <field name="res_model">report.energy.consumption.dashboard</field>
+      <field name="view_mode">pivot</field>
+    </record>
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="report_energy_consumption_dashboard.action_server">
+      <field name="name">report_energy_consumption_dashboard server</field>
+      <field name="model_id" ref="model_report_energy_consumption_dashboard_report_energy_consumption_dashboard"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="report_energy_consumption_dashboard" id="report_energy_consumption_dashboard.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="report_energy_consumption_dashboard.menu_1" parent="report_energy_consumption_dashboard.menu_root"/>
+    <menuitem name="Menu 2" id="report_energy_consumption_dashboard.menu_2" parent="report_energy_consumption_dashboard.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="report_energy_consumption_dashboard.menu_1_list" parent="report_energy_consumption_dashboard.menu_1"
+              action="report_energy_consumption_dashboard.action_window"/>
+    <menuitem name="Server to list" id="report_energy_consumption_dashboard" parent="report_energy_consumption_dashboard.menu_2"
+              action="report_energy_consumption_dashboard.action_server"/>
+-->
+    <menuitem id="menu_report_energy_consumption_dashboard"
+            name="Report Energy Consumption (Dashboard)"
+            action="report_energy_consumption_dashboard.action_window"
+            parent="mrp.menu_mrp_reporting"
+            sequence="11"/>
+  </data>
+</odoo>

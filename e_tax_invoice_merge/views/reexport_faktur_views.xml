@@ -1,0 +1,13 @@
+<odoo>
+    <data>
+
+        <act_window
+            name="Download e-Faktur"
+            id="action_reexport_etax_invoice_merge"
+            res_model="reexport.efaktur"
+            binding_model="etax.invoice.merge"
+            binding_views="list"
+            view_mode="form"
+            target="new"/>
+    </data>
+</odoo>

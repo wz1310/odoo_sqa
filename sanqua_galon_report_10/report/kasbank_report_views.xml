@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="kas_bank_report_tree" model="ir.ui.view">
+        <field name="name">report.kas.bank.tree</field>
+        <field name="model">report.kas.bank</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="partner_id"/>
+                <field name="payment_term_id"/>
+                <field name="credit_limit"/>
+                <field name="omzet_amount"/>
+                <field name="piutang"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- <record id="kas_bank_report_pivot" model="ir.ui.view">
+         <field name="name">report.kas.bank.pivot</field>
+         <field name="model">report.kas.bank</field>
+         <field name="arch" type="xml">
+             <pivot string="Kas Bank Report" disable_linking="True">
+                <field name="user_id" type="row"/>
+                <field name="team_id" type="row"/>
+                <field name="partner_id" type="row"/>
+                <field name="region_master_id" type="row"/>
+                <field name="region_id" type="row"/>
+                <field name="product_id" type="row"/>
+             </pivot>
+         </field>
+    </record> -->
+
+    <record id="kas_bank_report_search" model="ir.ui.view">
+        <field name="name">report.kas.bank.view</field>
+        <field name="model">report.kas.bank</field>
+        <field name="arch" type="xml">
+            <search string="Kas Bank Report">
+                <field name="partner_id"/>
+                <field name="payment_term_id"/>
+                <field name="company_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_kas_bank_report" model="ir.actions.act_window">
+        <field name="name">Kas Bank Report</field>
+        <field name="res_model">report.kas.bank</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="menu_kas_bank_report"
+            name="Kas Bank Report"
+            action="action_kas_bank_report"
+            parent="sanqua_galon_report_1.menu_galon_report"
+            sequence="1"/>
+</odoo>

@@ -1,0 +1,23 @@
+<odoo>
+    <record model="ir.model.access" id="access_sale_truck_item_status_partner_report_stock_user">
+        <field name="name">sale_truck_item_status_partner_report.stock_user</field>
+        <field name="model_id" ref="model_sale_truck_item_status_partner_report"/>
+        <field name="group_id" ref="stock.group_stock_user"/>
+        <field name="perm_read">1</field>
+        <field name="perm_write">0</field>
+        <field name="perm_create">0</field>
+        <field name="perm_unlink">0</field>
+    </record>
+
+    <record model="ir.model.access" id="access_sale_truck_item_status_partner_report_sale_salesman_all_leads">
+        <field name="name">sale_truck_item_status_partner_report.stock_user</field>
+        <field name="model_id" ref="model_sale_truck_item_status_partner_report"/>
+        <field name="group_id" ref="sales_team.group_sale_salesman_all_leads"/>
+        <field name="perm_read">1</field>
+        <field name="perm_write">0</field>
+        <field name="perm_create">0</field>
+        <field name="perm_unlink">0</field>
+    </record>
+
+    
+</odoo>

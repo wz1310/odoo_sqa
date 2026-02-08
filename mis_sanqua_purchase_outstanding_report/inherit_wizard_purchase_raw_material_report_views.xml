@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="sanqua_purchase_outstanding_report_form_inheriteds">
+        <field name="name">Purchase Order Raw Material Report Inherit</field>
+        <field name="model">wizard.purchase.order.raw.material.report</field>
+        <field name="inherit_id" ref="sanqua_purchase_outstanding_report.raw_material_purchase_order_report_wizard_form_view" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='start_date']" position="before">
+                <field name="filter_date" />
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="whs" options="{'no_open': True, 'no_create': True}"
+                                domain="[('company_id', '=', company_id)]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

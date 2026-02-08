@@ -1,0 +1,5 @@
+<odoo>
+    <data>
+        <function model="publisher_warranty.contract" name="_update_notification"/>
+    </data>
+</odoo>

@@ -1,0 +1,14 @@
+<odoo>
+    <data>
+        <record id="account_tax_form_view_inherit" model="ir.ui.view">
+            <field name="name">account.tax.form.view.inherit</field>
+            <field name="model">account.tax</field>
+            <field name="inherit_id" ref="account.view_tax_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet/group/group/div" position="after">
+                    <field name="export_on_etax"/>
+                </xpath>
+            </field>
+       	</record>
+    </data>
+</odoo>

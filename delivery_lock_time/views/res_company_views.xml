@@ -1,0 +1,12 @@
+<odoo>
+    <record id="view_company_form_inherit" model="ir.ui.view">
+        <field name="name">res.company.form.view.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='page_configuration']/group/group" position="inside">
+                <field name="customer_lead_time"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

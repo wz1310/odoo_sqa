@@ -1,0 +1,8 @@
+<odoo>
+
+    <menuitem id="standar_harga_menu"
+            name="Standar Harga"
+            parent="sale.menu_sale_config"
+            action="mis_standar_harga.standar_harga_action"
+            sequence="1"/>
+</odoo>

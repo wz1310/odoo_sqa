@@ -1,0 +1,121 @@
+<odoo>
+  <record model="ir.ui.view" id="mis_inherited_view_po_form">
+    <field name="name">Inherited View PO Form</field>
+    <field name="model">purchase.order</field>
+    <field name="inherit_id" ref="purchase.purchase_order_form" />
+    <field name="arch" type="xml">
+      
+      <xpath expr="//field[@name='order_line']/tree//field[@name='product_qty']" position="after">
+        <field name="fpb_not" string="Notes" optional="hide"/>
+        <field name="fpb_uom" string="Uom" optional="hide"/>
+      </xpath>
+        <xpath expr="//notebook" position="inside">
+            <page string="Close reason" attrs="{'invisible': [('status_po','!=','close')]}">
+               <field name="close_reason"/>
+           </page>
+            <page string="Open reason" attrs="{'invisible': [('open_reason','=',False)]}">
+               <field name="open_reason"/>
+            </page>
+        </xpath>
+            <!-- <xpath expr="//header/button[@name='btn_close']" position="attributes">
+                <attribute name="confirm"></attribute>
+            </xpath> -->
+            <xpath expr="//header/button[@name='btn_close']" position="after">
+                <button string="Open PO" type="object" name="btn_open" attrs="{'invisible': [('status_po','!=','close')]}"></button>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="after">
+                <field name="detail_project"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='price_subtotal']" position="after">
+                <field name="desc" optional="hide"/>
+            </xpath>
+        </field>
+  </record>
+
+  <record model="ir.ui.view" id="message_post_wiz_form_view">
+        <field name="name">Message Post Wiz Form</field>
+        <field name="model">message.post.wiz</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <header></header>
+                <sheet>
+                    <group>
+                        <!-- START HERE -->
+                        <!-- YOU CAN ERASE THIS SYNTAX -->
+                        <field name="messages" label="Additional Message" placeholder="Message Here" string="Reason"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="confirm" class="oe_highlight" />
+                </footer>
+                
+                <!-- UNCOMMENT IF USING Mail Track SYSTEM -->
+                <!--<div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>-->
+            </form>
+        </field>
+    </record>
+
+  <record model="ir.ui.view" id="message_open_wiz_form_view">
+        <field name="name">Message Open Wiz Form</field>
+        <field name="model">message.open.wiz</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <header></header>
+                <sheet>
+                    <group>
+                        <!-- START HERE -->
+                        <!-- YOU CAN ERASE THIS SYNTAX -->
+                        <field name="messages" label="Additional Message" placeholder="Message Here" string="Reason"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Confirm" type="object" name="confirm" class="oe_highlight" />
+                </footer>
+                
+                <!-- UNCOMMENT IF USING Mail Track SYSTEM -->
+                <!--<div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>-->
+            </form>
+        </field>
+    </record>
+        
+        <record id="detail_project_po_tree_view" model="ir.ui.view">
+            <field name="name">detail.project.po.tree.view</field>
+            <field name="model">detail.project.po</field>
+            <field name="arch" type="xml">
+                <tree string="Detail Project PO">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id='detail_project_po_action' model='ir.actions.act_window'>
+            <field name="name">Detail Project PO</field>
+            <field name="res_model">detail.project.po</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="detail_project_po_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Detail Project PO
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_detail_project_po_action"
+            name="Detail Project PO"
+            parent="purchase.purchase_report"
+            action="detail_project_po_action"
+            sequence="113"/>
+
+
+</odoo>

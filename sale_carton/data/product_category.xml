@@ -1,0 +1,7 @@
+<odoo>
+	<record model="product.category" id="product_categ_carton">
+		<field name="name">Carton</field>
+		<field name="parent_id" ref="product.product_category_1"/>
+		<field name="check_stock" eval="True"/>
+	</record>
+</odoo>

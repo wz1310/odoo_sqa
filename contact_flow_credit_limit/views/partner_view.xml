@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_form" model="ir.ui.view">
+        <field name="name">view.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="type">form</field>
+        <field name="inherit_id" ref="partner_credit_limit.view_partner_form"/>
+        <field name="arch" type="xml">
+            <button name="btn_add_pricelist" position="attributes">
+                <attribute name="attrs">{'invisible': [('state', '=', 'approved')]}</attribute>
+            </button>
+            <button name="set_black_list" position="attributes">
+                <attribute name="attrs">{'invisible': [('parent.state', '=', 'approved')]}</attribute>
+            </button>
+            <button name="btn_update_pricelist" position="attributes">
+                <attribute name="attrs">{'invisible': [('parent.state', '=', 'approved')]}</attribute>
+            </button>
+        </field>
+    </record>
+</odoo>

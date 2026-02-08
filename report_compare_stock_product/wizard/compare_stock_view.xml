@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="report_compare_stock_wizard_view" model="ir.ui.view">
+        <field name="name">report.compare.stock.wizard.view</field>
+        <field name="model">compare.stock</field>
+        <field name="arch" type="xml">
+            <form string="Product Stock Comparison Report">                               
+               <field invisible="1" name="state_x"/>
+                <group>
+                    <field name="date_to" required="1" invisible="1"/>
+                    <field name="product_ids" placeholder="Semua produk akan tampil jika tidak di isi" widget="many2many_tags"/>
+                    <field name="location_ids" placeholder="Pilih Lokasi Yang Akan di Check Perpindahannya" widget="many2many_tags" required="1" domain="[('usage', '=', 'internal')]"/>
+                    <field name="company_id" readonly="1" force_save="1"/>
+                    <field name="selisih"/>
+                </group>
+                <group col="2" fill="0" attrs="{'invisible':[('state_x','!=','get')]}">
+                    <separator colspan="4" string="Generate to Excel is done. Download by click link below." attrs="{'invisible':[('state_x','=','choose')]}"/>
+                    <field name="name" invisible="1" width="100" attrs="{'invisible':[('state_x','=','choose')]}"/>
+                    <field name="data_x" nolabel="1" readonly="0" width="100" filename="name" attrs="{'invisible':[('state_x','=','choose')]}"/>
+                </group>
+                <footer attrs="{'invisible':[('state_x','!=','choose')]}">
+                    <button name="compare_stock_excel_report" string="Generate" type="object" default_focus="1" class="oe_highlight"/>
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+                
+            </form>
+        </field>
+    </record>
+
+    <record id="action_report_compare_stock" model="ir.actions.act_window">
+        <field name="name">Product Stock Comparison Report</field>
+        <field name="res_model">compare.stock</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="report_compare_stock_wizard_view"/>
+        <field name="context">{}</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_report_compare_stock" 
+            name="Product Stock Comparison Report Excel" 
+            parent="stock.menu_warehouse_report"
+            sequence="160"
+            action="action_report_compare_stock"
+        />
+</odoo>

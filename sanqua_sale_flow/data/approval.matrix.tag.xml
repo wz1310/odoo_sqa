@@ -1,0 +1,6 @@
+<odoo>
+    <record model="approval.matrix.tag" id="matrix_tag_so_no_agreement">
+        <field name="name">so.non.agreement</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+    </record>
+</odoo>

@@ -1,0 +1,224 @@
+<odoo>
+  <data>
+        <record id="mis_sum_budget_form_view" model="ir.ui.view">
+            <field name="name">mis.sum.budget.form.view</field>
+            <field name="model">mis.summary.budget</field>
+            <field name="arch" type="xml">
+                <form string="MIS Summary Budget">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="budget_cros_id"/>
+                                <field name="budget_pos"/>
+                                <field name="acc_group"/>
+                                <field name="date_paid"/>
+                                <field name="theoritical_amount" type="measure"/>
+                            </group>
+                            <group>
+                                <field name="plan_amt"/>
+                                <field name="prac_amt"/>
+                                <field name="acv_amt"/>
+                                <field name="company_id"/>
+                            </group>
+                        </group>            
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="mis_sum_budget_tree_view" model="ir.ui.view">
+            <field name="name">mis.sum.budget.tree.view</field>
+            <field name="model">mis.summary.budget</field>
+            <field name="arch" type="xml">
+                <tree string="MIS Summary Budget">
+                    <field name="budget_pos"/>
+                    <field name="acc_group"/>
+                    <field name="date_paid"/>
+                    <field name="plan_amt"/>
+                    <field name="prac_amt"/>
+                    <field name="acv_amt"/>
+                    <field name="company_id"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id='mis_sum_budget_action' model='ir.actions.act_window'>
+            <field name="name">MIS Summary Budget</field>
+            <field name="res_model">mis.summary.budget</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="mis_sum_budget_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    MIS Summary Budget
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_mis_sum_budget_action"
+            name="MIS Summary Budget"
+            parent="account.menu_finance_entries_management"
+            action="mis_sum_budget_action"
+            sequence="112"
+            groups="base.group_erp_manager"/>
+
+
+    <record id="mis_crossovered_budget_form_inherit" model="ir.ui.view">
+        <field name="name">mis.crossovered.budget.form.inherit</field>
+        <field name="model">crossovered.budget</field>
+        <field name="inherit_id" ref="account_budget.crossovered_budget_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[1]" position="before">
+                <page name="budget_sums" string="Budget">
+                    <field name="mis_sum_budget">
+                        <tree editable='bottom'>
+                            <field name="budget_pos"/>
+                            <field name="acc_group"/>
+                            <field name="date_paid"/>
+                            <field name="plan_amt"/>
+                            <field name="theoritical_amount" type="measure" invisible="1"/>
+                            <field name="prac_amt"/>
+                            <field name="acv_amt" widget="percentage"/>
+                            <field name="state" invisible="1"/>
+                            <field name="date_start" invisible="1"/>
+                            <field name="date_end" invisible="1"/>
+                            <field name="company_id"/>
+                            <button type="object" name="action_open_budget" string="Entries..." icon="fa-arrow-circle-o-right"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+        
+        <record id="mis_sku_tree_view" model="ir.ui.view">
+            <field name="name">mis.sku.tree.view</field>
+            <field name="model">mis.sku</field>
+            <field name="arch" type="xml">
+                <tree editable='bottom' string="MIS SKU">
+                    <field name="name" required="1"/>
+                    <field name="group" options="{'no_open': True}"/>
+                    <field name="date" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id='mis_sku_action' model='ir.actions.act_window'>
+            <field name="name">MIS SKU</field>
+            <field name="res_model">mis.sku</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="mis_sku_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    MIS SKU
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_mis_sku_action"
+            name="MIS SKU"
+            parent="stock.menu_stock_inventory_control"
+            action="mis_sku_action"
+            sequence="112"
+            groups="base.group_user"/>
+
+        <!-- /////////////////////////master group budgetary position//////////////////// -->
+            
+
+        <record id="mis_group_bp_tree_view" model="ir.ui.view">
+            <field name="name">mis.group.bp.tree.view</field>
+            <field name="model">mis.grouping.bp</field>
+            <field name="arch" type="xml">
+                <tree editable='bottom' string="MIS Grouping BP">
+                    <field name="name" required="1"/>
+                    <field name="company_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id='mis_group_bp_action' model='ir.actions.act_window'>
+            <field name="name">MIS Group BP</field>
+            <field name="res_model">mis.grouping.bp</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="mis_group_bp_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    MIS Group BP
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_mis_group_bp_action"
+            name="MIS Group BP"
+            parent="account.menu_finance_entries_management"
+            sequence="113"
+            action="mis_group_bp_action"
+            groups="base.group_erp_manager"/>
+
+            <!-- /////////////////////////////////////////////////////////// -->
+
+
+        <record id="mis_group_sku_tree_view" model="ir.ui.view">
+            <field name="name">mis.group.sku.tree.view</field>
+            <field name="model">mis.grouping.sku</field>
+            <field name="arch" type="xml">
+                <tree editable='bottom' string="MIS Grouping SKU">
+                    <field name="name" required="1"/>
+                    <field name="date" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id='mis_group_sku_action' model='ir.actions.act_window'>
+            <field name="name">MIS Group SKU</field>
+            <field name="res_model">mis.grouping.sku</field>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="mis_group_sku_tree_view"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    MIS Group SKU
+                </p>    
+            </field>
+        </record>
+        
+        <menuitem id="menu_mis_group_sku_action"
+            name="MIS Group SKU"
+            parent="stock.menu_stock_inventory_control"
+            sequence="113"
+            action="mis_group_sku_action"
+            groups="base.group_user"/>
+
+
+    <!-- /////////////////////TAMBAHAN GROUP DAN DIVIDER PADA BUDGETARY POSITION/////////////////// -->
+
+    <record id="mis_budget_pos_form_inherit" model="ir.ui.view">
+        <field name="name">mis.budget.pos.form.inherit</field>
+        <field name="model">account.budget.post</field>
+        <field name="inherit_id" ref="account_budget.view_budget_post_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="divider"/>
+                <field name="bp_group"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ////////////////////////////////////////////////////////////////////////// -->
+
+    <!-- /////////////////////TAMBAHAN WAREHOUSE PADA ANALYTIC GROUP/////////////////// -->
+
+    <record id="mis_agroup_form_inherit" model="ir.ui.view">
+        <field name="name">mis.agroup.form.inherit</field>
+        <field name="model">account.analytic.group</field>
+        <field name="inherit_id" ref="analytic.account_analytic_group_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='description']" position="after">
+                <field name="warehouse_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- /////////////////////////////////////////////////////////////////////////////////// -->
+
+  </data>
+</odoo>

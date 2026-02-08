@@ -1,0 +1,23 @@
+<odoo>
+	<record model="ir.ui.view" id="order_pickup_method_tree">
+		<field name="name">Order Pickup Method Tree</field>
+		<field name="model">order.pickup.method</field>
+		<field name="arch" type="xml">
+			<tree string="Order Pickup Method" decoration-muted="active==False" editable="bottom">
+				<field name="name" />
+				<field name="description" />
+				<field name="price_unit_discount_agreement" />
+				<field name="active" />	
+			</tree>
+		</field>
+	</record>
+
+	<record model="ir.actions.act_window" id="action_order_pickup_method">
+		<field name="name">Order Pickup Method</field>
+		<field name="res_model">order.pickup.method</field>
+		<field name='view_mode'>tree</field>
+		<field name='view_id' ref='sanqua_sale_flow.order_pickup_method_tree'/>
+	</record>
+
+	<menuitem action="action_order_pickup_method" id="order_pickup_method_menu" name="Pickup Method" sequence="101" parent="sale.menu_sale_config" />
+</odoo>

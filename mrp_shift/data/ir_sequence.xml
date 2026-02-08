@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+	<record id="sequence_mrp_rph" model="ir.sequence">
+		<field name="name">Mrp RPH</field>
+		<field name="code">mrp.rph</field>
+		<field name="prefix">RPH/%(day)s%(month)s%(y)s/</field>
+		<field name="padding">4</field>
+		<field name="number_next">1</field>
+		<field name="number_increment">1</field>
+		<field name="company_id" eval="False"/>
+	</record>
+
+	<record id="sequence_mrp_pbbh" model="ir.sequence">
+		<field name="name">Mrp PBBH</field>
+		<field name="code">mrp.pbbh</field>
+		<field name="prefix">PBBH/%(day)s%(month)s%(y)s/</field>
+		<field name="padding">4</field>
+		<field name="number_next">1</field>
+		<field name="number_increment">1</field>
+		<field name="company_id" eval="False"/>
+	</record>
+
+	<record id="sequence_mrp_rpm" model="ir.sequence">
+		<field name="name">Mrp RPM</field>
+		<field name="code">mrp.rpm</field>
+		<field name="prefix">RPM/%(day)s%(month)s%(y)s/</field>
+		<field name="padding">4</field>
+		<field name="number_next">1</field>
+		<field name="number_increment">1</field>
+		<field name="company_id" eval="False"/>
+	</record>
+</odoo>

@@ -1,0 +1,54 @@
+<odoo>
+    <!-- add new menu approval matrix -->
+    <record model="ir.actions.act_window" id="action_approval_matrix_collection">
+        <field name="name">Invoice Collection Approval Matrix</field>
+        <field name="res_model">approval.matrix</field>
+        <!-- IF ODOO version <= 12 REQUIRE view_type (UNCOMMENT THIS) -->
+        <!-- <field name="view_type">form</field> -->
+        <field name='view_mode'>kanban,tree,form</field>
+        <!-- <field name='view_id' ref='ref_view_id'/> -->
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('approval_matrix.approval_matrix_kanban_view'), 'sequence':1}),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('approval_matrix.approval_matrix_tree_view'), 'sequence':2}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('approval_matrix.approval_matrix_form_view'), 'sequence':3})
+                ]"/>
+        <field name="context">{'default_res_model':'collection.activity'}</field>
+        <field name="domain">[('res_model','=','collection.activity')]</field>
+    </record>
+    
+
+    <record model="ir.actions.act_window" id="action_res_partner_collector">
+        <field name="name">Collector</field>
+        <field name="res_model">res.partner</field>
+        <!-- IF ODOO version <= 12 REQUIRE view_type (UNCOMMENT THIS) -->
+        <!-- <field name="view_type">form</field> -->
+        <field name='view_mode'>kanban,tree,form</field>
+        <!-- <field name='view_id' ref='ref_view_id'/> -->
+        <!-- <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('approval_matrix.approval_matrix_kanban_view'), 'sequence':1}),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('approval_matrix.approval_matrix_tree_view'), 'sequence':2}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('approval_matrix.approval_matrix_form_view'), 'sequence':3})
+                ]"/> -->
+        <field name="domain">[]</field>
+        <field name="context">{'default_collector':True,'search_default_collector': 1}}</field>
+    </record>
+
+    <menuitem
+        id="collection_approval_matrix_menu"
+        name="Collection Approval Matrix"
+        action="action_approval_matrix_collection"
+        parent="collector_menu"/>
+
+    <menuitem
+        id="collector_res_partner_menu"
+        name="Collector"
+        action="action_res_partner_collector"
+        parent="collector_menu"/>
+
+    <record model="ir.ui.menu" id="account_accountant.menu_accounting">
+        <field name="groups_id" eval="[(4,ref('invoice_collection.group_collection_collector'))]"/>
+    </record>
+
+</odoo>

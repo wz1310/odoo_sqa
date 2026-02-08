@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <report id="your_report_id" 
+        model="tes.report.bersih" 
+        string="Report Name Goes Here" 
+        name="tes_report_bersih.report_my_custom_report" 
+        file="tes_report_bersih.your_report_id" 
+        report_type="qweb-html" />
+    
+        <template id="report_my_custom_report">
+            <t t-call="report.layout">
+                <div class="page">
+                    <div class="text-center">
+                        <h4>
+                            <b>Hello This is Custom Report (Odoo QWEB)</b>
+                        </h4>
+                        <t t-foreach="hold_data_array" t-as="data">
+                            <t t-esc="data[0]" />
+                            <t t-esc="data[1]" />
+                            ......
+              ......
+              ......
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

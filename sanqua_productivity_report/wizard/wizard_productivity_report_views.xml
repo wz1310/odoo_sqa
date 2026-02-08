@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="productivity_report_wizard_form_view">
+        <field name="name">Wizard Productivity Report</field>
+        <field name="model">wizard.productivity.report</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="year" />
+                            <field name="type_of_result" invisible="1"/>
+                            <field name="company_id" options="{'no_open': True, 'no_create': True}" readonly="True" force_save="1"/>
+                            <!-- <field name="mesin_ids" widget="many2many_tags" options="{'no_open': True, 'no_create': True}" attrs="{'invisible':[('type_of_result', '!=', 'mesin')],'required':[('type_of_result', '=', 'mesin')]}" domain="[('company_id', '=', company_id)]"/>
+                            <field name="product_ids" widget="many2many_tags" options="{'no_open': True, 'no_create': True}" attrs="{'invisible':[('type_of_result', '!=', 'product')],'required':[('type_of_result', '=', 'product')]}"/> -->
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Generate Excel" type="object" name="button_print" class="oe_highlight" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_productivity_mesin_report" model="ir.actions.act_window">
+        <field name="name">Hasil Produksi / Mesin</field>
+        <field name="res_model">wizard.productivity.report</field>
+        <field name="view_mode">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="productivity_report_wizard_form_view"/>
+        <field name="target">new</field>
+        <field name="context">{'default_type_of_result':'mesin'}</field>
+    </record>
+
+    <record id="action_productivity_product_report" model="ir.actions.act_window">
+        <field name="name">Hasil Produksi / SKU</field>
+        <field name="res_model">wizard.productivity.report</field>
+        <field name="view_mode">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="productivity_report_wizard_form_view"/>
+        <field name="target">new</field>
+        <field name="context">{'default_type_of_result':'product'}</field>
+    </record>
+
+    <menuitem id="productivity_mesin_report_menu" name="Hasil Produksi / Mesin" action="action_productivity_mesin_report" parent="mrp.menu_mrp_reporting" sequence="10"/>
+
+    <menuitem id="productivity_product_report_menu" name="Hasil Produksi / SKU" action="action_productivity_product_report" parent="mrp.menu_mrp_reporting" sequence="10"/>
+</odoo>

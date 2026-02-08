@@ -1,0 +1,177 @@
+<odoo>
+    <record id="discount_target_support_customer_view_form" model="ir.ui.view">
+        <field name="name">discount.target.support.customer.view.form</field>
+        <field name="model">discount.target.support.customer</field>
+        <field name="arch" type="xml">
+            <form string="Master Diskon Target and Support">
+                <header>
+                    <button string="Fetch Sale Report" type="object" name="btn_fetch_sale_report" class="oe_highlight" attrs="{'invisible':[('state','!=','draft')]}"/>
+                    <button name="btn_submit" states="draft" type="object" string="Submit" class="btn-primary" confirm="Sure to Submit?"/>
+                    <button name="btn_draft" states="reject" type="object" string="Set to Draft" confirm="Sure to reject?"/>
+                    <button name="btn_approve" type="object" string="Approve" confirm="Sure to Approve?" class="btn-primary" attrs="{'invisible':['|',('user_can_approve','=',False),('state','not in',['waiting_approval'])]}"/>
+                    <button name="btn_reject" type="object" string="Reject" attrs="{'invisible':['|',('user_can_approve','=',False),('state','not in',['waiting_approval'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,waiting_approval,approved" />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="team_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly':[('state','!=','draft')]}" domain="[('state', '=', 'done')]"/>
+                            <field name="salesman_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="description" attrs="{'readonly':[('state','!=','draft')]}"/>
+                        </group>
+                        <group>
+                            <field name="start_date" attrs="{'readonly':[('state','!=','draft')]}" string="Start Date Omset"/>
+                            <field name="end_date" attrs="{'readonly':[('state','!=','draft')]}" string="End Date Omset"/>
+                            <field name="company_id" options="{'no_quick_create':True,'no_create':True}" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            <field name="realization_date_start" attrs="{'readonly':[('state','!=','draft')]}" string="Start Date Potongan"/>
+                            <field name="realization_date_end" attrs="{'readonly':[('state','!=','draft')]}" string="End Date Potongan"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Customer Detail">
+                            <group>
+                                <group>
+                                    
+                                    <field name="master_id" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_quick_create':True,'no_create':True}" domain="[('team_id','=',team_id), ('salesman_id','=',salesman_id)]" />
+
+                                    <field name="allowed_partner_ids" invisible="1" widget="many2many_tags" />
+                                    
+                                    <field name="partner_id" attrs="{'readonly':[('state','!=','draft')]}" domain="[('id','=',allowed_partner_ids)]" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="target_qty" attrs="{'readonly':[('state','!=','draft')]}" />
+                                    <field name="disc_type" />
+                                    <field name="target_type"/>
+                                    
+                                    <field name="remain_disc" />
+                                    <field name="realization_qty"/>
+                                    
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Accounting">
+                            <group>
+                                <group>
+                                    <field name="journal_id" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="debit_account_id" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="credit_account_id" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="tax_debit_account_id" string ="Tax Account" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="tax_credit_account_id" attrs="{'readonly':[('state','!=','draft')]}" options="{'no_quick_create':True,'no_create':True}" invisible ="1"/>
+                                </group>
+                                <group string="Created Entry" attrs="{'2:invisible':[('move_entry_id','=',False)]}">
+                                    <field name="move_entry_id" readonly="1" />
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Discount Usage" groups="sanqua_discount_target_support.discount_target_support_customer_group_manager">
+                            <field name="usage_ids" attrs="{'readonly':[('state','!=','draft')]}">
+                                <tree>
+                                    <field name="payment_id"/>
+                                    <field name="settlement_request_number"/>
+                                    <field name="settlement_request_date"/>
+                                    <field name="invoice_id"/>
+                                    <field name="disc_usage" sum="Total Usages"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="payment_id" options="{'no_quick_create':True,'no_create':True}"/>
+                                            <field name="disc_usage"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Report">
+                            <field name="sale_report_ids" invisible="1"/>
+                            <field name="line_ids" attrs="{'readonly':[('state','!=','draft')]}">
+                                <tree editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="qty_order"/>
+                                    <field name="qty_delivered"/>
+                                    <field name="price_subtotal"/>
+                                    <field name="price_delivered"/>
+                                    <field name="target_qty"/>
+                                    <field name="target_amount"/>
+                                    <field name="discount_amount" required="1"/>
+                                    <field name="discount_qty" required="1"/>
+                                </tree>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="product_id"/>
+                                            <field name="qty_order"/>
+                                            <field name="qty_delivered"/>
+                                            <field name="price_subtotal"/>
+                                            <field name="target_qty"/>
+                                            <field name="target_amount"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                <field name="discount" widget="monetary"/>
+                                <field name="discount_qty" widget="monetary"/>
+                            </group>
+                            <div class="oe_clear"/>
+                        </page>
+
+                        <page id="page_approval" string="Approvals">
+                            <field name="user_can_approve" invisible="1" />
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved"/></group>
+
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="discount_target_support_customer_view_tree" model="ir.ui.view">
+        <field name="name">discount.target.support.customer.view.tree</field>
+        <field name="model">discount.target.support.customer</field>
+        <field name="arch" type="xml">
+            <tree 
+                string="Discount Target and Support Customer" 
+                decoration-muted="state=='rejected'" 
+                decoration-info="state=='waiting_approval'">
+                <field name="name"/>
+                <field name="team_id"/>
+                <field name="salesman_id"/>
+                <field name="partner_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="disc_type"/>
+                <field name="discount"/>
+                <field name="remain_disc"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="discount_target_support_customer_action" model="ir.actions.act_window">
+        <field name="name">Discount Target and Support Customer</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">discount.target.support.customer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new Master Diskon Target and Support.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="discount_target_support_customer_menu"
+        name="Discount Target &amp; Support Customer"
+        parent="sale.menu_sale_config"
+        action="discount_target_support_customer_action"
+        sequence="2"/>
+</odoo>

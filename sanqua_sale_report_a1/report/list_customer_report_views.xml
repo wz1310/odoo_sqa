@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="list_customer_report_tree" model="ir.ui.view">
+        <field name="name">report.list.customer.tree</field>
+        <field name="model">report.list.customer</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="team_id" widget="many2onebutton"/>
+                <field name="partner_code" optional="show"/>
+                <field name="partner_name" optional="show"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="vat"/>
+                <field name="tax_holder_name"/>
+                <field name="streets"/>
+                <field name="customer_group_id"/>
+                <field name="phone"/>
+                <field name="ref" invisible="1"/>
+                <field name="user_id"/>
+                <field name="sales_admin_id"/>
+                <field name="credit_limit"/>
+                <field name="payment_term_id"/>
+                <field name="nik"/>
+                <field name="region_group_id" optional="show"/>
+                <field name="region_master_id" optional="show"/>
+                <field name="region_id" optional="show"/>
+                <field name="join_date" optional="hide"/>
+                <field name="owner_image" invisible="1"/>
+                <field name="warehouse_image" optional="hide"/>
+                <field name="ktp_image" optional="hide"/>
+                <field name="lat_long" optional="hide"/>
+                <field name="payment_method" optional="hide"/>
+                <field name="collection_method" optional="hide"/>
+                <field name="contact_address" optional="hide"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="list_customer_report_pivot" model="ir.ui.view">
+         <field name="name">report.list.customer.pivot</field>
+         <field name="model">report.list.customer</field>
+         <field name="arch" type="xml">
+             <pivot string="List Customer Report" disable_linking="True">
+                <field name="team_id" type="row"/>
+                <field name="partner_id" type="row"/>
+                <field name="user_id" type="row"/>
+                <field name="sales_admin_id" type="row"/>
+                <field name="credit_limit" type="measure"/>
+             </pivot>
+         </field>
+    </record>
+
+    <record id="list_customer_report_search" model="ir.ui.view">
+        <field name="name">report.list.customer.view</field>
+        <field name="model">report.list.customer</field>
+        <field name="arch" type="xml">
+            <search string="List Customer Report">
+                <field name="team_id"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <field name="sales_admin_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_list_customer_report" model="ir.actions.act_window">
+        <field name="name">A1 - List Customer Report</field>
+        <field name="res_model">report.list.customer</field>
+        <field name="view_mode">tree,pivot</field>
+    </record>
+
+    <menuitem id="menu_list_customer_report"
+            name="A1 - List Customer Report"
+            action="action_list_customer_report"
+            parent="sale.menu_sale_report"
+            sequence="111"/>
+</odoo>

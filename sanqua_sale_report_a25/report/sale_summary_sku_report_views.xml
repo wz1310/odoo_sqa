@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="sale_summary_sku_search" model="ir.ui.view">
+            <field name="name">sale.summary.sku.report.view</field>
+            <field name="model">report.sale.summary.sku</field>
+            <field name="arch" type="xml">
+                <search string="Sale Summary SKU">
+                    <field name="categ_id"/>
+                    <field name="product_id"/>
+                    <field name="date"/>
+                    <field name="company_id"/>
+                    <filter name="current_month" string="Current Month" domain="[
+                            ('date', '&gt;=', (context_today()).strftime('%Y-%m-01')),
+                            ('date', '&lt;', (context_today() + relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                    <separator/>
+                </search>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="sale_summary_sku_tree_view">
+            <field name="name">sale.summary.sku.report.tree</field>
+            <field name="model">report.sale.summary.sku</field>
+            <field name="arch" type="xml">
+                <tree string="Sale Summary SKU">
+                    <field name="categ_id"/>
+                    <field name="product_id"/>
+                    <field name="date"/>
+                    <field name="quantity"/>
+                    <field name="price_total"/>
+                    <field name="company_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sale_summary_sku_pivot">
+            <field name="name">sale.summary.sku.report.pivot</field>
+            <field name="model">report.sale.summary.sku</field>
+            <field name="arch" type="xml">
+                <pivot string="Sale Summary SKU" disable_linking="True">
+                    <field name="categ_id" type="row"/>
+                    <field name="product_id" type="row"/>
+                    <field name="date" type="col" interval="month"/>
+                    <field name="quantity" type="measure"/>
+                    <field name="price_total" type="measure"/>
+                 </pivot>
+            </field>
+        </record>
+
+        <record id="action_sale_summary_sku" model="ir.actions.act_window">
+            <field name="name">A25 - Sale Summary SKU</field>
+            <field name="res_model">report.sale.summary.sku</field>
+            <field name="view_mode">pivot,tree</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_id" ref="sanqua_sale_report_a25.sale_summary_sku_pivot"/>
+            <field name="context">{'search_default_current_month':1}</field>
+        </record>
+
+        <menuitem
+            id="sale_summary_sku_menu"
+            name="A25 - Sale Summary SKU"
+            action="sanqua_sale_report_a25.action_sale_summary_sku"
+            parent="sale.menu_sale_report"
+            groups="sanqua_sale_report_a25.group_sale_summary_sku"
+            sequence="140"
+        />
+    </data>
+</odoo>

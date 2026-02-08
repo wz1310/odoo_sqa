@@ -1,0 +1,11 @@
+<odoo>
+    <record model="ir.sequence" id="sequence_purchase_request">
+        <field name="name">PR Sequence</field>
+        <field name="code">seq.purchase.requestxx</field>
+        <field name="use_date_range" eval="True"/>
+        <field name="padding">5</field>
+        <!-- UNCOMMENT BELLOW IF USE PREFIX NOR SUFFIX -->
+        <field name="prefix">PR/{}/%(range_y)s/%(month)s/</field>
+        <!-- <field name="suffix">DOC/CODE/%(range_y)s/%(month)s/</field> -->
+    </record>
+</odoo>

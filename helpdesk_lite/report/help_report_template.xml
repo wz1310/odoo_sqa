@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="help_report_template_document">
+	<t t-call="web.html_container">
+		<t t-call="web.basic_layout">
+			<t t-if="len(docs) == 1">
+				<style>
+					.judul{
+						border:1px solid black;
+						margin-left:auto;
+						margin-right:auto;
+						padding-left:10px;
+						padding-right:10px;
+						border-radius:10px;
+						border-collapse:separate;
+						font-size:25px;
+					}
+					.heads{
+						margin-top:40px;
+						font-size:12px;
+					}
+					.th-1{
+					padding-left:10px;
+					bgcolor:green;
+					}
+					.th-2{
+					border:1px solid black;
+					text-align:center;
+					background-color:#a3a3a3;
+					}
+					.text-1{
+					width: 100%;
+					margin-top:10px;
+					font-size:12px;
+					}
+					.text-2{
+					font-size:12px;
+					}
+					.text-3{
+					font-size:12px;
+					}
+					.sign{
+					width: 100%;
+					margin-top:10px;
+					font-size:12px;
+					}
+                    th input[type="checkbox"] {
+                    float: left;
+                    margin: 0 auto;
+                    width: 100%;
+                    margin-left:10px;
+                    }
+				</style>
+				<div>
+						<table class="judul">
+                            <tr>
+                                <th>FORM IT SUPPORT</th>
+                            </tr>
+						</table>
+				</div>
+				<div>
+					<t t-foreach="docs" t-as="doc">
+					<table class="heads">
+							<tr>
+								<th>Nama Asset</th>
+								<th class="th-1">:</th>
+							</tr>
+							<tr>
+								<th>Lokasi</th>
+								<th class="th-1">:</th>
+								<td class="th-1"><span t-field="doc.company_id"/></td>
+							</tr>
+							<tr>
+								<th>No Identifikasi</th>
+								<th class="th-1">:</th>
+							</tr>
+							<tr>
+								<th>User Pemakai</th>
+								<th class="th-1">:</th>
+								<td class="th-1"><span t-field="doc.partner_id"/></td>
+							</tr>
+							<tr>
+								<th>Diajukan oleh Bagian</th>
+								<th class="th-1">:</th>
+								<td class="th-1"><span t-field="doc.department"/></td>
+							</tr>
+					</table>
+				</t>
+				<t t-foreach="docs" t-as="doc">
+					<table class="text-2">
+					<t t-if="doc.sub_category_id.id == 1">
+							<tr>
+								<th>Kategori support</th>
+								<th style="padding-left:30px;">:</th>
+								<th><input type="checkbox" checked="True"></input></th>
+								<th style="padding-left:15px;">Hardware</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Software</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Jaringan</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Desain</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Lainnya</th>
+							</tr>
+						</t>
+					<t t-if="doc.sub_category_id.id == 2">
+							<tr>
+								<th>Kategori support</th>
+								<th style="padding-left:30px;">:</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Hardware</th>
+								<th><input type="checkbox" checked="True"></input></th>
+								<th style="padding-left:15px;">Software</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Jaringan</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Desain</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Lainnya</th>
+							</tr>
+						</t>
+					<t t-if="doc.sub_category_id.id == 3">
+							<tr>
+								<th>Kategori support</th>
+								<th style="padding-left:30px;">:</th>
+								<th><input type="checkbox"></input></th>
+								<th style="padding-left:15px;">Hardware</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Software</th>
+								<th><input type="checkbox" checked="True"></input></th>
+								<th style="padding-left:15px;">Jaringan</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Desain</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Lainnya</th>
+							</tr>
+						</t>
+					<t t-if="doc.sub_category_id.id == 4">
+							<tr>
+								<th>Kategori support</th>
+								<th style="padding-left:30px;">:</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Hardware</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Software</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Jaringan</th>
+								<th><input type="checkbox" checked="True"></input></th>
+								<th style="padding-left:15px;">Desain</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Lainnya</th>
+							</tr>
+						</t>
+					<t t-if="doc.sub_category_id.id == 5">
+							<tr>
+								<th>Kategori support</th>
+								<th style="padding-left:30px;">:</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Hardware</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Software</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Jaringan</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Desain</th>
+								<th><input type="checkbox" checked="True"></input></th>
+								<th style="padding-left:15px;">Lainnya</th>
+							</tr>
+						</t>
+					<t t-if="doc.sub_category_id.id == ''">
+							<tr>
+								<th>Kategori support</th>
+								<th style="padding-left:30px;">:</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Hardware</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Software</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Jaringan</th>
+								<th><input type="checkbox" ></input></th>
+								<th style="padding-left:15px;">Desain</th>
+								<th><input type="checkbox"></input></th>
+								<th style="padding-left:15px;">Lainnya</th>
+							</tr>
+						</t>
+					</table>
+				</t>
+					<table class="text-1">
+							<tr>
+								<th>Deskripsi Masalah</th>
+							</tr>
+					</table>
+					<t t-foreach="docs" t-as="doc">
+						<table class="text-3">
+							<tr>
+								<td><textarea rows="4" cols="90%"><t t-esc="doc.description"/></textarea></td>
+							</tr>
+						</table>
+					</t>
+					<t t-foreach="docs" t-as="doc">
+					<table class="text-1">
+							<tr>
+								<th style="padding-top:5px;">Diajukan Oleh,</th>
+								<th style="padding-left:100px;">Diterima Oleh,</th>
+							</tr>
+							<tr>
+								<td style="padding-top:5px;"><t t-esc="doc.partner_id.name"/></td>
+								<td style="padding-left:100px;"><t t-esc="doc.user_id.name"/></td>
+							</tr>
+							<tr>
+								<th style="padding-top:30px;">Tanggal : <span t-field="doc.create_date" t-options='{"widget": "date", "format": "dd/MM/yyyy "}'/></th>
+								<th style="padding-left:100px;">Tanggal : <span t-field="doc.create_date" t-options='{"widget": "date", "format": "dd/MM/yyyy "}'/></th>
+							</tr>
+							<tr>
+								<th>Pukul :</th>
+								<th style="padding-left:100px;">Pukul :</th>
+							</tr>
+						</table>
+					</t>
+					<table class="text-1">
+							<tr>
+								<th>Detail Perbaikan yang dilakukan:</th>
+							</tr>
+					</table>
+					<t t-foreach="docs" t-as="doc">
+						<table class="text-3">
+							<tr>
+								<td><textarea rows="6" cols="90%"><t t-esc="doc.explain"/></textarea></td>
+							</tr>
+						</table>
+					</t>
+					<table class="text-1">
+							<tr>
+								<th>Serah terima hasil perbaikan:</th>
+							</tr>
+							<tr>
+								<th>Verifikasi user:</th>
+							</tr>
+							<tr>
+								<th><textarea style="margin-top:10px;" rows="4" cols="90%"></textarea></th>
+							</tr>
+					</table>
+					<t t-foreach="docs" t-as="doc">
+					<table class="sign">
+							<tr>
+								<th class="th-2">Diserahkan Oleh,</th>
+								<th class="th-2">Diterima oleh User,
+								</th>
+							</tr>
+							<tr>
+								<th style="padding-top:40px;border:1px solid black;text-align:center;">
+									<t t-esc="doc.user_id.name"/>
+								</th>
+								<th style="border:1px solid black;text-align:center;">
+									<t t-esc="doc.partner_id.name"/>
+								</th>
+							</tr>
+							<tr>
+								<th style="border:1px solid black;">Tanggal : <span t-field="doc.date_done" t-options='{"widget": "date", "format": "dd/MM/yyyy "}'/></th>
+								<th style="border:1px solid black;">Tanggal : <span t-field="doc.date_done" t-options='{"widget": "date", "format": "dd/MM/yyyy "}'/></th>
+							</tr>
+							<tr>
+								<th style="border:1px solid black;">Pukul :</th>
+								<th style="border:1px solid black;">Pukul :</th>
+							</tr>
+					</table>
+				</t>
+				</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</odoo>

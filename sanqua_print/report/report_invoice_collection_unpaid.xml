@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <template id="report_invoice_collection_document">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-set="line_ids" t-value="o.line_ids.filtered(lambda r: r.partner_id.id == x.id and r.invoice_state not in ['paid'])"/>
+                <div class="header">
+                    <div class="row">
+                        <table style="width: 100%;border-bottom: solid 2px black;">
+                            <tr>
+                                <td rowspan="2" style="width: 10%;">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                                </td>
+                                <td rowspan="2" style="font-size: 12px; width: 60%;">
+                                    <span style="font-size: 14px;" t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["name"], "no_marker": true}'/>
+                                    <span t-field="o.company_id.partner_id.street"/><br/>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Telp. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Fax. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.vat">
+                                        NPWP. <span t-field="o.company_id.partner_id.vat"/> 
+                                    </t>
+                                </td>
+                                <td style="width: 30%;">
+                                    <span> Doc. No. : </span><span t-field="o.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span> Tanggal : </span><span t-field="o.activity_date"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <table class="table" style="width: 100%;font-size: 11px;">
+                            <tr>
+                                <th class="text-center" style="border-bottom: 2px solid black;border-top: none !important;padding:0px !important;" colspan="3">TANDA TERIMA TAGIHAN</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:0px !important;" width="15%">Kode Konsumen</td>
+                                <td style="padding:0px !important;" width="1%">:</td>
+                                <td style="padding:0px !important;" width="84%"><span t-field="x.code"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding:0px !important;border-top: none !important;" width="15%">Nama Konsumen</td>
+                                <td style="padding:0px !important;border-top: none !important;" width="1%">:</td>
+                                <td style="padding:0px !important;border-top: none !important;" width="84%"><span t-field="x.name"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="page" style="padding-top:140px;font-size: 11px;">
+                    <style>
+                        .table th,
+                        .table td {
+                            padding: 5px;
+                        }
+                        .th-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            text-align:center;
+                        }
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <div class="row">
+                        <table class="table" style="width: 100%; border: 1px solid black;page-break-before:always;">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 5%;">
+                                        No.
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        No Sales Invoice
+                                    </th>
+                                    <th class="th-0" style="width: 5%;">
+                                        <span><![CDATA[&nbsp;]]></span>
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        No SJ
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Tanggal Invoice
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Nominal Invoice
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Sisa Invoice
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Keterangan
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-foreach="line_ids" t-as="line">
+                                    <t t-if="idx == 10">
+                                        <tr>
+                                            <td class="td-4 text-center" style="border-bottom:1px solid black;">
+                                                <span t-esc="idx"/>
+                                            </td>
+                                            <td class="td-4 text-center" style="border-bottom:1px solid black;">
+                                                <span t-field="line.invoice_id.name"/>
+                                            </td>
+                                            <td class="td-4 text-center" style="border-bottom:1px solid black;">
+                                                <!-- <span t-esc="o.get_format_currency(line.quantity)"/> -->
+                                            </td>
+                                            <td class="td-4 text-center" style="border-bottom:1px solid black;">
+                                                <span t-field="line.invoice_origin"/>
+                                            </td>
+                                            <td class="text-center td-4" style="border-bottom:1px solid black;">
+                                                <span t-field="line.invoice_date"/>
+                                            </td>
+                                            <td class="text-right td-4" style="border-bottom:1px solid black;">
+                                                <span t-esc="o.get_format_currency(line.amount_total)"/>
+                                            </td>
+                                            <td class="text-right td-4" style="border-bottom:1px solid black;">
+                                                <span t-esc="o.get_format_currency(line.amount_residual)"/>
+                                            </td>
+                                            <td class="text-right td-4" style="border-bottom:1px solid black;">
+                                                <!-- <span t-esc="o.get_format_currency(line.price_subtotal)"/> -->
+                                            </td>
+                                        </tr>
+                                        <t t-set="blank_space" t-value="4"/>
+                                        <t t-foreach="blank_space" t-as="a">
+                                            <tr>
+                                                <td class="td-4 text-center">
+                                                    <span t-esc="idx"/>
+                                                </td>
+                                                <td class="td-4 text-center">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                                <td class="td-4 text-center">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                                <td class="td-4 text-right">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                                <td class="td-4 text-right">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                                <td class="td-4 text-right">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                                <td class="td-4 text-right">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                                <td class="td-4 text-right">
+                                                    <span><![CDATA[&nbsp;]]></span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                        <tr>
+                                            <th class="th-0" style="width: 5%;">
+                                                No.
+                                            </th>
+                                            <th class="th-0" style="width: 15%;">
+                                                No Sales Invoice
+                                            </th>
+                                            <th class="th-0" style="width: 5%;">
+                                                <span><![CDATA[&nbsp;]]></span>
+                                            </th>
+                                            <th class="th-0" style="width: 15%;">
+                                                No SJ
+                                            </th>
+                                            <th class="th-0" style="width: 15%;">
+                                                Tanggal Invoice
+                                            </th>
+                                            <th class="th-0" style="width: 15%;">
+                                                Nominal Invoice
+                                            </th>
+                                            <th class="th-0" style="width: 15%;">
+                                                Sisa Invoice
+                                            </th>
+                                            <th class="th-0" style="width: 15%;">
+                                                Keterangan
+                                            </th>
+                                        </tr>
+                                    </t>
+                                    <t t-else="">
+                                        <tr>
+                                            <td class="td-4 text-center">
+                                                <span t-esc="idx"/>
+                                            </td>
+                                            <td class="td-4 text-center">
+                                                <span t-field="line.invoice_id.name"/>
+                                            </td>
+                                            <td class="td-4 text-center">
+                                                <!-- <span t-esc="o.get_format_currency(line.quantity)"/> -->
+                                            </td>
+                                            <td class="td-4 text-center">
+                                                <span t-field="line.invoice_origin"/>
+                                            </td>
+                                            <td class="text-center td-4">
+                                                <span t-field="line.invoice_date"/>
+                                            </td>
+                                            <td class="text-right td-4">
+                                                <span t-esc="o.get_format_currency(line.amount_total)"/>
+                                            </td>
+                                            <td class="text-right td-4">
+                                                <span t-esc="o.get_format_currency(line.amount_residual)"/>
+                                            </td>
+                                            <td class="text-right td-4">
+                                                <!-- <span t-esc="o.get_format_currency(line.price_subtotal)"/> -->
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                </t>
+                                <t t-set="blank_space" t-value="o.get_blank_space(line_ids)"/>
+                                <t t-foreach="blank_space" t-as="a">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="idx"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="td-4 text-right">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="td-4 text-right">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="td-4 text-right">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="td-4 text-right">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                        <td class="td-4 text-right">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                </t>
+                                <tr>
+                                        <td colspan="6" class="th-0 text-center" style="font-weight:bold;">
+                                            Total
+                                        </td>
+                                        <td class="th-0 text-center" style="font-weight:bold;">
+                                            <span t-esc="o.get_format_currency(sum([line.amount_residual for line in line_ids]))"/>
+                                        </td>
+                                        <td class="th-0 text-center">
+                                            <span><![CDATA[&nbsp;]]></span>
+                                        </td>
+                                    </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="footer" style="font-size: 11px;">
+                    <div class="row">
+                        <style>
+                            .table th,
+                            .table td {
+                                padding: 5px;
+                            }
+                            .th-0 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black !important;
+                                border-left: 1px solid black;
+                                border-right: 1px solid black;
+                                text-align:center;
+                            }
+                            .td-1 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: 1px solid black;
+                            }
+                            .td-2 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: none !important;
+                                border-right: none !important;
+                            }
+                            .td-3 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: none !important;
+                                border-right: 1px solid black;
+                            }
+
+                            .td-4 {
+                                border-top: none !important;
+                                border-bottom: none !important;
+                                border-left: 1px solid black;
+                                border-right: 1px solid black;
+                            }
+                            .no-border {
+                                border: none !important;
+                            }
+                        </style>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td colspan="2" class="text-center">Yang Menyerahkan</td>
+                                <td colspan="2" class="text-center">Adm Sales</td>
+                                <td colspan="2" class="text-center">Sales/Collector</td>
+                                <td colspan="2" class="text-center">Customer</td>
+                            </tr>
+                            <tr style="height: 25px;">
+                                <td colspan="8"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-center"> (.....................) </td>
+                                <td colspan="2" class="text-center"> (.....................) </td>
+                                <td colspan="2" class="text-center"> ( <span t-field="o.collector_id.name"/> ) </td>
+                                <td colspan="2" class="text-center"> (.....................) </td>
+                            </tr>
+                            <tr>
+                                <td class="no-border text-center">
+                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="th-0">
+                                    
+                                </td>
+                                <td class="no-border text-center">
+                                    Tunai
+                                </td>
+                                <td class="no-border">
+                                    :
+                                </td>
+                                <td colspan="5"></td>
+                            </tr>
+                            <tr>
+                                <td class="th-0">
+                                    
+                                </td>
+                                <td class="no-border text-center">
+                                    Transfer
+                                </td>
+                                <td class="no-border">
+                                    :
+                                </td>
+                                <td class="no-border">
+                                    Tgl :
+                                </td>
+                                <td colspan="4" class="no-border">
+                                    Nominal:
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="th-0" style="width: 5%;">
+                                    
+                                </td>
+                                <td class="no-border text-center" style="width: 15%;">
+                                    Giro
+                                </td>
+                                <td class="no-border" style="width: 5%;">
+                                    :
+                                </td>
+                                <td class="no-border" style="width: 15%;">
+                                    Bank
+                                </td>
+                                <td colspan="2" class="no-border" style="width: 30%;">
+                                    Rp
+                                </td>
+                                <td colspan="2" class="no-border" style="width: 30%;">
+                                    Tgl:
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_invoice_collection">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-if="o.state not in ['draft','rejected','waiting_approval']">
+                    <t t-foreach="o.line_ids.filtered(lambda r: r.invoice_state not in ['paid']).mapped('partner_id')" t-as="x">                
+                        <t t-call="sanqua_print.report_invoice_collection_document"/>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

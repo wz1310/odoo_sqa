@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo><!-- 
+    <record id="expense_sheet_list_view" model="ir.ui.view">
+        <field name="name">expenses.sheet.list.view</field>
+        <field name="model">expenses.sheet</field>
+        <field name="arch" type="xml">
+            <tree create="1" edit="1">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="name" />
+                <field name="tanggal_kegiatan" />
+                <field name="jumlah_dana" widget="monetary" />
+                <field name="atas_nama" />
+                <field name="status_anggaran" />
+            </tree>
+        </field>
+    </record>
+    <record id="expenses_sheet_form_view" model="ir.ui.view">
+        <field name="name">expenses.sheet.form.view</field>
+        <field name="model">expenses.sheet</field>
+        <field name="arch" type="xml">
+            <form string="Expenses Sheet" class="o_expense_sheet_form">
+                <header>
+                </header>
+                <sheet>                    
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="expense_id" invisible="1"/>
+                            <field name="department_id" />
+                            <field name="manager_id" />
+                            <field name="products_id" />
+                            <field name="company_id" groups="base.expenses_request_user"/>
+                            <field name="account_id" />
+                            <field name="name" string="Kegiatan" />
+                            <field name="tanggal_kegiatan" />
+                            <field name="jumlah_dana" widget="monetary" />
+                        </group>
+                        <group>
+                        <h3>DETAIL PEMBAYARAN</h3>
+                            <field name="atas_nama" />
+                            <field name="no_rek" string="Nomor rekening"/>
+                            <field name="bank_names" string="Bank - Cabang"/>
+                        <h3>ANGGARAN</h3>
+                            <field name="partner_id"/>
+                            <field name="status_anggaran" widget="selection"/>
+                            <field name="sum_anggaran" widget="selection" string="Sumber anggaran"/>
+                        </group>
+                        <field name="target_keg" class="oe_inline" placeholder="Target kegiatan..."/>
+                    </group>
+                    <notebook>
+                        <page string="Expense Request Sheet">
+                        <field name="expenses_request_line">
+                            <tree editable="bottom">                         
+                                <field name="name" string="Kegiatan" />                 
+                                <field name="tanggal_kegiatan" />                 
+                                <field name="jumlah_dana" />                 
+                                <field name="atas_nama" /> 
+                                <field name="bank_names" />
+                                <field name="no_rek" /> 
+                                <field name="sum_anggaran" /> 
+                                <field name="status_anggaran" />                 
+                            </tree>
+                        </field> -->
+                       <!--  <group class="oe_subtotal_footer oe_right" 
+                            colspan="2" name="expense_total">
+                            <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                <label for="total"/>
+                            </div>
+                            <field name="total" nolabel="1" class="oe_subtotal_footer_separator"/>
+                        </group> -->
+                      <!--   </page>
+                    </notebook>
+                </sheet>
+                </form>
+        </field>
+    </record>
+    <record id="expenses_sheet" model="ir.actions.act_window">
+        <field name="name">Expense Request Sheet</field>
+        <field name="res_model">expenses.sheet</field>
+        <field name="view_mode">tree,form</field>
+    </record> -->
+</odoo>

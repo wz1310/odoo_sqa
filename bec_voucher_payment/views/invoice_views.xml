@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+	<record id="view_move_form" model="ir.ui.view">
+		<field name="name">account.move.form.inherit_bec_vendor_bill</field>
+		<field name="model">account.move</field>
+		<field name="inherit_id" ref="account.view_move_form" />
+		<field name="arch" type="xml">
+			<field name="ref" position="after">
+				<field name="payment_journal_id" />
+				<field name="voucher_id" attrs="{'invisible': [('type','!=', 'in_invoice')]}"/>
+				<field name="note" attrs="{'invisible': [('type','!=', 'in_invoice')]}"/>
+			</field>
+			<field name="invoice_partner_bank_id" position="after">
+				<field name="cek_number" />
+			</field>
+		</field>
+	</record>
+
+	<record id="view_invoice_tree" model="ir.ui.view">
+        <field name="name">account.invoice.tree.vcp</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree" />
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='invoice_origin']" position="after">
+            	<field name="type" invisible="1"/>
+                <field name="note" attrs="{'invisible': [('type','!=', 'in_invoice')]}"/>
+                <!-- <field name="note">[('type', '=', 'in_invoice')]</field> -->
+            </xpath>
+
+        </field>
+    </record>
+
+	<record model="ir.ui.view" id="view_account_move_filter">
+		<field name="name">bec.account.move.search</field>
+		<field name="model">account.move</field>
+		<field name="inherit_id"
+			ref="account.view_account_move_filter" />
+		<field name="arch" type="xml">
+			<xpath expr="//filter[@name='status']" position="after">
+				<filter name="Voucher Payment"
+					context="{'group_by':'voucher_id'}" />
+			</xpath>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="bec_account_account">
+		<field name="name">bec.account.account.form</field>
+		<field name="model">account.account</field>
+		<field name="inherit_id"
+			ref="account.view_account_form" />
+		<field name="arch" type="xml">
+			<field name="deprecated" position="after" >
+				<field name="rounding" />
+			</field>
+		</field>
+	</record>
+	
+</odoo>

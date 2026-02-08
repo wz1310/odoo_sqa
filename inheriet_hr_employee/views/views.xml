@@ -1,0 +1,18 @@
+<odoo>
+  <data>
+
+        <record model="ir.ui.view" id="view_inheriet_hr_employee">
+            <field name="name">inheriet.form.hr.employee</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="priority" eval="50"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='coach_id']" position="after" >
+                    <field name="dekan" string="Dekan"/>
+                    <field name="warek" string="Warek"/>
+                    <field name="rektor" string="Rektor"/>
+                </xpath>
+            </field>
+        </record>
+  </data>
+</odoo>

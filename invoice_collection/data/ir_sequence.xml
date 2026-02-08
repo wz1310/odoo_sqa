@@ -1,0 +1,12 @@
+<odoo>
+    <record model="ir.sequence" id="sequence_collection_activity">
+        <field name="name">Collection Activity Sequence</field>
+        <field name="code">seq.collection.activity</field>
+        <field name="use_date_range" eval="True"/>
+        <field name="padding">5</field>
+        <!-- UNCOMMENT BELLOW IF USE PREFIX NOR SUFFIX -->
+        <field name="prefix">COL/</field>
+        <field name="implementation">no_gap</field>
+        <!-- <field name="suffix">DOC/CODE/%(range_y)s/%(month)s/</field> -->
+    </record>
+</odoo>

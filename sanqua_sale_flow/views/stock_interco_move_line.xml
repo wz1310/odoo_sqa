@@ -1,0 +1,98 @@
+<odoo>
+
+	<record model="ir.ui.view" id="stock_interco_move_line_tree">
+		<field name="name">Stock Interco Move Line Tree</field>
+		<field name="model">stock.interco.move.line</field>
+		<field name="priority">10</field>
+		<field name="arch" type="xml">
+			<tree string="Tree">
+				<field name="picking_id" invisible="1" />
+				<field name="product_id" readonly="1" />
+				<field name="warehouse_id" context="{'all_companies':True}" />
+				<field name="plant_id" invisible="1" />
+				<field name="lot_id" context="{'allowed_company_ids':[plant_id],'force_company':plant_id}" />
+
+				<field name="qty" />
+			</tree>
+		</field>
+	</record>
+
+
+	<record model="ir.ui.view" id="stock_interco_move_line_form">
+		<field name="name">Stock Interco Move Line Form</field>
+		<field name="model">stock.interco.move.line</field>
+		<field name="arch" type="xml">
+			<form string="Form">
+				<header></header>
+				<sheet>
+					<h1>
+						<field name="product_id" />
+					</h1>
+					<group>
+						<!-- START HERE -->
+						<!-- YOU CAN ERASE THIS SYNTAX -->
+						<field name="picking_id"/>
+						<field name="move_id" />
+						<field name="warehouse_id" context="{'all_companies':True}" />
+						<field name="src_location_id" context="{'all_companies':True}" />
+						<field name="product_id" readonly="1" invisible="1" />
+						<field name="available_lot_in_location" context="{'all_companies':True}" invisible="1" />
+						<field name="lot_id" domain="[('id','in',available_lot_in_location)]" context="{'all_companies':True,'lot_ids':available_lot_in_location}" />
+						<field name="free_qty" />
+						<field name="qty" />
+					</group>
+				</sheet>
+				<!--<footer></footer>-->
+				
+				<!-- UNCOMMENT IF USING Mail Track SYSTEM -->
+				<!--<div class="oe_chatter">
+				    <field name="message_follower_ids" widget="mail_followers"/>
+				    <field name="activity_ids" widget="mail_activity"/>
+				    <field name="message_ids" widget="mail_thread"/>
+				</div>-->
+			</form>
+		</field>
+	</record>
+
+	<record model="ir.ui.view" id="stock_interco_move_line_editable_tree">
+		<field name="name">Stock Interco Move Line Editable Tree</field>
+		<field name="model">stock.interco.move.line</field>
+		<field name="priority">88</field>
+		<field name="arch" type="xml">
+			<tree string="Tree" editable="bottom">
+				<field name="picking_id" invisible="1" />
+				<field name="plant_id" invisible="1"/>
+				<field name="move_id" invisible="1" />
+				<field name="warehouse_id" context="{'all_companies':True}" invisible="1" />
+				<field name="src_location_id" context="{'all_companies':True}" readonly="False" invisible="1" />
+				<field name="product_id" readonly="1" invisible="1" />
+				<field name="available_lot_in_location" context="{'all_companies':True,'force_company':plant_id}" invisible="1" widget="many2many_tags" />
+				<field name="lot_id" domain="[('id','in',available_lot_in_location)]" options="{'no_create':1,'no_quick_create':1}" />
+				<field name="free_qty" />
+				<field name="qty" />
+			</tree>
+		</field>
+	</record>
+
+
+	<!-- adding stock interco into stock move form -->
+	<record model="ir.ui.view" id="view_stock_move_operations_interco">
+		<field name="name">Stock Move Operations Interco</field>
+		<field name="model">stock.move</field>
+		<field name="inherit_id" ref="stock.view_stock_move_operations" />
+		<field name="arch" type="xml">
+			<field name="move_line_ids" position="before">
+				<field name="interco_move_line_ids" context="{'tree_view_ref':'sanqua_sale_flow.stock_interco_move_line_editable_tree', 'all_companies':True}" 
+				attrs="{'invisible':[('interco_master','!=',True)],'readonly':[('picking_state','=','done')]}"/>
+				<field name="picking_state" invisible="1" />
+				<field name="interco_master" invisible="1" />
+			</field>
+			<field name="move_line_ids" position="attributes">
+				<attribute name="attrs">{'invisible':[('interco_master','=',True),('picking_state','not in',['done','plant-confirmed'])],'readonly':[('picking_state','=','done')]}</attribute>
+			</field>
+			<xpath expr="//div[2]" position="after">
+				<field name="to_backorder" attrs="{'invisible':[('interco_master','=',False)], 'readonly':[('state','in',['done','cancel'])]}"/>
+			</xpath>
+		</field>
+	</record>
+</odoo>

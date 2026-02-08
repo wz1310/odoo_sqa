@@ -1,0 +1,17 @@
+<odoo>
+    
+    <record id="group_sale_summary_sku" model="res.groups">
+        <field name="name">A25 - Sale Summary SKU</field>
+    </record>
+
+    <record model="ir.rule" id="rule_sale_summary_sku_user">
+        <field name="name">Rule Sale Summary SKU User</field>
+        <field name="model_id" ref="sanqua_sale_report_a25.model_report_sale_summary_sku" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+        <field name="groups" eval="[(4,ref('sanqua_sale_report_a25.group_sale_summary_sku'))]" />
+    </record>
+</odoo>

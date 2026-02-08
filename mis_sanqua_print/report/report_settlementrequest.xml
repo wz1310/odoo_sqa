@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_settlementrequest_document">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div class="row">
+                        <table style="width: 100%;border-bottom: solid 2px black;">
+                            <tr>
+                                <td rowspan="2" style="width: 10%;">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                                </td>
+                                <td rowspan="2" style="font-size: 12px; width: 60%;">
+                                    <!--span style="font-size: 14px;" t-field="o.company_id.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;adress&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: true}"/-->
+                                    <span style="font-size: 20px;text-transform: uppercase;font-weight:bolder;" t-field="o.company_id.partner_id.name"/><br/>
+                                    <span t-field="o.company_id.partner_id.street"/><br/>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Telp. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Fax. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.vat">
+                                        NPWP. <span t-field="o.company_id.partner_id.vat"/> 
+                                    </t>
+                                </td>
+                                <td style="width: 30%;">
+                                    <t t-if="o.company_id.iso_customer_payment">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            Doc. No. : <t t-esc="o.company_id.iso_customer_payment"/><br/>
+                                        </span>
+                                    </t>
+                                    <!--t t-if="o.state not in ['posted','sent','reconciled']">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            <t t-esc="dict(o._fields['state'].selection).get(o.state)"/>
+                                        </span>
+                                    </t-->
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4 class="text-right">
+                                    Settlement Request</h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="page" style="font-size: 11px;">
+                    <style>
+                        .table th,
+                        .table td {
+                            padding: 5px;
+                        }
+                        .th-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            text-align:center;
+                        }
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <div class="row">
+                        <div style="width:100%">
+                        <table class="table" style="width:100%;font-family:Arial;font-size:14px;">
+                                <tr>
+                                    <td class="td-1" style="width:15%">Request Date</td>
+                                    <td class="td-2" style="width:1%">:</td>
+                                    <td class="td-3" style="width:34%"><span t-field="o.request_date"/></td>
+                                    <td class="td-2" style="width:10%" nowrap="nowrap">Form No.</td>
+                                    <td class="td-2" style="width:1%">:</td>
+                                    <td class="td-3" style="width:39%"><!--span t-field="o.company_id.iso_customer_payment"/--><span t-field="o.name" /></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">Type</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3">
+                                        <span t-field="o.invoice_type"/>
+                                    </td>
+                                    <td class="td-2" nowrap="nowrap">Customer</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3">
+                                        <span t-field="o.partner_id.name" />
+                                    </td>
+                                </tr>                                
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <table class="table" style="width: 100%; border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 20%;">
+                                        Invoice No.
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Date
+                                    </th>
+                                    <th class="th-0" style="width: 20%;">
+                                        Payment Method
+                                    </th>
+                                    <th class="th-0" style="width: 20%;">
+                                        Amount Invoice
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Pay Amount
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Amount Residual
+                                    </th>
+                                    <th class="th-0" style="width: 15%;">
+                                        Payment
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-foreach="o.line_ids" t-as="line">
+                                    <tr>
+                                        <td class="td-4 text-center" nowrap="nowrap">
+                                            <span t-esc="line.invoice_id.name"/>
+                                        </td>
+                                        <td class="td-4 text-center" nowrap="nowrap">
+                                            <span t-esc="line.date"/>
+                                        </td>
+                                        <td class="td-4 text-center" nowrap="nowrap">
+                                            <span t-esc="line.journal_id.name"/>
+                                        </td>
+                                        <td class="text-right td-4" nowrap="nowrap">
+                                            <span t-esc="o.get_format_currency(line.invoice_total)"/>
+                                        </td>
+                                        <td class="text-right td-4" nowrap="nowrap">
+                                            <span t-esc="o.get_format_currency(line.pay_amount)"/>
+                                        </td>
+                                        <td class="text-right td-4" nowrap="nowrap">
+                                            <span t-esc="o.get_format_currency(line.amount_residual)"/>
+                                        </td>
+                                        <td class="text-right td-4" nowrap="nowrap">
+                                            <span t-esc="line.payment_id.name"/>
+                                        </td>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="footer-report" style="font-size: 11px;">
+                        <style>
+                            .td-1 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: 1px solid black;
+                            }
+                            .td-2 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: none !important;
+                                border-right: none !important;
+                            }
+                            .td-3 {
+                                border-top: 1px solid black !important;
+                                border-bottom: 1px solid black;
+                                border-left: none !important;
+                                border-right: 1px solid black;
+                            }
+
+                            .td-4 {
+                                border-top: none !important;
+                                border-bottom: none !important;
+                                border-left: 1px solid black;
+                                border-right: 1px solid black;
+                            }
+                            .no-border {
+                                border: none !important;
+                            }
+                            tr { 
+                                page-break-inside:avoid; 
+                                page-break-after:auto 
+                                }
+                        </style>
+                        <table style="width: 100%;">
+                            <tr style="height: 5px;">
+                                <td colspan="5"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center">Prepared by,</td>
+                                <td class="text-center">Reviewed by,</td>
+                                <td class="text-center"></td>
+                                <td class="text-right"></td>
+                                <td class="text-right"></td>
+                            </tr>
+                            <tr style="height: 40px;">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center"> (.................................) </td>
+                                <td class="text-center"> (.................................) </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_settlementrequest">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="mis_sanqua_print.report_settlementrequest_document"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,21 @@
+<odoo>
+	<record id="action_server_allow_all_company_constrains" model="ir.actions.server">
+		<field name="name">Allow All Company Constrains</field>
+		<field name="model_id" ref="base.model_res_users"/>
+	    <field name="binding_model_id" ref="base.model_res_users" />
+	    <field name="state">code</field>
+	    <field name="code">
+			if records:
+				
+				companies = env['res.company'].with_user(1).search([('id', '!=', False)])
+				warehouses = env['stock.warehouse'].with_user(1).search([('active','!=',False)])
+				journals = env['stock.warehouse'].with_user(1).search([('id','!=',False)])
+				records.with_user(1).write({
+					'company_ids':[(6,0,companies.ids)],
+					'warehouse_ids':[(6,0,warehouses.ids)],
+					'journal_ids':[(6,0,journals.ids)],
+					'tz':'Asia/Jakarta',
+				})
+		</field>
+	</record>
+</odoo>

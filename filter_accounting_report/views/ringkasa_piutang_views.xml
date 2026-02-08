@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    
+    <record id="action_ringkasan_piutang_report" model="ir.actions.client">
+        <field name="name">A10 - Ringkasan Piutang X</field>
+        <field name="tag">account_report</field>
+        <field name="context" eval="{'model': 'account.aged.receivable','views':'ringkasan.piutang'}" />
+    </record>
+
+    <menuitem id="menu_ringkasan_piutang_report"
+            name="A10 - Ringkasan Piutang X"
+            action="action_ringkasan_piutang_report"
+            parent="sale.menu_sale_report"
+            sequence="120"/>
+
+</odoo>

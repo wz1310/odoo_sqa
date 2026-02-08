@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--Report Template-->
+    <template id="report_invoice_due_date_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <br></br>
+                <br></br>
+                <br></br>
+                <table class="table table-sm o_main_table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Number</th>
+                            <th>E-Tax</th>
+                            <th>Vendor</th>
+                            <th>Bill Date</th>
+                            <th>Source Document</th>
+                            <th>Company</th>
+                            <th>Due Date</th>
+                            <th>Tax Excluded</th>
+                            <th>Total</th>
+                            <th>Amount Due</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="sale_tbody">
+                        <tr t-foreach="docs" t-as="doc">
+                            <td><span t-field="doc.name"/></td>
+                            <td><span t-field="doc.e_tax_invoice_id"/></td>
+                            <td><span t-field="doc.partner_id"/></td>
+                            <td><span t-field="doc.invoice_date"/></td>
+                            <td><span t-field="doc.invoice_origin"/></td>
+                            <td><span t-field="doc.company_id"/></td>
+                            <td><span t-field="doc.invoice_date_due"/></td>
+                            <td><span t-field="doc.amount_untaxed_signed"/></td>
+                            <td><span t-field="doc.amount_total_signed"/></td>
+                            <td><span t-field="doc.amount_residual_signed"/></td>
+                            <td><span t-field="doc.state"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_invoice_due_date">
+        <t t-call="web.html_container">
+            <t t-call="account_move_due_date_filter.report_invoice_due_date_document"/>
+        </t>
+    </template>
+
+    <data noupdate="1">
+    <!--Paper Format-->
+        <record id="invoice_due_date_paper_format" model="report.paperformat">
+            <field name="name">A4 Paper Format (Invoice Due Date)</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">30</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_spacing">25</field>
+            <field name="dpi">90</field>
+        </record>
+    </data?
+
+    <report 
+        id="action_report_invoice_due_date"
+        string="Invoice Due Date"
+        model="account.move" 
+        report_type="qweb-pdf"
+        file="account_move_due_date_filter.report_invoice_due_date" 
+        name="account_move_due_date_filter.report_invoice_due_date"
+        print_report_name="('Invoice - %s' % (object.name))"
+        paperformat = "account_move_due_date_filter.invoice_due_date_paper_format"
+        groups="account.group_account_user"
+    />
+
+</odoo>

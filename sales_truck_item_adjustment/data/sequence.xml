@@ -1,0 +1,27 @@
+<odoo>
+    <record model="ir.sequence" id="sequence_sales_truck_item_adjustment">
+        <field name="name">Sequence Sales Truck Item Adjustment</field>
+        <field name="code">seq.sales.truck.item.adjustment</field>
+        <field name="use_date_range" eval="True"/>
+        <field name="padding">4</field>
+        <!-- UNCOMMENT BELLOW IF USE PREFIX NOR SUFFIX -->
+        <field name="prefix">SOT/ADJ/%(range_y)s/%(month)s/</field>
+        <!-- <field name="suffix">DOC/CODE/%(range_y)s/%(month)s/</field> -->
+    </record>
+    <record model="ir.sequence" id="sequence_sales_truck_item_adjustment_deposito_galon">
+        <field name="name">Sequence Sales Truck Item Adjustment Depostio Galon</field>
+        <field name="code">seq.sales.truck.item.adjustment.deposito.galon</field>
+        <field name="use_date_range" eval="True"/>
+        <field name="padding">4</field>
+        <!-- UNCOMMENT BELLOW IF USE PREFIX NOR SUFFIX -->
+        <field name="prefix">Dep/%(range_y)s/%(month)s/</field>
+        <!-- <field name="suffix">DOC/CODE/%(range_y)s/%(month)s/</field> -->
+    </record>
+    <record model="ir.sequence" id="sequence_adjustment_galon">
+        <field name="name">Sequence Galon Adjustment</field>
+        <field name="code">seq.adj.galon</field>
+        <field name="use_date_range" eval="True"/>
+        <field name="padding">4</field>
+        <field name="prefix">ADJ/%(range_y)s/%(month)s/</field>
+    </record>
+</odoo>

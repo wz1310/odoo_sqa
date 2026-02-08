@@ -1,0 +1,61 @@
+<odoo>
+    <record model="ir.ui.view" id="sale_truck_dispenser_status_tree_view">
+        <field name="name">Sale Truck Dispenser Status Tree</field>
+        <field name="model">sale.truck.dispenser.status</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="partner_id"  invisible="0"/>
+                <field name="partner_code" />
+                <field name="partner_name" />
+                <field name="brand"/>
+                <field name="new_brand" optional="show"/>
+                <field name="serial_number"/>
+                <field name="new_serial_number" optional="show"/>
+                <field name="qty" optional="show"/>
+                <field name="deliver_date"/>
+                <field name="condition"/>
+                <field name="type_of_lease"/>
+                <field name="return_date"/>
+                <field name="picking_id" optional="show"/>
+                <field name="company_id" optional="show"/>
+                <field name="rental_price_to_vendor" optional="show"/>
+                <field name="rental_price_to_customer" optional="show"/>
+                <field name="vendor_ids" optional="show" widget="many2many_tags"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- <record id="sale_truck_dispenser_status_pivot" model="ir.ui.view">
+        <field name="name">Sale Truck Dispenser Status Pivot</field>
+        <field name="model">sale.truck.dispenser.status</field>
+        <field name="arch" type="xml">
+            <pivot string="Sale Truck Dispenser Status Pivot" disable_linking="True">
+                <field name="partner_id" type="row"/>
+                <field name="product_id" type="col"/>
+                <field name="order_type" type="col"/>
+                <field name="qty_calc" type="measure"/>
+            </pivot>
+        </field>
+    </record> -->
+
+
+    <record model="ir.actions.act_window" id="action_sale_truck_dispenser_status">
+        <field name="name">Laporan Dispenser</field>
+        <field name="res_model">sale.truck.dispenser.status</field>
+        <field name='view_mode'>tree</field>
+        <field name="domain">[('qty','>',0)]</field>
+        <!-- <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'pivot', 'view_id': ref('sales_truck_item_status.sale_truck_item_status_pivot'), 'sequence':1}),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('sales_truck_item_status.sale_truck_item_status_tree_view'), 'sequence':2}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('sales_truck_item_status.sale_truck_item_status_form_view'), 'sequence':3})
+                ]"/> -->
+    </record>
+
+    <menuitem id="sale_truck_dispenser_status_menu"
+            name="Laporan Dispenser"
+            action="action_sale_truck_dispenser_status"
+            parent="sanqua_galon_report_1.menu_galon_report"
+            sequence="50"/>
+</odoo>

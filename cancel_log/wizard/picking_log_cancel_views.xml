@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="picking_log_cancel_form_view" model="ir.ui.view">
+        <field name="name">picking.log.cancel.form.view</field>
+        <field name="model">picking.log.cancel</field>
+        <field name="arch" type="xml">
+            <form string="Reason Cancellation?">
+                <group>
+                    <p>
+                        Are you sure to cancel?
+                    	Please fill Reason why you cancel picking
+                    </p>
+                </group>
+                <group>
+                    <field name="reason" required="1"/>
+                </group>
+                <footer>
+                    <button name="apply_cancel" string="Apply Cancel Picking" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

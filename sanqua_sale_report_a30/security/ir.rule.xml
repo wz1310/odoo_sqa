@@ -1,0 +1,17 @@
+<odoo>
+    
+    <record id="group_harga_dasar_konsumen" model="res.groups">
+        <field name="name">A30 - Harga Dasar Konsumen WIM Report</field>
+    </record>
+
+    <record model="ir.rule" id="rule_harga_dasar_konsumen_user">
+        <field name="name">Rule Harga Dasar Konsumen WIM User</field>
+        <field name="model_id" ref="sanqua_sale_report_a30.model_report_harga_dasar_konsumen" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+        <field name="groups" eval="[(4,ref('sanqua_sale_report_a30.group_harga_dasar_konsumen'))]" />
+    </record>
+</odoo>

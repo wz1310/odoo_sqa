@@ -1,0 +1,258 @@
+<odoo>
+    <template id="purchase_return_print_template">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <div class="header">
+                    <div class="row">
+                        <table style="width: 100%;border-bottom: solid 2px black;">
+                            <tr>
+                                <td rowspan="2" style="width: 10%;">
+                                    <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/>
+                                </td>
+                                <td rowspan="2" style="font-size: 12px; width: 60%;">
+                                    <span style="font-size: 14px;" t-field="o.company_id.partner_id" t-options='{"widget": "contact", "fields": ["adress", "name", "phone"], "no_marker": true}'/>
+                                    <span t-field="o.company_id.partner_id.street"/><br/>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Telp. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.phone">
+                                        Fax. <span t-field="o.company_id.partner_id.phone"/>
+                                    </t>
+                                    <t t-if="o.company_id.partner_id.vat">
+                                        NPWP. <span t-field="o.company_id.partner_id.vat"/> 
+                                    </t>
+                                </td>
+                                <td style="width: 30%;">
+                                    <t t-if="o.company_id.iso_purchase_return">
+                                        <span class="text-left" style="font-size: 10px;">
+                                            Doc. No. : <t t-esc="o.company_id.iso_purchase_return"/><br/>
+                                        </span>
+                                    </t>
+                                    <t t-if="o.state not in ['done']">
+                                         <span class="text-left" style="font-size: 10px;">
+                                            <t t-esc="dict(o._fields['state'].selection).get(o.state)"/>
+                                        </span>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <h4  class="text-right" >
+                                    Purchase Return</h4>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="page" style="padding-top:100px;font-size: 11px;">
+                    <style>
+                        .table th,
+                        .table td {
+                            padding: 5px;
+                        }
+                        .th-0 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                            text-align:center;
+                        }
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <div class="row">
+                        <div style="width:40%">
+                            Vendor Name : <span t-field="o.partner_id.name"/>
+                        </div>
+                        <div style="width:60%">
+                            <table class="table" style="width:100%;">
+                                <tr>
+                                    <td class="td-1" style="width:20%;">Date</td>
+                                    <td class="td-2" style="width:1%;">:</td>
+                                    <td class="td-3" style="width:29%;"><span t-field="o.date"/></td>
+                                    <td class="td-2" style="width:15%;">Return No.</td>
+                                    <td class="td-2" style="width:1%;">:</td>
+                                    <td class="td-3" style="width:34%;"><span t-field="o.doc_name"/></td>
+                                </tr>
+                                <tr>
+                                    <td class="td-1">Receipt/INV. No</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-esc="o.vendor_bill_to_ref_id.name"/></td>
+                                    <td class="td-2">Rate</td>
+                                    <td class="td-2">:</td>
+                                    <td class="td-3"><span t-esc="o.vendor_bill_to_ref_id.currency_id.rate"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 10px;">
+                        <table class="table" style="width: 100%; border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th class="th-0" style="width: 5%;">
+                                        No.
+                                    </th>
+                                    <th class="th-0" style="width: 45%;">
+                                        Description
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Qty
+                                    </th>
+                                    <th class="th-0" style="width: 10%;">
+                                        Unit
+                                    </th>
+                                    <th class="th-0" style="width: 30%;">
+                                        Serial Number
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="idx" t-value="1"/>
+                                <t t-foreach="o.move_lines" t-as="line">
+                                    <tr>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="idx"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.product_id.display_name"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.quantity_done"/>
+                                        </td>
+                                        <td class="td-4 text-center">
+                                            <span t-esc="line.product_uom.name"/>
+                                        </td>
+                                        <td class="text-right td-4">
+                                            <t t-if="line.move_line_ids">
+                                                <t t-foreach="line.move_line_ids" t-as="l">
+                                                    <span t-esc="l.lot_id.name"/>
+                                                    <br/>
+                                                </t>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <t t-set="idx" t-value="idx + 1"/>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="footer" style="font-size: 11px;">
+                    <style>
+                        .td-1 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: 1px solid black;
+                        }
+                        .td-2 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: none !important;
+                        }
+                        .td-3 {
+                            border-top: 1px solid black !important;
+                            border-bottom: 1px solid black;
+                            border-left: none !important;
+                            border-right: 1px solid black;
+                        }
+
+                        .td-4 {
+                            border-top: none !important;
+                            border-bottom: none !important;
+                            border-left: 1px solid black;
+                            border-right: 1px solid black;
+                        }
+                        .no-border {
+                            border: none !important;
+                        }
+                    </style>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td rowspan="4" style="width: 25%;">
+                            <h6>Description :</h6></td>
+                            <td class="text-right" style="width: 25%;"><h6>Total Quantity <![CDATA[&nbsp;]]>:</h6></td>
+                            <td class="text-center" style="width: 10%;"><h6><span t-esc="o.get_format_currency(sum([x.quantity_done for x in o.move_lines]))"/></h6></td>
+                            <td colspan="2" style="width: 40%;"></td>
+                        </tr>
+                        <tr><td><span><![CDATA[&nbsp;]]></span></td></tr>
+                        <tr><td><span><![CDATA[&nbsp;]]></span></td ></tr>
+                        <tr><td><span><![CDATA[&nbsp;]]></span></td></tr>
+                        <tr>
+                            <td class="text-center">Prepared by,</td>
+                            <td class="text-center">Approved by,</td>
+                            <td class="text-center">Receive by,</td>
+                            <td class="text-right"></td>
+                            <td class="text-right"></td>
+                        </tr>
+                        <tr style="height: 40px;">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="text-center"> (.................................) </td>
+                            <td class="text-center"> (.................................) </td>
+                            <td class="text-center"> (.................................) </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+
+    <template id="purchase_return_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                
+                
+                <t t-call="purchase_return_print.purchase_return_print_template"/>
+            </t>
+        </t>
+    </template>
+
+    <report
+    id="report_purchase_return"
+    model="stock.picking"
+    string="Purchase Return"
+    report_type="qweb-pdf"
+    name="purchase_return_print.purchase_return_report"
+    file="purchase_return_print.purchase_return_report"
+    attachment="(object.name.replace('/','_')+'.pdf')"
+    print_report_name="(object.name.replace('/','_')+'.pdf')"
+    paperformat="sanqua_print.sanqau_print_paperformat_a5"
+    />
+
+    
+</odoo>

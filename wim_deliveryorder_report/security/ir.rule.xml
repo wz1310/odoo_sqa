@@ -1,0 +1,14 @@
+<odoo>
+    <record id="group_mis_deliveryorder_report" model="res.groups">
+        <field name="name">MIS Delivery Order Report</field>
+    </record>
+    <record model="ir.rule" id="rule_mis_deliveryorder_global_user">
+        <field name="name">Rule MIS Delivery Order Global User</field>
+        <field name="model_id" ref="model_mis_report_delivery_order" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+    </record>
+</odoo>

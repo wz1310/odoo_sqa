@@ -1,0 +1,11 @@
+<odoo>
+    <record model="ir.sequence" id="sequence_settlement_request">
+        <field name="name">Settlement Request Sequence</field>
+        <field name="code">seq.settlement.request</field>
+        <field name="use_date_range" eval="True"/>
+        <field name="padding">3</field>
+        <!-- UNCOMMENT BELLOW IF USE PREFIX NOR SUFFIX -->
+        <field name="prefix">SR/</field>
+        <!-- <field name="suffix">DOC/CODE/%(range_y)s/%(month)s/</field> -->
+    </record>
+</odoo>

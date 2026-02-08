@@ -1,0 +1,35 @@
+<odoo>
+    <record id="mrp_rpb_view_tree" model="ir.ui.view">
+        <field name="name">mrp.rpb.view.tree</field>
+        <field name="model">mrp.rpb</field>
+        <field name="arch" type="xml">
+            <tree string="RPB" editable="top">
+                <field name="name"/>
+                <field name="month"/>
+                <field name="year"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="is_active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="mrp_rpb_action" model="ir.actions.act_window">
+        <field name="name">RPB</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">mrp.rpb</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new RPB.
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="rpb_menu"
+        name="RPB"
+        parent="mrp.menu_mrp_bom"
+        action="mrp_rpb_action"
+        sequence="100"/>
+</odoo>

@@ -1,0 +1,141 @@
+<odoo>
+	<record model="ir.ui.view" id="view_backorder_confirmation_inherited">
+		<field name="name">stock_backorder_confirmation_inherited</field>
+        <field name="model">stock.backorder.confirmation</field>
+		<field name="inherit_id" ref="stock.view_backorder_confirmation" />
+		<field name="arch" type="xml">
+			<xpath expr="//button[@name='process_cancel_backorder']" position="attributes">
+        		<attribute name="invisible">1</attribute>
+            </xpath>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="picking_tree_inherited">
+		<field name="name">Picking Tree Inherited</field>
+		<field name="model">stock.picking</field>
+		<field name="inherit_id" ref="stock.vpicktree" />
+		<field name="arch" type="xml">
+			<field name="name" position="replace">
+				<field name="display_name"/>
+			</field>
+			<field name="state" position="before">
+				<!-- <field name="no_sj_vendor" optional="show"/> -->
+				<field name="interco_ref_picking_ids" widget="many2many_tags" optional="hide"/>
+			</field>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="stock_picking_form_inherited">
+			<field name="name">Inherited Stock Picking Form</field>
+			<field name="model">stock.picking</field>
+			<field name="inherit_id" ref="stock.view_picking_form" />
+			<field name="arch" type="xml">
+				<header position="inside">
+					<!-- hide when interco master == False  or (interco_master == true and state not in assigned)-->
+					<button context="{'force_company':company_id}" string="Confirm" type="object" name="btn_plant_confirm" confirm="Confirm?" class="oe_highlight" attrs="{'invisible':['|', '|',  ('interco_master','=', False), '&amp;', ('interco_master','=', True), ('state','not in',['confirmed','assigned']), ('is_locked','=',False)]}" />
+					<button string="Refuse" type="object" name="btn_plant_refuse" confirm="Refuse?" class="oe_highlight" attrs="{'invisible':['|', '|', ('interco_master','=', False), '&amp;', ('interco_master','=', True), ('state','not in',['confirmed']), ('is_locked','=',False)]}" />
+					<button string="Allow Print" type="object" name="btn_allow_print" class="oe_highlight" attrs="{'invisible':[('allow_print','=', True)]}" groups="stock.group_stock_manager"/>
+					<button string="Received" type="object" name="btn_sent" class="oe_highlight" attrs="{'invisible':['|','|',('state','!=', 'done'),('picking_type_code','!=', 'outgoing'),('sent','!=',False)]}"/>
+				</header>
+				<xpath expr="//h1[@class='d-none d-md-block']" position="replace">
+					<!-- visible if not outgoing-->
+					<h1 class="d-none d-md-block" attrs="{'invisible':[('picking_type_code', '=', 'outgoing')]}">
+                        <field name="name" attrs="{'invisible': [('name','=','/')]}"/>
+                    </h1>
+
+					<!-- visible if outgoing-->
+					<!-- doc name -->
+					<h1 class="d-none d-md-block" attrs="{'invisible':[('picking_type_code', '!=', 'outgoing')]}">
+						<field name="doc_name"/>
+                    </h1>
+					
+					<!-- <h7 class="d-none d-md-block" attrs="{'invisible':[('picking_type_code', '!=', 'outgoing')]}">
+                        <field name="name" attrs="{'invisible': [('name','=','/')]}"/>
+                    </h7> -->
+				</xpath>
+				<field name="location_id" position="after">
+					<field name="warehouse_plant_id" domain="[('company_id','=',plant_id)]" context="{'domain_company_id':plant_id}" attrs="{'readonly':[('state','in',['plant-confirmed','done'])]}" />
+					<field name="sale_mix_ids" widget="many2many_tags" attrs="{'invisible':[('picking_type_code', '=', 'incoming')]}"/>
+					<field name="allow_print" groups="base.group_stock_manager"/>
+				</field>
+				<field name="origin" position="after">
+					
+					
+					<field name="sale_agreement_id" readonly="1" attrs="{'invisible':[('picking_type_code', '=', 'incoming')]}"/>
+					<field name="sales_team_id" readonly="1" attrs="{'invisible':[('picking_type_code', '=', 'incoming')]}"/>
+					<field name="plant_id" attrs="{'readonly':[('state','in',['plant-confirmed','done'])]}"/>
+
+					
+					<field name="order_pickup_method_id" readonly="1" attrs="{'invisible':[('order_pickup_method_id','=',False)]}"/>
+					<field name="carrier_type" attrs="{'invisible':[('picking_type_code','!=','outgoing')]}" />
+					<field name="vehicle_model_id" readonly="1" />
+					<field name="fleet_vehicle_id"/>
+					<field name="fleet_driver_id" />
+				</field>
+
+				<field name="move_type" position="before">
+					<field name="interco_master" readonly="1" />
+					<field name="interco_ref_picking_ids" widget="many2many_tags" readonly="1"/>
+					<field name="allowed_company_ids" widget="many2many_tags" />
+					<field name="avail_to_cancel" groups="base.group_system"/>
+					<field name="sent" groups="base.group_system"/>
+				</field>
+
+
+				<field name="partner_id" position="attributes">
+					<attribute name="attrs">{'readonly':[('interco_master','=',True)]}</attribute>
+					
+				</field>
+
+				<field name="origin" position="attributes">
+					<attribute name="attrs">{'readonly':[('interco_master','=',True)]}</attribute>
+				</field>
+
+				<!-- <field name="analytic_account_id" position="attributes">
+					<attribute name="groups">account.group_account_manager</attribute>
+				</field> -->
+				<xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='quantity_done']" position="before">
+					<field name="interco_master" invisible="1" />
+					<field name="interco_move_line_qty_done" readonly="1" attrs="{'column_invisible':[('parent.interco_master','=',False)]}" />
+				</xpath>
+				<xpath expr="//field[@name='move_ids_without_package']" position="attributes">
+					<attribute name="attrs">
+						{'readonly': ['|', '|', '&amp;', ('show_operations', '=', True), ('state', 'in', ['plant_confirmed']), '|', ('is_locked', '=', True), ('state', '=', 'done'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}
+					</attribute>
+				</xpath>
+
+				<xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='reserved_availability']" position="attributes">
+					<attribute name="attrs">{'column_invisible': (['|', '|', '|', ('parent.state','=', 'done'), ('parent.picking_type_code', '=', 'incoming'), ('parent.immediate_transfer', '=', True), ('parent.interco_master','=', True)])}</attribute>
+				</xpath>
+
+				<xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='product_id']" position="after">
+					<field name="interco_src_location_names" />
+					<field name="desc_product" />
+				</xpath>
+				<xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='product_uom']" position="after">
+				    <field name="warehouse_plant_id" invisible="1"/>
+					<!-- <button string="Selected Lots" name="btn_select_lots" type="object" class="oe_highlight" attrs="{'invisible':[('warehouse_plant_id','=',False)]}"/> -->
+				</xpath>
+				<xpath expr="//field[@name='move_ids_without_package']/tree/button[@name='action_show_details']" position="replace">
+					<button name="action_show_details" string="Detail" type="object" class="oe_highlight" attrs="{'invisible': [('show_details_visible', '=', False)]}" options='{"warn": true}'/>                
+				</xpath>
+
+				<button name="button_scrap" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</button>
+				
+				<button name="action_cancel" position="attributes">
+					<!-- invisible -->
+					<!-- <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ('assigned', 'partially_available', 'draft')), ('is_locked','=',True)]}</attribute> -->
+					<attribute name="groups">base.group_system</attribute>
+				</button>
+				
+				
+				<xpath expr="//button[@name='action_toggle_is_locked'][2]" position="attributes">
+					<attribute name="groups">stock.group_stock_user</attribute>
+				</xpath>
+				<xpath expr="//notebook/page[@name='note']" position="inside">
+					<label for="internal_sale_notes"/>
+					<field name="internal_sale_notes"/>
+				</xpath>
+			</field>
+		</record>	
+</odoo>

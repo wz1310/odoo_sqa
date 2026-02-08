@@ -1,0 +1,7 @@
+id,name,active
+customer_group_sub_distributor, Sub Distributor,1
+customer_group_agency, Agency,1
+customer_group_wholesaler, Wholesaler,1
+customer_group_special_outlet, Special Outlet,1
+customer_group_branch, Branch,1
+customer_group_canvasser, Canvasser,1

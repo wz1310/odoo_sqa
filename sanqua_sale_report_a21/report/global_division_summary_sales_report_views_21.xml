@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="global_division_summary_sales_report_pivot_21">
+            <field name="name">global.division.summary.sales.report.pivot.21</field>
+            <field name="model">report.global.division.summary.sales.21</field>
+            <field name="arch" type="xml">
+                <pivot string="Sales Analysis" disable_linking="True">
+                    <field name="team_id" type="row"/>
+                    <!-- <field name="product_id" type="row"/> -->
+                    <field name="date" interval="day" type="col"/>
+                    <field name="qty_realisasi" type="measure"/>
+                    <field name="qty_target" type="measure"/>
+                    <field name="persentase" type="measure"/>
+                    <field name="accumulate" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="global_division_summary_sales_report_search_21" model="ir.ui.view">
+            <field name="name">report.global.division.summary.sales.search.view.21</field>
+            <field name="model">report.global.division.summary.sales.21</field>
+            <field name="arch" type="xml">
+                <search string="Global Division Summary Sales Report">
+                    <field name="team_id"/>
+                    <filter name="current_month" string="Current Month" domain="[
+                            ('date', '&gt;=', (context_today()).strftime('%Y-%m-01')),
+                            ('date', '&lt;', (context_today() + relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                        <separator/>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_global_division_summary_sales_report_21" model="ir.actions.act_window">
+            <field name="name">A21 - Global Division Summary Sales Report</field>
+            <field name="res_model">report.global.division.summary.sales.21</field>
+            <field name="view_mode">pivot</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_id" ref="global_division_summary_sales_report_pivot_21"/>
+            <field name="context">{'search_default_current_month':1}</field>
+        </record>
+
+        <menuitem id="global_division_summary_sales_report_menu" name="A21 - Global Division Summary Sales Report" action="action_global_division_summary_sales_report_21" parent="sale.menu_sale_report" groups="group_global_division_summary_sales_report" sequence="138" />
+    </data>
+</odoo>

@@ -1,0 +1,16 @@
+<odoo>
+  <data>
+<template id="my_template" inherit_id="account_reports.main_template" primary="True">
+    <xpath expr="//div[hasclass('alert')]" position="after">
+        <div><p></p></div>
+    <div class="col-4">
+        <h2><t t-esc="report.get('company_name')"/></h2>
+    </div>
+    	<div class="col-4">
+    	<span><h4>Laporan Profit and Loss</h4></span>
+    </div>
+            </xpath>
+</template>
+
+  </data>
+</odoo>

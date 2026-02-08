@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="purchase_order_form" model="ir.ui.view">
+		<field name="name">order_global.purchase_order_form</field>
+		<field name="model">purchase.order</field>
+		<field name="inherit_id" ref="purchase.purchase_order_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='order_line']/tree/field[@name='product_uom']" position="after">
+				<field name="discount_percent_line"/>
+				<field name="amount_discount" attrs="{'readonly': [('state', 'in', ('done' ,'cancel'))]}" />
+                <field name="base_price" widget="monetary" invisible="1"/>
+                <field name="total_discount_amount" widget="monetary" invisible="1"/>
+			</xpath>
+			<field name="amount_untaxed" position="before">
+				<field name="global_discount" attrs="{'readonly': [('state', 'in', ('done' ,'cancel'))]}" />
+				<field name="amount_global_discount" attrs="{'readonly': [('state', 'in', ('done' ,'cancel'))]}" />
+				<field name="amount_untaxed_base" invisible="1"/>
+			</field>
+		</field>
+	</record>
+
+	<record id="purchase_pci_discount_inherit_form" model="ir.ui.view">
+		<field name="name">pci_discounts_advance.purchase_order_form</field>
+		<field name="model">purchase.order</field>
+		<field name="inherit_id" ref="pci_discounts_advance.purchase_order_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='order_line']/tree/field[@name='discount_fixed_line']" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+			<xpath expr="//field[@name='order_line']/tree/field[@name='multi_discounts']" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+		</field>
+	</record>
+</odoo>

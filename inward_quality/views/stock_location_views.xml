@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="view_location_form_inherit_teksian" model="ir.ui.view">
+	        <field name="name">stock.location.form.inherit.teksian</field>
+	        <field name="model">stock.location</field>
+	        <field name="inherit_id" ref="stock.view_location_form"/>
+	        <field name="arch" type="xml">
+	        	<xpath expr="//field[@name='return_location']" position="after">
+	        		<field name="check_active"/>
+	        	</xpath>
+	        </field>
+		</record>
+	</data>
+</odoo>

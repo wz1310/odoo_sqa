@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="purchase_raw_material_report_wizard_form_view">
+        <field name="name">Wizard Purchase Raw Material Report</field>
+        <field name="model">wizard.purchase.raw.material.report</field>
+        <field name='priority'>10</field>
+        <field name="arch" type="xml">
+            <form string="Form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="type" invisible="1"/>
+                            <field name="month" attrs="{'invisible':[('type', '!=', 'monthly')],'required':[('type', '=', 'monthly')]}"/>
+                            <field name="year" />
+                            <field name="company_id" options="{'no_open': True, 'no_create': True}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Generate Excel" type="object" name="button_print" class="oe_highlight" />
+                    <button string="Cancel" class="btn-secondary" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_purchase_raw_material_report" model="ir.actions.act_window">
+        <field name="name">Purchase Raw Material Report</field>
+        <field name="res_model">wizard.purchase.raw.material.report</field>
+        <field name="view_mode">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="purchase_raw_material_report_wizard_form_view"/>
+        <field name="target">new</field>
+        <field name="context">{'default_type':'monthly'}</field>
+    </record>
+
+    <record id="action_purchase_raw_material_resume_report" model="ir.actions.act_window">
+        <field name="name">Purchase Raw Material Report</field>
+        <field name="res_model">wizard.purchase.raw.material.report</field>
+        <field name="view_mode">form</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_id" ref="purchase_raw_material_report_wizard_form_view"/>
+        <field name="target">new</field>
+        <field name="context">{'default_type':'yearly'}</field>
+    </record>
+
+    <menuitem id="purchase_raw_material_report_menu" name="Raw Material Packages" action="action_purchase_raw_material_report" parent="purchase.purchase_report" sequence="20"/>
+    <menuitem id="purchase_raw_materialresume_report_menu" name="Raw Material Packages Resume" action="action_purchase_raw_material_resume_report" parent="purchase.purchase_report" sequence="30"/>
+
+</odoo>

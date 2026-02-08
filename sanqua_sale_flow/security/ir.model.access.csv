@@ -1,0 +1,20 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_order_pickup_method_reader,Access Order Pickup Method Reader,model_order_pickup_method,group_order_pickup_method_reader,1,0,0,0
+access_order_pickup_method_manager,Access Order Pickup Method Manager,model_order_pickup_method,group_order_pickup_method_manager,1,1,1,1
+access_sale_order_group_credit_limit_approver,Access Sale Order Group Credit Limit Approver,model_sale_order,sanqua_sale_flow.group_credit_limit_approver,1,1,0,0
+access_sale_order_line_group_credit_limit_approver,Access Sale Order line Group Credit Limit Approver,model_sale_order_line,sanqua_sale_flow.group_credit_limit_approver,1,1,0,0
+access_sale_coupon_group_credit_limit_approver,Access Sale Coupon Group Credit Limit Approver,sale_coupon.model_sale_coupon,sanqua_sale_flow.group_credit_limit_approver,1,0,0,0
+access_mrp_bom_group_credit_limit_approver,Access Mrp BOM Group Credit Limit Approver,mrp.model_mrp_bom,sanqua_sale_flow.group_credit_limit_approver,1,0,0,0
+access_mrp_bom_line_group_credit_limit_approver,Access Mrp BOM Line Group Credit Limit Approver,mrp.model_mrp_bom_line,sanqua_sale_flow.group_credit_limit_approver,1,0,0,0
+access_stock_move_line_group_credit_limit_approver,Access Stock Move Line Group Credit Limit Approver,stock.model_stock_move_line,sanqua_sale_flow.group_credit_limit_approver,1,0,0,0
+access_stock_move_group_credit_limit_approver,Access Stock Move Group Credit Limit Approver,stock.model_stock_move,sanqua_sale_flow.group_credit_limit_approver,1,1,0,0
+access_stock_picking_group_credit_limit_approver,Access Stock Picking Group Credit Limit Approver,stock.model_stock_picking,sanqua_sale_flow.group_credit_limit_approver,1,1,0,0
+access_group_stock_user_stock_interco_move_line,Access Stock user Interco Move Line,model_stock_interco_move_line,stock.group_stock_user,1,1,1,1
+access_fleet_vehicle_model_group_sale_salesman,Access Fleet Vehicle Model to Group Sale Salesman,fleet.model_fleet_vehicle_model,sales_team.group_sale_salesman,1,0,0,0
+access_fleet_vehicle_model_brand_group_sale_salesman,Access Fleet Vehicle Model Brand to Group Sale Salesman,fleet.model_fleet_vehicle_model_brand,sales_team.group_sale_salesman,1,0,0,0
+access_base_model_paperformat_group_base_user,Access Base Model Paper Format Config to Group Internal User,base.model_report_paperformat,base.group_user,1,0,0,0
+access_fleet_vehicle_group_stock_user,Access Fleet Vehicle to Inventory User,fleet.model_fleet_vehicle,stock.group_stock_user,1,0,0,0
+access_order_pickup_method_base_user,Access Order Pickup Method base user,model_order_pickup_method,base.group_user,1,0,0,0
+
+access_sale_order_lock_wizard,access_sale_order_lock_wizard,model_sale_order_lock_wizard,sales_team.group_sale_manager,1,1,1,1
+access_sale_order_lock_line_wizard,access_sale_order_lock_line_wizard,model_sale_order_lock_line_wizard,sales_team.group_sale_manager,1,1,1,1

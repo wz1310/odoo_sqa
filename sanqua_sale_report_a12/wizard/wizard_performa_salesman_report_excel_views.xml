@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="performa_salesman_report_wizard_view_form" model="ir.ui.view">
+        <field name="name">performa.salesman.report.excel.wizard.view.form</field>
+        <field name="model">performa.salesman.report.excel.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Performa Salesman Report">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                             Filter Periode
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="bulan"/>
+                            <field name="tahun"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="btn_confirm" string="Confirm" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_performa_salesman_report_excel_wizard" model="ir.actions.act_window">
+        <field name="name">A12 - Performa Salesman Report Excel Wizard</field>
+        <field name="res_model">performa.salesman.report.excel.wizard</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_performa_salesman_excel_report"
+            name="A12 - Performa Salesman Excel Report"
+            action="action_performa_salesman_report_excel_wizard"
+            parent="sale.menu_sale_report"
+            groups="sanqua_sale_report_a12.group_performa_salesman_report" sequence="122"/>
+
+</odoo>

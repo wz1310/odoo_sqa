@@ -1,0 +1,234 @@
+<odoo>
+        <!-- module category region and group for region -->
+        <record model="ir.module.category" id="module_category_discount_and_region">
+            <field name="name">Discount And Region</field>
+        </record>
+
+        <record model="ir.module.category" id="module_category_region">
+            <field name="name">Region</field>
+            <field name="parent_id" ref="module_category_discount_and_region"/>
+        </record>
+        <record id="group_region_manager" model="res.groups">
+            <field name="name">Region Manager</field>
+            <field name="category_id" ref="module_category_region"/>
+        </record>
+        <record id="group_region_group_manager" model="res.groups">
+            <field name="name">Region Group Manager</field>
+            <field name="category_id" ref="module_category_region"/>
+            <field name="implied_ids" eval="[(4, ref('group_region_manager'))]"/>
+        </record>
+        <record id="group_top_region_group_manager" model="res.groups">
+            <field name="name">Top Region Group Manager</field>
+            <field name="category_id" ref="module_category_region"/>
+            <field name="implied_ids" eval="[(4, ref('group_region_group_manager'))]"/>
+        </record>
+
+        <!-- module category region and group for discount -->
+        <record model="ir.module.category" id="module_category_discount">
+            <field name="name">Discount</field>
+            <field name="parent_id" ref="module_category_discount_and_region"/>
+        </record>
+        <record id="group_region_discount_manager" model="res.groups">
+            <field name="name">Region Discount Manager</field>
+            <field name="category_id" ref="module_category_discount"/>
+        </record>
+        <record id="group_top_region_discount_manager" model="res.groups">
+            <field name="name">Top Region Discount Manager</field>
+            <field name="category_id" ref="module_category_discount"/>
+            <field name="implied_ids" eval="[(4, ref('group_region_discount_manager'))]"/>
+        </record>
+
+
+        <!-- module category region and group for product group -->
+        <record model="ir.module.category" id="module_category_product_group">
+            <field name="name">Product Group</field>
+            <field name="parent_id" ref="module_category_discount_and_region"/>
+        </record>
+        <record id="group_product_group_manager" model="res.groups">
+            <field name="name">Product Group Manager</field>
+            <field name="category_id" ref="module_category_product_group"/>
+        </record>
+        <record id="group_top_product_group_manager" model="res.groups">
+            <field name="name">Top Product Group Manager</field>
+            <field name="category_id" ref="module_category_product_group"/>
+            <field name="implied_ids" eval="[(4, ref('group_product_group_manager'))]"/>
+        </record>
+
+    <data noupdate="0">
+        <!-- rule for global rule group false -->
+        
+        <record model="ir.rule" id="global_region_allowed_company_rule">
+            <field name="name">Region: Global rule </field>
+            <field name="model_id" ref="sanqua_master_region.model_region_region"/>
+            <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+            <field name="groups" eval="False"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="active" eval="False"/>
+        </record>
+        
+        <record model="ir.rule" id="global_region_group_allowed_company_rule">
+            <field name="name">Region Group: Global rule </field>
+            <field name="model_id" ref="sanqua_master_region.model_region_group"/>
+            <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+            <field name="groups" eval="False"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="active" eval="False"/>
+        </record>
+        
+        <record model="ir.rule" id="global_region_discount_allowed_company_rule">
+            <field name="name">Region Discount: Global rule </field>
+            <field name="model_id" ref="sanqua_master_region.model_region_discount"/>
+            <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+            <field name="groups" eval="False"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+        
+        <record model="ir.rule" id="global_region_discount_product_allowed_company_rule">
+            <field name="name">Region Discount Product: Global rule </field>
+            <field name="model_id" ref="sanqua_master_region.model_region_discount_product"/>
+            <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+            <field name="groups" eval="False"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+
+        <!-- rule for internal user -->
+        <!-- this comment -->
+        <!-- for future purpose -->
+        <!-- at this momment theres no company_id field on region.master -->
+        <!-- <record model="ir.rule" id="internal_user_region_master_default_company_rule">
+            <field name="name">Region Master: Read Only by Default Company</field>
+            <field name="model_id" ref="sanqua_master_region.model_region_master"/>
+            <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="perm_create" eval="False"/>
+        </record> -->
+
+        <record model="ir.rule" id="internal_user_region_discount_default_company_rule">
+            <field name="name">Region Discount: Read Only by Default Company</field>
+            <field name="model_id" ref="sanqua_master_region.model_region_discount"/>
+            <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="perm_create" eval="False"/>
+        </record>
+
+        <record model="ir.rule" id="internal_user_region_discount_product_default_company_rule">
+            <field name="name">Region Discount Product: Read Only by Default Company</field>
+            <field name="model_id" ref="sanqua_master_region.model_region_discount_product"/>
+            <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="perm_create" eval="False"/>
+        </record>
+
+        <!-- rule for region group manager -->
+        <record model="ir.rule" id="group_manager_region_default_company_rule">
+            <field name="name">Region: Manage by Default Company</field>
+            <field name="model_id" ref="sanqua_master_region.model_region_region"/>
+            <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('sanqua_master_region.group_region_group_manager'))]"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+
+        <!-- rule for top region group manager -->
+        <record model="ir.rule" id="top_manager_region_allowed_company_rule">
+            <field name="name">Region: Manage by Allowed Company</field>
+            <field name="model_id" ref="sanqua_master_region.model_region_region"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', [x.id for x in user.company_ids])]</field>
+            <field name="groups" eval="[(4, ref('sanqua_master_region.group_top_region_group_manager'))]"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+
+        <!-- rule for region discount manager -->
+        <record model="ir.rule" id="discount_manager_region_discount_default_company_rule">
+            <field name="name">Region Discount: Manage by Default Company</field>
+            <field name="model_id" ref="sanqua_master_region.model_region_discount"/>
+            <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('sanqua_master_region.group_region_discount_manager'))]"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+
+        <record model="ir.rule" id="discount_manager_region_discount_product_default_company_rule">
+            <field name="name">Region Discount Product: Manage by Default Company</field>
+            <field name="model_id" ref="sanqua_master_region.model_region_discount_product"/>
+            <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('sanqua_master_region.group_region_discount_manager'))]"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+    
+        <record model="ir.rule" id="top_discount_manager_region_discount_allowed_company_rule">
+            <field name="name">Region Discount: Manage by Allowed Company</field>
+            <field name="model_id" ref="sanqua_master_region.model_region_discount"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', [x.id for x in user.company_ids])]</field>
+            <field name="groups" eval="[(4, ref('sanqua_master_region.group_top_region_discount_manager'))]"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+
+        <record model="ir.rule" id="top_discount_manager_region_discount_product_allowed_company_rule">
+            <field name="name">Region Discount Product: Manage by Allowed Company</field>
+            <field name="model_id" ref="sanqua_master_region.model_region_discount_product"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', [x.id for x in user.company_ids])]</field>
+            <field name="groups" eval="[(4, ref('sanqua_master_region.group_top_region_discount_manager'))]"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+
+        <record model="ir.rule" id="product_group_manager_product_group_default_company_rule">
+            <field name="name">Product Group: Manage by Default Company</field>
+            <field name="model_id" ref="sanqua_master_region.model_product_group"/>
+            <field name="domain_force">[('company_id', '=', user.company_id.id)]</field>
+            <field name="groups" eval="[(4, ref('sanqua_master_region.group_product_group_manager'))]"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+
+        <record model="ir.rule" id="top_product_group_manager_product_group_allowed_company_rule">
+            <field name="name">Product Group: Manage by Allowed Company</field>
+            <field name="model_id" ref="sanqua_master_region.model_product_group"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id', 'in', [x.id for x in user.company_ids])]</field>
+            <field name="groups" eval="[(4, ref('sanqua_master_region.group_top_product_group_manager'))]"/> 
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="perm_create" eval="True"/>
+        </record>
+    </data>
+</odoo>

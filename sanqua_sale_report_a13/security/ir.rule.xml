@@ -1,0 +1,6 @@
+<odoo>
+    
+    <record id="group_annual_sales_target_report" model="res.groups">
+        <field name="name">A13 - Annual Sales Target Report</field>
+    </record>
+</odoo>

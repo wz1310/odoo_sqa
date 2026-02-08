@@ -1,0 +1,1040 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo><!-- 
+    <record id="expense_list_view" model="ir.ui.view">
+        <field name="name">expenses.list.view</field>
+        <field name="model">expenses.request</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="kegiatan" />
+                <field name="tanggal_kegiatan" />
+                <field name="atas_nama" />
+                <field name="status_anggaran" />
+                <field name="state" />
+                <field name="count_attachment" invisible="1"/>
+                <button name="action_view_employee_attachment" 
+                    string="Attachment" type="object" icon="fa-paperclip" 
+                    attrs="{'invisible': [('count_attachment', '=', 0)]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="expenses_form_view" model="ir.ui.view">
+        <field name="name">expenses.form.view</field>
+        <field name="model">expenses.request</field>
+        <field name="arch" type="xml">
+            <form string="Expenses" class="o_expense_form">
+                <header>
+                    <field name="status" widget="statusbar" invisible="1" groups="expenses_request.expenses_request_general_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,confirm,validate,done,cancel" statusbar_colors='{"confirm":"blue"}'/>
+                    <button name="act_post"
+                        states='draft'
+                        string="Post To Approval"
+                        type="object"
+                        class="oe_highlight"/>
+                    <button name="action_create_sheet"
+                        string="Create sheet"
+                        type="object"
+                        class="oe_highlight"/>
+                         <button name="button_approved_manager" states="submit" string="Approve" type="object" class="oe_highlight o_expense_sheet_approve"/>
+                    <button name="act_approve_mg" string="Approve MG" type="object" class="oe_highlight" groups="expenses_request.expenses_request_manager" attrs="{'invisible':[('approve_mg','!=', True)]}"/>
+                    <button name="act_approve_gm" string="Approve GM" type="object" class="oe_highlight" groups="expenses_request.expenses_request_general_manager" attrs="{'invisible':['|',('approve_gm','!=', True),('deskripsi_approve','=', 'Done')]}"/>
+                    <button name="act_approve_dir" string="Approve Direktur" type="object"  class="oe_highlight" groups="   expenses_request.expenses_request_direktur" attrs="{'invisible': ['|',('approve_direktur','!=', True),('deskripsi_approve','=', 'Done')]}"/>
+                    <button name="act_approve_man_dir" string="Approve Manager Direktur" type="object"  class="oe_highlight" groups="expenses_request.expenses_request_managing_direktur" attrs="{'invisible': ['|',('approve_manager_direktur','!=', True),('deskripsi_approve','=', 'Done')]}"/>
+                </header>
+                    <div class="alert alert-info" role="alert" style="margin-bottom:5px;" attrs="{'invisible': ['|',('status','!=', 'wait_general_manager'),('deskripsi_approve','=', 'Done')]}">
+                        You have <bold><a class="alert-link">Expense Request</a></bold> for this time, still wait for <bold><a class="alert-link">General Manager</a></bold> approve !
+                    </div>
+                    <div class="alert alert-info" role="alert" style="margin-bottom:5px;" attrs="{'invisible': ['|',('status','!=', 'wait_manager_direktur'),('deskripsi_approve','=', 'Done')]}">
+                        You have <bold><a class="alert-link">Expense Request</a></bold> for this time, still wait for <bold><a class="alert-link">Manager Direktur</a></bold> approve !
+                    </div>
+                    <div class="alert alert-info" role="alert" style="margin-bottom:5px;" attrs="{'invisible': ['|',('status','!=', 'wait_direktur'),('deskripsi_approve','=', 'Done')]}">
+                        You have <bold><a class="alert-link">Expense Request</a></bold> for this time, still wait for <bold><a class="alert-link">Direktur</a></bold> approve !
+                    </div>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <div name="button_box" class="oe_button_box">
+                            <button class="oe_stat_button" type="object" name="action_view_employee_attachment" icon="fa-file">
+                            <field name="count_attachment" widget="statinfo"/>
+                        </button>
+                          <button class="oe_stat_button" name="get_expense" type="object" icon="fa-tasks">
+                                <field string="Expense" name="expense_count" widget="statinfo"/>
+                          </button>
+                      </div>
+                        </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="Employee"/>
+                        </h1>
+                    </div>
+                <div class="oe_edit_only">
+                    <field name="is_editable" invisible="1"/>
+                    <label for="name" class="oe_inline"/>
+                </div>
+                <h1>
+                    <field name="name" class="oe_inline" invisible="1" attrs="{'readonly': [('is_editable','=', False)]}"/>
+                    <field name="referensi" class="oe_inline"/>
+                </h1>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="expense_id" invisible="1"/>
+                            <field name="approve_mg" type="checkbox"  invisible="1"/>
+                            <field name="approve_gm" type="checkbox"  invisible="1"/>
+                            <field name="approve_direktur" type="checkbox"  invisible="1"/>
+                            <field name="approve_manager_direktur" type="checkbox"  invisible="1"/>
+                            <field name="department_id" />
+                            <field name="manager_id" />
+                        </group>
+                        <group>
+                            <field name="deskripsi_approve" string="Approve By" readonly="1" />
+                            <field name="target_keg" class="oe_inline" placeholder="Target kegiatan..."/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="True"/>
+                            <field name="kegiatan" />
+                            <field name="tanggal_kegiatan" />
+                            <field name="product_id" />
+                            <field name="unit_amount" />
+                            <field name="quantity" />
+                            <field name="tax_ids" widget="many2many_tags" groups="account.group_account_user" context="{'default_company_id': company_id}" />
+                            <field name="total_amount"/>
+                            <field name="payment_mode" widget="radio"/>
+                            <field name="company_id" groups="base.expenses_request_user"/>
+                        </group>
+                        <group>
+                            <field name="analytic_account_id" />
+                            <field name="account_id" />                               
+                        </group>                            
+                        <group>
+                        <h3>DETAIL PEMBAYARAN</h3>
+                            <field name="atas_nama" />
+                            <field name="no_rek" string="Nomor rekening"/>
+                            <field name="bank_names" string="Bank - Cabang"/>
+                        </group>
+                        <group>
+                        <h3>ANGGARAN</h3>
+                            <field name="partner_id"/>
+                            <field name="status_anggaran" widget="selection"/>
+                            <field name="sum_anggaran" widget="selection" string="Sumber anggaran"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+                </form>
+        </field>
+    </record>
+
+    <record id="expenses_request" model="ir.actions.act_window">
+        <field name="name">Expense Request</field>
+        <field name="res_model">expenses.request</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="expenses_root_menu" name="Expense Request" web_icon="expenses_request,static/description/icon.png"/>
+
+    <menuitem id="expenses_sub_menu" parent="expenses_root_menu"
+              name="Expenses Request"/>
+
+    <menuitem id="expenses_profile_menu" name="Expense Request"
+              action="expenses_request"
+              parent="expenses_sub_menu"/>
+
+    <menuitem id="expenses_sheet_profile_menu" name="Expense Request Sheet"
+              action="expenses_sheet"
+              parent="expenses_sub_menu"/>
+
+    <menuitem id="expenses_request_profile_menu" name="Expense Request"
+              action="expenses_request"
+              parent="hr_expense.menu_hr_expense_my_expenses"/>
+
+    <menuitem id="expenses_request_sheet_profile_menu" name="Expense Request Sheet"
+              action="expenses_sheet"
+              parent="hr_expense.menu_hr_expense_my_expenses"/> -->
+
+<!--     <record id="Inherit_expenses" model="ir.ui.view">
+        <field name="name">Expenses Request</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" postition='inside'>
+                <button name="get_expenses" type="object" icon="fa-chain">
+                    <field string="Expenses" name="expenses_count" widget="statinfo"/>
+                </button>
+            </xpath>
+        </field>
+    </record> --><!-- 
+
+    <record id="Inherit_expenses_shet_report" model="ir.ui.view">
+        <field name="name">Expenses Request</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="inherit_id" ref="hr_expense.view_hr_expense_sheet_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" postition='inside'>
+                <button name='approve_mg' type='object' string='Approve'/>
+            
+            </xpath>
+        </field>
+    </record> -->
+
+<!-- =========================================================== fungsi multiple form--> 
+        <record id="expenses_request_view_tree" model="ir.ui.view">
+            <field name="name">hr.expense.request.tree</field>
+            <field name="model">hr.expense</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="currency_id" invisible="True"/>
+                    <field name="attachment_number" invisible="True"/>
+                    <field name="codes"/>
+                    <field name="date"/>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="sheet_id" invisible="not context.get('show_report', False)"/>
+                    <field name="payment_mode"/>
+                    <field name="analytic_account_id" groups="analytic.group_analytic_accounting"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_tags"/>
+                    <field name="total_amount" sum="Total Amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    <field name="vendors" string="Vendor"/>
+                    <field name="atas_nama" string="Paid to"/>
+                    <field name="no_rek" string="Bank Account"/>
+                    <field name="bank_name" string="Bank name"/>
+                    <button name="action_get_attachment_view" string="View Attached Documents" type="object" icon="fa-paperclip" attrs="{'invisible': [('attachment_number', '=', 0)]}"/>
+                    <field name="message_unread" invisible="1"/>
+                    <field name="state"/>
+                    <field name="activity_exception_decoration" widget="activity_exception"/>
+                </tree>
+            </field>
+        </record>
+
+    <record id="expenses_request_view_form" model="ir.ui.view">
+            <field name="name">hr.expense.request.view.form</field>
+            <field name="model">hr.expense</field>
+            <field name="arch" type="xml">
+                <form string="Expenses Requestes">
+                <header><!-- 
+                  <button name="action_submit_expenses" string="Create Report" type="object" class="oe_highlight o_expense_submit" attrs="{'invisible': ['|', ('attachment_number', '&lt;=', 0), ('sheet_id', '!=', False)]}"/> -->
+                  <button name="action_submit_expenses" string="Create Report" type="object" class="oe_highlight o_expense_submit" attrs="{'invisible': ['|', ('attachment_number', '&lt;=', 0), ('sheet_id', '!=', False)]}"/>
+                  <widget name="attach_document" string="Attach Document" action="message_post" attrs="{'invisible': ['|', ('attachment_number', '&lt;', 1), ('id','=',False)]}"/>
+                  <widget name="attach_document" string="Attach Document" action="message_post" highlight="1" attrs="{'invisible': ['|',('attachment_number', '&gt;=', 1), ('id','=',False)]}"/>
+                  <button name="action_submit_expenses" string="Create Report" type="object" class="o_expense_submit" attrs="{'invisible': ['|', ('attachment_number', '&gt;=', 1), ('sheet_id', '!=', False)]}"/>
+                  <field name="state" widget="statusbar" statusbar_visible="draft,approved,done"/>
+                  <button name="action_view_sheet" type="object" string="View Report" class="oe_highlight" attrs="{'invisible': [('sheet_id', '=', False)]}"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_get_attachment_view"
+                            class="oe_stat_button"
+                            icon="fa-file-text-o"
+                            type="object">
+                            <field name="attachment_number" widget="statinfo" string="Documents" options="{'reload_on_button': true}"/>
+                        </button>
+                    </div>
+                <h1>
+                    <field name="codes" invisible="1"/>
+                    <field name="codee" attrs="{'readonly': [('codee','!=', '')]}" force_save='True'/>
+                </h1>
+
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Lunch with Customer" attrs="{'readonly': [('akses_user', '=', True)]}"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="testing" invisible="1" />
+                            <field name="id" invisible="1" />
+                            <field name="ceks_user" invisible="1" />
+                            <field name="akses_user" invisible="1" />
+                            <field name="department_id" groups="base.group_erp_manager,account.group_account_invoice,account.group_account_user,account.group_account_manager,  expenses_request.expenses_request_user_budget"/>
+                            <field name="test_department" invisible="1"/>
+                            <field name="parent_depart" invisible="1"/>
+                            <field name="testnam" invisible="1"/>
+                            <table>
+                                <tr>
+                                <th>TPA <field name="tanpa_budget" attrs="{'readonly': [('akses_user', '=', True)]}"/></th>
+                                <th>Out Of Budget <field name="out_budget" attrs="{'readonly': [('akses_user', '=', True)]}"/></th>
+                            </tr>
+                        </table>
+                            <field name="analytic_account_group" string="Budget group" options="{'no_open': True,'no_create': True, 'no_create_edit':True}" attrs="{'readonly': ['|','|',('is_editable', '=', False),('tanpa_budget', '=', True),('akses_user', '=', True)]}"/>
+                            <field name="is_editable" invisible="1"/>
+                            <field name="is_ref_editable" invisible="1"/>
+                            <field name="analytic_account_id"  groups="analytic.group_analytic_accounting" attrs="{'readonly': ['|',('is_editable', '=', False),('tanpa_budget', '=', True)]}" string="Budget" invisible="1"/>
+                            <field name="analytic_account_id"  groups="expenses_request.expenses_request_user,expenses_request.expenses_request_manager,expenses_request.expenses_request_general_manager,expenses_request.expenses_request_direktur" attrs="{'readonly': ['|','|',('is_editable', '=', False),('tanpa_budget', '=', True),('akses_user', '=', True)]}" options="{'no_quick_create':True,'no_create_edit':True,'no_open': True,'no_create': True, 'no_create_edit':True}" string="Budget"/>
+
+                            <field name="account_date" string="Start Date" groups="expenses_request.expenses_request_user_budget,base.group_erp_manager" attrs="{'readonly': ['|',('akses_user', '=', True),('ceks_user','=',True)]}"/>
+                            <field name="end_date" string="End Date" groups="expenses_request.expenses_request_user_budget,base.group_erp_manager" attrs="{'readonly': ['|',('akses_user', '=', True),('ceks_user','=',True)]}"/>
+                            <field name="id_budget" string="Id Budget" groups=" base.group_erp_manager" attrs="{'readonly': ['|',('akses_user', '=', True),('ceks_user','=',True)]}"/>
+                            <field name="cros_id" string="Cros Id" groups="base.group_erp_manager" attrs="{'readonly': ['|',('akses_user', '=', True),('ceks_user','=',True)]}"/>
+                            <field name="cros_tgl" string="Cros Tgl" groups="base.group_erp_manager" attrs="{'readonly': ['|',('akses_user', '=', True),('ceks_user','=',True)]}"/>
+
+                            <field name="product_id" required="1" context="{'default_can_be_expensed': 1, 'tree_view_ref': 'hr_expense.product_product_expense_tree_view'}"
+                                   widget="many2one_barcode" attrs="{'readonly': [('akses_user', '=', True)]}"
+                            />
+                            <field name="unit_amount" required="1" widget="monetary" options="{'currency_field': 'currency_id', 'field_digits': True}" attrs="{'readonly': [('akses_user', '=', True)]}"/>
+                            <field name="product_uom_category_id" invisible="1"/>
+                            <label for="quantity" attrs="{'readonly': [('akses_user', '=', True)]}"/>
+                            <div class="o_row">
+                                <field name="quantity" class="oe_inline" attrs="{'readonly': [('akses_user', '=', True)]}"/>
+                                <field name="product_uom_id" required="1" widget="selection" class="oe_inline" groups="uom.group_uom"/>
+                            </div>
+                            <field name="tax_ids" widget="many2many_tags" groups="account.group_account_user" attrs="{'readonly': [('is_editable', '=', False)]}" context="{'default_company_id': company_id}"/>
+                            <field name="total_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                        <group>
+                            <field name="reference" attrs="{'readonly': ['|',('akses_user', '=', True),('ceks_user','=',True)]}"/>
+                            <field name="date"  attrs="{'readonly': ['|',('akses_user', '=', True),('ceks_user','=',True)]}"/>
+                            <field name="account_id" options="{'no_create': True}" domain="[('internal_type', '=', 'other'), ('company_id', '=', company_id)]" groups="account.group_account_user,account.group_account_invoice" attrs="{'readonly': [('is_editable', '=', False)]}" context="{'default_company_id': company_id}"/>
+                            <field name="employee_id" groups="hr_expense.group_hr_expense_team_approver" context="{'default_company_id': company_id}" attrs="{'readonly': [('akses_user', '=', True)]}"/>
+                            <field name="sheet_id" invisible="1"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+
+                            <field name="planned_amount" attrs="{'readonly': [('planned_amount','!=', '')]}" force_save='True'/>
+                            <field name="practicals_amount" attrs="{'readonly': [('practicals_amount','!=', '')]}" force_save='True'/>
+                            <field name="total_ongoing" string="Total Outstanding" />
+                            <field name="sisa_budget" string="Remaining budget" attrs="{'readonly': [('sisa_budget','!=', '')]}" force_save='True'/>
+
+                            <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_tags" attrs="{'readonly': [('is_editable', '=', False)]}"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="vendors" groups="expenses_request.expenses_request_user_budget"/>
+                            <field name="vendors" groups="expenses_request.expenses_request_user" invisible="1" />
+                            <field name="atas_nama" string="Paid To" required="1" attrs="{'readonly': [('akses_user', '=', True)]}"/>
+                            <field name="no_rek" string="Bank Account" attrs="{'readonly': [('akses_user', '=', True)]}"/>
+                            <field name="bank_name" string="Bank Name" required="1" attrs="{'readonly': [('akses_user', '=', True)]}"/>
+                        </group><group>
+                            <label for="payment_mode"/>
+                            <div>
+                                <field name="payment_mode" widget="radio"/>
+                            </div>
+                        </group>
+                    </group>
+                    <div>
+                        <field name="description" class="oe_inline" placeholder="Notes..." attrs="{'readonly': [('akses_user', '=', True)]}"/>
+                    </div>
+                </sheet>
+                <div class="o_attachment_preview"/>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_expense_view_request" model="ir.actions.act_window">
+            <field name="name">Expenses Request User</field>
+            <field name="res_model">hr.expense</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="hr_expense.hr_expense_view_search"/>
+            <field name="context">{'search_default_my_expenses': 1, 'search_default_no_report': 1}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new expense
+              </p>
+            </field>
+        </record>
+
+        <record id="view_hr_expense_request_sheet_tree" model="ir.ui.view">
+            <field name="name">hr.expense.request.sheet.tree</field>
+            <field name="model">hr.expense.sheet</field>
+            <field name="arch" type="xml">
+                <tree string="Expense Reports" decoration-warning="state=='draft'" decoration-bf="message_unread == True" decoration-danger="state=='cancel'">
+                    <field name="name" string="Expense Report"/>
+                    <field name="employee_id"/>
+                    <field name="create_date"/>
+                    <field name="accounting_date" groups="account.group_account_manager"/>
+                    <field name="total_amount" sum="Total Amount"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="state"/>
+                    <field name="notes"/>
+                    <field name="vendors"/>
+                    <field name="atas_nama"/>
+                    <field name="no_rek"/>
+                    <field name="bank_name"/>
+                    <field name="message_unread" invisible="1"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="activity_exception_decoration" widget="activity_exception"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_hr_expense_request_sheet_form" model="ir.ui.view">
+            <field name="name">hr.expense.request.sheet.form</field>
+            <field name="model">hr.expense.sheet</field>
+            <field eval="25" name="priority"/>
+            <field name="arch" type="xml">
+                <form string="Expense Reports" class="o_expense_sheet">
+                <field name="can_reset" invisible="1"/>
+                 <header>
+
+                    <field name="status" widget="statusbar" invisible="1" groups="expenses_request.expenses_request_general_manager"/>
+
+                    <field name="status_budget" widget="statusbar" invisible="1" groups="expenses_request.expenses_request_general_manager_budget"/>
+
+
+                    <button name="action_cancel" string="Cancel" type="object" class="oe_highlight"  attrs="{'invisible':[('state','!=','done')]}" groups=" expenses_request.expenses_request_manager_budget"/>
+
+                    <button name="act_approve_mg" string="Approve Kaprodi/Manager" type="object" class="oe_highlight" groups="expenses_request.expenses_request_manager" attrs="{'invisible':['|','|',('approve_mg','!=', True),('state','=','draft'),('state','=','cancel')]}"/>
+                    <button name="act_approve_gm" string="Approve Dekan" type="object" class="oe_highlight" groups="expenses_request.expenses_request_general_manager" attrs="{'invisible':['|','|',('approve_gm','!=', True),('state','=','draft'),('state','=','cancel')]}"/>
+                    <button name="act_approve_dir" string="Approve Warek" type="object"  class="oe_highlight" groups="   expenses_request.expenses_request_direktur" attrs="{'invisible': ['|','|',('approve_direktur','!=', True),('state','=','draft'),('state','=','cancel')]}"/>
+                    <button name="act_approve_man_dir" string="Approve Rektor" type="object"  class="oe_highlight" groups="expenses_request.expenses_request_managing_direktur" attrs="{'invisible': ['|','|',('approve_manager_direktur','!=', True),('state','=','draft'),('state','=','cancel')]}"/>
+
+                    <button name="act_approve_mg_budget" string="Approve MG Budget" type="object" class="oe_highlight" groups="expenses_request.expenses_request_manager_budget" attrs="{'invisible':['|','|',('approve_mg_budget','!=', True),('state','=','draft'),('state','=','cancel')]}"/>
+                    <button name="act_approve_corporate" string="Approve Corporate" type="object" class="oe_highlight" groups="expenses_request.expenses_request_corporate" attrs="{'invisible':['|','|',('approve_corporate','!=', True),('state','=','draft'),('state','=','cancel')]}"/>
+                    <button name="act_approve_bendahara_ypk" string="Approve Bendahara YPK" type="object"  class="oe_highlight" groups="   expenses_request.expenses_request_bendahara_ypk" attrs="{'invisible': ['|','|',('approve_bendahara_ypk','!=', True),('state','=','draft'),('state','=','cancel')]}"/>
+
+
+                    <button name="action_submit_sheet" states="draft" string="Submit to Manager" type="object" class="oe_highlight o_expense_sheet_submit" invisible="1"/>
+
+                    <button name="request_approval" string="Request Approval" type="object" class="oe_highlight " attrs="{'invisible': ['|',('state','!=','draft')]}"/>
+                    <button name="approve_expense_sheets" states="submit" string="Approve" type="object" groups="hr_expense.group_hr_expense_team_approver" class="oe_highlight o_expense_sheet_approve" invisible="1"/>
+                    <button name="action_sheet_move_create" string="Post Journal Entries" type="object" groups="account.group_account_manager,account.group_account_invoice" attrs="{'invisible': [('state', '!=', 'approve')]}" class="oe_highlight o_expense_sheet_post"/>
+                    <button name="%(hr_expense.hr_expense_sheet_register_payment_wizard_action)d" type="action" string="Register Payment" class="oe_highlight o_expense_sheet_pay" attrs="{'invisible': [('state', '!=', 'post')]}" context="{'default_amount': total_amount, 'partner_id': address_id}" groups="account.group_account_manager,account.group_account_invoice"/>
+                    <button name="reset_expense_sheets" string="Reset to Draft" type="object" attrs="{'invisible': ['|', '|',('can_reset', '=', False), ('state', 'not in', ['submit', 'cancel']),('ceks_user','=',True)]}"/>
+                    <button name="%(hr_expense.hr_expense_refuse_wizard_action)d" states="submit,approve" context="{'hr_expense_refuse_model':'hr.expense.sheet'}" string="Refuse" type="action" groups="hr_expense.group_hr_expense_team_approver" attrs="{'invisible': [('ceks_user','=',True)]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submit,approve,post,done"/>
+                </header>
+
+
+                    <div class="alert alert-info" role="alert" style="margin-bottom:5px;" attrs="{'invisible': ['|','|',('status','!=', 'wait_general_manager'),('deskripsi_approve','=', 'Done'),('state','=', 'cancel')]}">
+                        You have <bold><a class="alert-link">Expense Request</a></bold> for this time, still wait for <bold><a class="alert-link">Dekan</a></bold> approve !
+                    </div>
+                    <div class="alert alert-info" role="alert" style="margin-bottom:5px;" attrs="{'invisible': ['|','|',('status','!=', 'wait_direktur'),('deskripsi_approve','=', 'Done'),('state','=', 'cancel')]}">
+                        You have <bold><a class="alert-link">Expense Request</a></bold> for this time, still wait for <bold><a class="alert-link">Warek</a></bold> approve !
+                    </div>
+                    <div class="alert alert-info" role="alert" style="margin-bottom:5px;" attrs="{'invisible': ['|','|',('status','!=', 'wait_manager_direktur'),('deskripsi_approve','=', 'Done'),('state','=', 'cancel')]}">
+                        You have <bold><a class="alert-link">Expense Request</a></bold> for this time, still wait for <bold><a class="alert-link">Rektor</a></bold> approve !
+                    </div>
+
+
+                    <div class="alert alert-info" role="alert" style="margin-bottom:5px;" attrs="{'invisible': ['|','|',('status_budget','!=', 'wait_corporate'),('deskripsi_approve_budget','=', 'Done'),('state','=', 'cancel')]}">
+                        You have <bold><a class="alert-link">Expense Request</a></bold> for this time, still wait for <bold><a class="alert-link">Corporate</a></bold> approve !
+                    </div>
+
+
+                    <div class="alert alert-info" role="alert" style="margin-bottom:5px;" attrs="{'invisible': ['|','|',('status_budget','!=', 'wait_bendahara_ypk'),('deskripsi_approve_budget','=', 'Done'),('state','=', 'cancel')]}">
+                        You have <bold><a class="alert-link">Expense Request</a></bold> for this time, still wait for <bold><a class="alert-link">Bendahara YPK</a></bold> approve !
+                    </div>
+
+
+                <sheet>
+
+
+                    <widget name="web_ribbon" title="Paid" attrs="{'invisible': [('state', '!=', 'done')]}"/>
+
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_get_attachment_view"
+                            class="oe_stat_button"
+                            icon="fa-file-text-o"
+                            type="object" attrs="{'invisible': [('state', '=', 'done')]}">
+                            <field name="attachment_number" widget="statinfo" string="Documents" attrs="{'invisible': [('state', '=', 'done')]}"/>
+                        </button>
+
+                    </div>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <group>
+                            <div>
+                        <h1>
+                            <field name="codes"/>
+                        </h1>
+                    </div>
+                    <div>
+                            <button name="update_code"
+                            class="oe_edit_only"
+                            icon="fa-repeat"
+                            type="object" /></div>
+                    </group>
+                        <h1>
+                            <field name="name" placeholder="e.g. Trip to NY" attrs="{'readonly': [('ceks_user', '=', True)]}"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="employee_details">
+                            <field name="ceks_user" invisible="1"/>
+                            <field name="employee_id" context="{'default_company_id': company_id}" attrs="{'readonly': [('ceks_user', '!=', False)]}"/>
+                            <field name="user_id" attrs="{'readonly': [('ceks_user', '!=', False)]}"/>
+                            <field name="department_id" attrs="{'readonly': [('ceks_user', '!=', False)]}"/>
+                            <field name="testnam" string="Parent Department" readonly="1"/>
+                            <field name="address_id" invisible="1" context="{'default_company_id': company_id}"/>
+                            <field name="department_id" invisible="1" context="{'default_company_id': company_id}" attrs="{'readonly': [('ceks_user', '!=', False)]}"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="payment_mode"/>
+                        </group>
+                        <group>
+                            <field name="deskripsi_approve" states="submit,approve,post,done"/>
+                            <field name="approve_mg" type="checkbox" invisible="1"/>
+                            <field name="approve_gm" type="checkbox"  invisible="1"/>
+                            <field name="approve_direktur" type="checkbox"  invisible="1"/>
+                            <field name="approve_manager_direktur" type="checkbox"  invisible="1"/>
+                            <field name="deskripsi_approve_budget" states="submit,approve,post,done"/>
+                            <field name="approve_mg_budget" type="checkbox" invisible="1"/>
+                            <field name="approve_corporate" type="checkbox"  invisible="1"/>
+                            <field name="approve_bendahara_ypk" type="checkbox"  invisible="1"/>
+                                    <field name="journal_id" options="{'no_open': True, 'no_create': True}" attrs="{'invisible': [('payment_mode', '!=', 'own_account')]}" context="{'default_company_id': company_id}"/>
+                                    <field name="bank_journal_id" groups="account.group_account_user,account.group_account_invoice" options="{'no_open': True, 'no_create': True}" attrs="{'invisible': [('payment_mode', '!=', 'company_account')]}" context="{'default_company_id': company_id}"/>
+                        </group>
+                    </group>
+                     <notebook>
+                        <page name="expenses" string="Expense">
+                        <field name="expense_line_ids" nolabel="1" widget="many2many" domain="[('employee_id', '=', employee_id), ('company_id', '=', company_id)]" options="{'reload_on_button': True}" context="{'form_view_ref' : 'expenses_request.expenses_request_no_header_view_form', 'default_company_id': company_id}" attrs="{'readonly': [('state', '=', 'done')]}">
+                            <tree decoration-danger="is_refused">
+                                <field name="codee" string="No.Exp" optional="hide"/>
+                                <field name="date"/>
+                                <field name="name"/>
+                                <field name="state" invisible="1"/>
+
+                                <field name="account_id" domain="['|', ('company_id', '=', parent.company_id), ('company_id', '=', False)]" groups="analytic.group_analytic_accounting"/>
+
+                                <field name="analytic_account_id" domain="['|', ('company_id', '=', parent.company_id), ('company_id', '=', False)]" groups="analytic.group_analytic_accounting" string="Budget"/>
+                                <field name="analytic_tag_ids" widget="many2many_tags" groups="analytic.group_analytic_tags"/>
+                                <field name="company_id"/>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="total_amount"/>
+                                <field name="company_currency_id" invisible="1"/>
+                                <field name="total_amount_company" groups="base.group_multi_currency"/>
+                                <field name="message_unread" invisible="1"/>
+                                <field name="attachment_number" string=" "/>
+                                <button name="action_get_attachment_view" string="View Attachments" type="object" icon="fa-paperclip"/>
+                                <field name="tax_ids" widget="many2many_tags" groups="account.group_account_user" context="{'default_company_id': company_id}"/>
+                                <field name="vendors" string="Vendor"/>
+                                <field name="atas_nama" string="Paid to"/>
+                                <field name="no_rek" string="Bank account"/>
+                                <field name="bank_name" string="Bank name"/>
+                                <field name="is_refused" invisible="True"/>
+                           </tree>
+                        </field>
+                        <field name="currency_id" invisible="1"/>
+                        <group class="oe_subtotal_footer oe_right" colspan="2" name="expense_total">
+                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                    <label for="total_amount"/>
+                                </div>
+                                <field name="total_amount" nolabel="1" class="oe_subtotal_footer_separator"/>
+                            </group>
+                            <field name="notes" class="oe_inline" placeholder="Notes ..."/>
+                            <div class="oe_clear"/>
+                        </page>
+
+                        <page name="other_info" string="Other Info">
+                            <group>
+                                <group>
+                                    <field name="journal_id" options="{'no_open': True, 'no_create': True}" attrs="{'invisible': [('payment_mode', '!=', 'own_account')]}" context="{'default_company_id': company_id}"/>
+                                    <field name="bank_journal_id" groups="account.group_account_user,account.group_account_invoice" options="{'no_open': True, 'no_create': True}" attrs="{'invisible': [('payment_mode', '!=', 'company_account')]}" context="{'default_company_id': company_id}"/>
+                                    <field name="accounting_date" groups="account.group_account_user" attrs="{'invisible': [('state', 'not in', ['approve', 'post', 'done'])]}"/>
+                                </group>
+                                <group>
+                                    <field name="account_move_id" groups="account.group_account_user" attrs="{'invisible': [('state', 'not in', ['post', 'done'])]}" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                     </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_expense_request_sheet_my_all" model="ir.actions.act_window">
+            <field name="name">My Expense Reports User</field>
+            <field name="res_model">hr.expense.sheet</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="hr_expense.hr_expense_sheet_view_search"/>
+            <field name="context">{'search_default_my_reports': 1}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a new expense report
+              </p><p>
+                Once you have created your expense, submit it to your manager who will validate it.
+              </p>
+            </field>
+        </record>
+
+        <record id="expenses_request_no_header_view_form" model="ir.ui.view">
+            <field name="name">hr.expense.request.view.form</field>
+            <field name="model">hr.expense</field>
+            <field name="inherit_id" ref="expenses_request.expenses_request_view_form"/>
+            <field eval="35" name="priority"/>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='codee']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+            </xpath>
+
+                <xpath expr="/form/sheet/div[hasclass('oe_button_box')]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_account_analytic_account_form_inherit_budgetku">
+            <field name="name">account.analytic.account.form.inherit.budgetku</field>
+            <field name="model">account.analytic.account</field>
+            <field name="inherit_id" ref="analytic.view_account_analytic_account_form"/>
+            <field name="priority" eval="50"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook/page/field[@name='crossovered_budget_line']/tree/field[@name='planned_amount']" position="after" >
+                    <field name="testing" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <!-- =================REPORT====================== -->
+
+        <record id="expenses_request_report_wizard" model="ir.ui.view" >
+            <field name="name">Custom Expense Report</field>
+            <field name="model">custom.expense.report.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Expense Summary Report">
+                    <group>
+                        <group>
+                            <field name="date_start"/>
+                        </group>
+                        <group>
+                            <field name="date_end"/>
+                        </group>
+                    </group>
+                    <footer>
+                <button name="get_report" string="Get Report" type="object" class="oe_highlight"/>
+                <button string="Cancel" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+<act_window id="action_custom_expense_report_wizard"
+    name="Custom Expense Report"
+    res_model="custom.expense.report.wizard"
+    view_mode="form"
+    target="new"/>
+
+<menuitem action="action_custom_expense_report_wizard"
+    id="menu_custom_expense_report_wizard"
+    parent="hr_expense.menu_hr_expense_reports"/>
+
+        <record id="paperformat_custom_expense_report" model="report.paperformat">
+            <field name="name">A4 session report</field>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">28</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report id="custom_expense_report"
+            model="custom.expense.report.wizard"
+            string="Custom Expense Report"
+            report_type="qweb-pdf"
+            name="expenses_request.custom_expense_report_view"
+            paperformat="expenses_request.paperformat_custom_expense_report"
+            menu="False"/>
+
+
+        <template id="custom_expense_report_view">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                <div class="page">
+                    <p style="font-size:130%;font-weight:bold;text-align:center;">Expense Report</p>
+                    <p style="font-size:115%;font-weight:bold;text-align:center;">Date From : <t t-esc="date_start"/>To
+                    <t t-esc="date_end"/></p>                    
+                <h2>
+            </h2>
+        </div>
+        <table style=" width: 100%;border-collapse: collapse;">
+          <tbody t-foreach="docss" t-as="o">            
+          <tr>
+            <td colspan="6" style="font-size:130%;">
+                <b>Budget : <t t-esc="o['budget']" /></b>
+            </td>
+          </tr>
+            <tr style="text-align: left;background-color:#d0d0d0;font-size:110%;height: 30px;">
+            <th> Reference</th>
+            <th> Date</th>
+            <th> Name</th>
+            <th> Employee</th>
+            <th> Department</th>
+            <th> Total Amount</th>
+          </tr>
+          <tr t-foreach="docs.search([('date', '>=', date_start),('date', '&lt;=', date_end),('analytic_account_id', '=', o['budget'])])" t-as="a" style="border-bottom: 1px solid black;">
+            <td >
+                <span t-field="a.codee" />
+            </td>
+            <td >
+                <span t-field="a.date" />
+            </td >
+            <td >
+                <span t-field="a.name" />
+            </td>
+            <td >
+                <span t-field="a.employee_id" />
+            </td>
+            <td>                
+                <span t-field="a.department_id" />
+            </td>
+            <td >
+                <span t-field="a.total_amount" />
+            </td>
+          </tr>
+          <tr t-foreach="request.env['crossovered.budget.lines'].search([('analytic_account_id', '=', o['budget'])])" t-as="a" style="border-bottom: 1px solid black;font-weight:bold;font-size:100%;">
+              <td colspan="5">Planned Amount</td>
+            <td>Rp.
+                <span t-esc="'{0:,.2f}'.format(a.planned_amount)"/>
+            </td>
+          </tr>
+          <tr style="border-bottom: 1px solid black;font-weight:bold;font-size:100%;">
+              <td colspan="5">Practicals Amount</td>
+              <td>Rp.
+                  <span t-esc="'{0:,.2f}'.format(sum(a.total_amount for a in docs.search([('date', '>=', date_start),('date', '&lt;=', date_end),('analytic_account_id', '=', o['budget'])])))" t-esc-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+              </td>
+          </tr>
+          <tr>
+              <td><p></p></td>
+          </tr>
+      </tbody>
+        </table>
+                <div class="footer o_standard_footer" style="border-top: 1px solid black;">
+                    <div class="row text-center">
+                        <div class="col col-12 text-center">
+                            <ul class="list-inline">
+                                <li class="list-inline-item">Page:</li>
+                                <li class="list-inline-item">
+                                    <span class="page"/>
+                                </li>
+                                <li class="list-inline-item">/</li>
+                                <li class="list-inline-item">
+                                    <span class="topage"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- =================ReportDepartment================= -->
+
+        <record id="expenses_request_report_wizard_department" model="ir.ui.view" >
+            <field name="name">Custom Expense Report Department</field>
+            <field name="model">custom.expense.report.wizard.department</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Expense Summary Report Department">
+                    <group><div>
+                        <group>
+                            <field name="department_id"/>
+                        </group>
+                    </div>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                    </group>
+                    <footer>
+                <button name="get_report_department" string="Get Report" type="object" class="oe_highlight"/>
+                <button string="Cancel" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+<act_window id="action_custom_expense_report_wizard_department"
+    name="Custom Expense Report Department"
+    res_model="custom.expense.report.wizard.department"
+    view_mode="form"
+    target="new"/>
+
+<menuitem action="action_custom_expense_report_wizard_department"
+    id="menu_custom_expense_report_wizard_department"
+    parent="hr_expense.menu_hr_expense_reports"/>
+
+        <record id="paperformat_custom_expense_report" model="report.paperformat">
+            <field name="name">A4 session report</field>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">28</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report id="custom_expense_report_department"
+            model="custom.expense.report.wizard.department"
+            string="Custom Expense Report Department"
+            report_type="qweb-pdf"
+            name="expenses_request.custom_expense_report_view_department"
+            paperformat="expenses_request.paperformat_custom_expense_report"
+            menu="False"/>
+
+        <template id="custom_expense_report_view_department">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                <div class="page">
+                    <p style="font-size:130%;font-weight:bold;text-align:center;">Expense Report</p>
+                    <p style="font-size:115%;font-weight:bold;text-align:center;">Date From : <t t-esc="date_start"/>To
+                    <t t-esc="date_end"/></p>                    
+                <h2>
+            </h2>
+        </div>
+        <table style=" width: 100%;border-collapse: collapse;">
+          <tbody t-foreach="docss" t-as="o">            
+          <tr>
+            <td colspan="6" style="font-size:130%;">
+                <b>Budget : <t t-esc="o['budget']" /></b>
+            </td>
+          </tr>
+            <tr style="text-align: left;background-color:#d0d0d0;font-size:110%;height: 30px;">
+            <th>Reference</th>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Employee</th>
+            <th>Department</th>
+            <th>Total Amount</th>
+          </tr>
+          <tr t-foreach="docs.search([('date', '>=', date_start),('date', '&lt;=', date_end),('analytic_account_id', '=', o['budget']),('department_id','=',department_id)])" t-as="a" style="border-bottom: 1px solid black;">
+            <td>
+                <span t-field="a.codee" />
+            </td>
+            <td>
+                <span t-field=" a.date" />
+            </td >
+            <td>
+                <span t-field="a.name" />
+            </td>
+            <td>
+                <span t-field="a.employee_id" />
+            </td>
+            <td>                
+                <span t-field="a.department_id" />
+            </td>
+            <td>
+                <span t-field="a.total_amount" />
+            </td>
+          </tr>
+          <tr t-foreach="request.env['crossovered.budget.lines'].search([('analytic_account_id', '=', o['budget'])])" t-as="a" style="border-bottom: 1px solid black;font-weight:bold;font-size:100%;">
+              <td colspan="5">Planned Amount</td>
+            <td>Rp.
+                <span t-esc="'{0:,.2f}'.format(a.planned_amount)"/>
+            </td>
+          </tr>
+          <tr style="border-bottom: 1px solid black;font-weight:bold;font-size:100%;">
+              <td colspan="5" >Practicals Amount</td>
+              <td>Rp.
+                  <span t-esc="'{0:,.2f}'.format(sum(a.total_amount for a in docs.search([('date', '>=', date_start),('date', '&lt;=', date_end),('analytic_account_id', '=', o['budget'])])))" t-esc-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+              </td>
+          </tr>
+          <tr>
+              <td><p></p></td>
+          </tr>
+      </tbody>
+        </table>
+                <div class="footer o_standard_footer" style="border-top: 1px solid black;">
+                    <div class="row text-center">
+                        <div class="col col-12 text-center">
+                            <ul class="list-inline">
+                                <li class="list-inline-item">Page:</li>
+                                <li class="list-inline-item">
+                                    <span class="page"/>
+                                </li>
+                                <li class="list-inline-item">/</li>
+                                <li class="list-inline-item">
+                                    <span class="topage"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- =================Report All Department================= -->
+
+        <record id="expenses_request_report_wizard_departmenta" model="ir.ui.view" >
+            <field name="name">Custom Expense Report All Department</field>
+            <field name="model">custom.expense.report.wizard.departmenta</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Expense Summary Report All Department">
+                    <group><div>
+                        <group>
+                            <field name="department_id"/>
+                        </group>
+                    </div>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                    </group>
+                    <footer>
+                <button name="get_report_all_department" string="Get Report" type="object" class="oe_highlight"/>
+                <button string="Cancel" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+<act_window id="action_custom_expense_report_wizard_departmenta"
+    name="Custom Expense Report All Department"
+    res_model="custom.expense.report.wizard.departmenta"
+    view_mode="form"
+    target="new"/>
+
+<menuitem action="action_custom_expense_report_wizard_departmenta"
+    id="menu_custom_expense_report_wizard_departmenta"
+    parent="hr_expense.menu_hr_expense_reports"/>
+
+        <record id="paperformat_custom_expense_report" model="report.paperformat">
+            <field name="name">A4 session report</field>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">28</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <report id="custom_expense_report_departmenta"
+            model="custom.expense.report.wizard.departmenta"
+            string="Custom Expense Report All Department"
+            report_type="qweb-pdf"
+            name="expenses_request.custom_expense_report_view_departmenta"
+            paperformat="expenses_request.paperformat_custom_expense_report"
+            menu="False"/>
+
+        <template id="custom_expense_report_view_departmenta">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                <div class="page">
+                    <p style="font-size:130%;font-weight:bold;text-align:center;">Expense Report</p>
+                    <p style="font-size:115%;font-weight:bold;text-align:center;">Date From : <t t-esc="date_start"/>To
+                    <t t-esc="date_end"/></p>                    
+                <h2>
+            </h2>
+        </div>
+        <table style=" width: 100%;border-collapse: collapse;">
+          <tbody t-foreach="docss" t-as="o">            
+          <tr>
+            <td colspan="6" style="font-size:130%;">
+                <b>Budget : <t t-esc="o['budget']" /></b>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="6" style="font-size:130%;">
+                <b>Period : <t t-esc="o['startdate']" /> / <t t-esc="o['enddate']" /></b>
+            </td>
+        </tr>
+            <tr style="text-align: left;background-color:#d0d0d0;font-size:110%;height: 30px;">
+            <th>Reference</th>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Employee</th>
+            <th>Department</th>
+            <th>Total Amount</th>
+          </tr>
+          <tr t-foreach="docs.search([('date', '>=', date_start),('date', '&lt;=', date_end),('date', '>=', o['startdate']),('date', '&lt;=',o['enddate']),('analytic_account_id', '=', o['budget'])])" t-as="a" style="border-bottom: 1px solid black;">
+            <td>
+                <span t-field="a.codee" />
+            </td>
+            <td>
+                <span t-field=" a.date" />
+            </td >
+            <td>
+                <span t-field="a.name" />
+            </td>
+            <td>
+                <span t-field="a.employee_id" />
+            </td>
+            <td>                
+                <span t-field="a.department_id" />
+            </td>
+            <td>
+                <span t-field="a.total_amount" />
+            </td>
+          </tr>
+          <tr t-foreach="request.env['crossovered.budget.lines'].search([('date_from', '>=', o['startdate']),('date_to', '&lt;=', o['enddate']),('analytic_account_id', '=', o['budget'])])" t-as="a" style="border-bottom: 1px solid black;font-weight:bold;font-size:100%;">
+              <td colspan="5">Planned Amount</td>
+            <td>Rp.
+                <span t-esc="'{0:,.2f}'.format(a.planned_amount)"/>
+            </td>
+          </tr>
+          <tr style="border-bottom: 1px solid black;font-weight:bold;font-size:100%;">
+              <td colspan="5" >Practicals Amount</td>
+              <td>Rp.
+                  <span t-esc="'{0:,.2f}'.format(sum(a.total_amount for a in docs.search([('date', '>=', date_start),('date', '&lt;=', date_end),('date', '>=', o['startdate']),('date', '&lt;=',o['enddate']),('analytic_account_id', '=', o['budget'])])))" t-esc-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+              </td>
+          </tr>
+          <tr>
+              <td><p></p></td>
+          </tr>
+      </tbody>
+        </table>
+                <div class="footer o_standard_footer" style="border-top: 1px solid black;">
+                    <div class="row text-center">
+                        <div class="col col-12 text-center">
+                            <ul class="list-inline">
+                                <li class="list-inline-item">Page:</li>
+                                <li class="list-inline-item">
+                                    <span class="page"/>
+                                </li>
+                                <li class="list-inline-item">/</li>
+                                <li class="list-inline-item">
+                                    <span class="topage"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+        <menuitem id="menu_hr_expense_request_user" parent="hr_expense.menu_hr_expense_my_expenses" 
+            action="action_expense_view_request" groups="base.group_erp_manager"/>
+        <menuitem id="menu_hr_expense_report_user" parent="hr_expense.menu_hr_expense_my_expenses" 
+            action="action_hr_expense_request_sheet_my_all" groups="base.group_erp_manager"/>
+
+
+
+
+        <menuitem id="menu_hr_expense_request_user" parent="hr_expense.menu_hr_expense_my_expenses" 
+            action="action_expense_view_request"/>
+        <menuitem id="menu_hr_expense_report_user" parent="hr_expense.menu_hr_expense_my_expenses" 
+            action="action_hr_expense_request_sheet_my_all"/>
+
+</odoo>

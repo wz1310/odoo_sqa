@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="oustanding_receivable_report_tree">
+            <field name="name">outstanding.receiveable.report.tree</field>
+            <field name="model">account.move</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'" js_class="account_tree">
+                    <field name="code_partner" string="Kode Pelanggan"/>
+                    <field name="partner_id" string="Nama Pelanggan"/>
+                    <field name="invoice_origin" string="Delivery Number"/>
+                    <field name="name" string="No. Invoice"/>
+                    <field name="invoice_date" string="Tanggal Invoice"/>
+                    <field name="team_id"/>
+                    <field name="amount_total" string="Nominal"/>
+                    <field name="amount_total_payment" string="Pembayaran"/>
+                    <field name="amount_residual" string="Saldo"/>
+                    <field name="invoice_payment_term_id" string="TOP"/>
+                    <field name="invoice_date_due" string="Tgl. Jatuh Tempo"/>
+                    <field name="state" optional="hide"/>
+                    <field name="company_id" optional="hide" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="outstanding_receiveable_report_groupby_inherit" model="ir.ui.view">
+            <field name="name">outstanding.receiveable.report.groupby.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group/filter[@name='status']" position="after">
+                    <filter string="Partner" name="partner" context="{'group_by':'partner_id'}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="action_outstanding_receiveable_report" model="ir.actions.act_window">
+            <field name="name">A11 - Outstanding Receiveable Report</field>
+            <field name="res_model">account.move</field>
+            <field name="view_mode">tree</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_id" ref="oustanding_receivable_report_tree"/>
+            <field name="search_view_id" ref="outstanding_receiveable_report_groupby_inherit"/>
+            <field name="domain">[('type', '=', 'out_invoice'),('amount_residual','!=',0)]</field>
+            <field name="context">{'search_default_partner':True}</field>
+        </record>
+
+        
+
+        <menuitem
+            id="outstanding_receiveable_report_menu"
+            name="A11 - Outstanding Receiveable Report"
+            action="action_outstanding_receiveable_report"
+            parent="sale.menu_sale_report"
+            groups="group_outstanding_receiveable_report"
+            sequence="121"
+        />
+    </data>
+</odoo>

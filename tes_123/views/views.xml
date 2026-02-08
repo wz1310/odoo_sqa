@@ -1,0 +1,42 @@
+<odoo>
+  <data>
+
+  <record id="tes_123_view_tree" model="ir.ui.view">
+            <field name="name">tes.123.tree</field>
+            <field name="model">tes.123</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+    <record id="tes_123_form_view" model="ir.ui.view">
+        <field name="name">tes.123.form.view</field>
+        <field name="model">tes.123</field>
+        <field name="arch" type="xml">
+            <form>
+              <sheet>
+                    <group>
+                    <field name="name"/>
+              </group>
+      </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_tes_123" model="ir.actions.act_window">
+        <field name="name">Tes 123</field>
+        <field name="res_model">tes.123</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="tes_123_root_menu" name="Tes 123" web_icon="tes_123,static/description/bc.png" />
+    <menuitem id="tes_123_sub_menu" parent="tes_123_root_menu"
+              name="Tes 123"/>
+    <menuitem id="tes_123_menu" name="Tes 123"
+              action="action_tes_123"
+              parent="tes_123_sub_menu"/>
+
+  </data>
+</odoo>

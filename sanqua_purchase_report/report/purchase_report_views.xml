@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="view_purchase_receipt_order_pivot">
+        <field name="name">view.purchase.receipt.order.pivot</field>
+        <field name="model">purchase.receipt.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Purchase Analysis" disable_linking="True" display_quantity="true">
+                <field name="category_id" type="row"/>
+                <field name="order_id" type="measure"/>
+                <field name="qty_ordered" type="measure"/>
+                <field name="qty_received" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_purchase_receipt_report" model="ir.actions.act_window">
+        <field name="name">Purchase Receipt Analysis</field>
+        <field name="res_model">purchase.receipt.report</field>
+        <field name="view_mode">pivot</field>
+        <field name="view_id"></field>  <!-- force empty -->
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_report_purchase" name="Receipt"  action="action_purchase_receipt_report" parent="purchase.purchase_report" sequence="3" groups="purchase.group_purchase_manager"/>
+
+
+</odoo>

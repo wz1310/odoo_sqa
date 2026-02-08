@@ -1,0 +1,25 @@
+<odoo>
+
+	<record model="fleet.vehicle.model.brand" id="vehicle_brand_sanqua">
+		<field name="name">SANQUA VEHICLES</field>
+	</record>
+	<record model="fleet.vehicle.model" id="vehicle_model_fuso">
+		<field name="name">Fuso</field>
+		<field name="brand_id" ref="sanqua_sale_flow.vehicle_brand_sanqua" />
+	</record>
+
+	<record model="fleet.vehicle.model" id="vehicle_model_truck">
+		<field name="name">Truck</field>
+		<field name="brand_id" ref="sanqua_sale_flow.vehicle_brand_sanqua" />
+	</record>
+
+	<record model="fleet.vehicle.model" id="vehicle_model_collback">
+		<field name="name">Collback</field>
+		<field name="brand_id" ref="sanqua_sale_flow.vehicle_brand_sanqua" />
+	</record>
+
+	<record model="fleet.vehicle.model" id="vehicle_model_container">
+		<field name="name">Container</field>
+		<field name="brand_id" ref="sanqua_sale_flow.vehicle_brand_sanqua" />
+	</record>
+</odoo>

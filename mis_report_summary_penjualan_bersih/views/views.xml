@@ -1,0 +1,10 @@
+<odoo>
+  <data>
+        <record id="action_account_report_sum" model="ir.actions.client">
+            <field name="name">Tes Journals</field>
+            <field name="tag">account_report</field>
+            <field name="context" eval="{'model': 'mis.report.summary.penjualan.bersih'}" />
+        </record>
+        <menuitem id="menu_action_account_report_sum" name="Tes sale" action="action_account_report_sum" parent="account.menu_finance_reports" groups="account.group_account_user"/>
+  </data>
+</odoo>

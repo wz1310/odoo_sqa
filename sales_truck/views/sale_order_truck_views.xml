@@ -1,0 +1,687 @@
+<odoo>
+    <record id="sale_order_truck_view_form" model="ir.ui.view">
+        <field name="name">sale.order.truck.view.form</field>
+        <field name="model">sale.order.truck</field>
+        <field name="arch" type="xml">
+            <form string="Sale Order Truck">
+                <header>
+                    <button name="btn_submit" states="draft" type="object" string="Submit" class="btn-primary" groups="sales_truck.group_sale_truck_sales"/>
+                    
+                    <button name="btn_approve" type="object" string="Approve" class="btn-primary" attrs="{'invisible':['|', ('user_can_approve','=',False), ('state','not in',['waiting_approval'])]}" confirm="Approve?"/>
+                    <button name="btn_reject" type="object" string="Reject"  attrs="{'invisible':['|',('user_can_approve','=',False), ('state','!=','waiting_approval')]}" class="oe_highlight" confirm="Sure to reject?"/>
+                    <button name="btn_refuse" attrs="{'invisible':[('state','not in',['submited'])]}" type="object" string="Refuse" class="btn-primary" groups="sales_truck.group_sale_truck_inventory_user"/>
+                    <button name="btn_confirm" attrs="{'invisible':[('state','not in',['submited'])]}" type="object" string="Confirm" class="btn-primary" groups="sales_truck.group_sale_truck_inventory_user"/>
+                    <button name="btn_take_confirm" states="refuse" type="object" string="Take Order" class="btn-primary"/>
+                    <button name="btn_post" type="object" string="Post" class="btn-primary" groups="sales_truck.group_sale_truck_inventory_user" attrs="{'invisible':[('state','not in',['confirmed'])]}"/>
+                    <button name="open_reject_message_wizard" type="object" string="Cancel" groups="sales_truck.group_sale_truck_inventory_user" attrs="{'invisible':[('state','not in',['confirmed'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,waiting_approval,submited,confirmed,done" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        
+                        <button type="object" class="oe_stat_button" name="open_sale_ids" icon="fa-list-alt"
+                            attrs="{'invisible': [('sale_count','=',0)]}">
+                            <field name="sale_count" widget="statinfo" string="Sale Order(s)"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="receive_material" attrs="{'readonly':[('state','not in',['draft'])]}" domain="[('state', '=', 'done')]"/>
+                            <field name="team_id" options="{'no_create':1}" attrs="{'readonly':[('state','not in',['draft'])]}" domain="[('state', '=', 'done')]"/>
+                            <!-- <field name="sales_id" options="{'no_create':1}" attrs="{'readonly':[('state','not in',['draft'])]}"/> -->
+                            
+                            <field name="plant_id" options="{'no_create':1}" context="{'all_companies':1}" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                            <field name="status_so" string="Status"/>
+                            <!-- <field name="plant_id" options="{'no_create':True, 'no_quick_create': True, 'no_open':True}" /> -->
+                        </group>
+                        <group>
+                            <field name="company_id" options="{'no_create':1}" attrs="{'readonly':[('state','not in',['draft'])], 'invisible':[('state','=','draft')]}"/>
+                            <field name="start_date" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                            <field name="end_date" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                            <field name="vehicle_model_id" 
+                                options="{'no_create':1}" 
+                                attrs="{'readonly':[('state','not in',['draft','submited'])]}" 
+                                force_save="1" context="{'force_company':plant_id}"/>
+                            <field 
+                                name="vehicle_id" 
+                                options="{'no_create':1}" 
+                                attrs="{'invisible':[('plant_id','=',False)], 'readonly':[('state','not in',['submited','refuse'])]}" 
+                                force_save="1" 
+                                context="{'force_company':plant_id}"/>
+                            <field name="vehicle_driver_id" 
+                                options="{'no_create':1}" 
+                                attrs="{'invisible':[('plant_id','=',False)], 'readonly':[('state','not in',['submited','refuse'])]}" 
+                                force_save="1" context="{'force_company':plant_id}" 
+                                />
+                            <field name="warehouse_id" 
+                                options="{'no_create':1}" 
+                                attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="order_pickup_method_id" options="{'no_create':1}" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                        </group> 
+                    </group>
+                    <notebook>
+                        <page name="orderlines" string="Aggrement Lines" attrs="{'invisible':[('receive_material','=',True)]}">
+                            <field name="order_line_ids">
+                                <tree>
+                                    <field name="partner_id" attrs="{'readonly':[('parent.state','not in',['draft'])]}" options="{'no_quick_create':True,'no_create':True}" domain="[('customer', '=', True)]"/>
+                                    <field name="product_id" domain="[('sale_truck', '=', True),('reg_in_customer_stock_card', '=', False)]" attrs="{'readonly':[('parent.state','not in',['draft'])]}" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="is_overdue"/>
+                                    <field name="is_overlimit"/>
+                                    
+                                    <field name="product_uom_qty" attrs="{'readonly':[('parent.state','not in',['draft','submited'])]}" sum="Total"/>
+                                    <field name="uom_id" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="partner_pricelist_id" options="{'no_quick_create':True,'no_create':True}" optional="hide" groups="sales_truck.group_sale_truck_sales,base.group_system"/>
+                                    <field name="pricelist_id" options="{'no_quick_create':True,'no_create':True}" groups="sales_truck.group_sale_truck_sales,base.group_system"/>
+                                    
+                                    <field name="delivered_qty" attrs="{'readonly':[('parent.state','!=','confirmed')]}" force_save="1"/>
+                                    <field name="rejected_qty" attrs="{'readonly':[('parent.state','!=','confirmed')]}" force_save="1"/>
+                                    <!-- <field name="different_qty" readonly="1" force_save="1"/> -->
+                                    <field name="price_unit" widget="monetary" groups="sales_truck.group_sale_truck_sales,base.group_system"/>
+                                    <field name="discount_fixed_line" widget="monetary" groups="sales_truck.group_sale_truck_sales,base.group_system" optional="show"/>
+                                    <field name="tax_ids" widget="many2many_tags" groups="sales_truck.group_sale_truck_sales,base.group_system"/>
+                                    <field name="currency_id" invisible="1" groups="sales_truck.group_sale_truck_sales,base.group_system"/>
+                                    <field name="price_subtotal" widget="monetary" options="{'currency_field': 'currency_id'}" groups="sales_truck.group_sale_truck_sales,base.group_system"/>
+                                    <field name="price_total" optional="hide" widget="monetary" options="{'currency_field': 'currency_id'}" groups="sales_truck.group_sale_truck_sales,base.group_system"/>
+
+                                    <field name="state" optional="hide"/>
+                                    <field name="note" optional="hide"/>
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="partner_id" attrs="{'readonly':[('parent.state','not in',['draft'])]}" options="{'no_quick_create':True,'no_create':True}" domain="[('customer', '=', True)]"/>
+                                                <field name="is_overdue"/>
+                                                <field name="is_overlimit"/>
+                                                <field name="qty_editable" invisible="1"/>
+                                                <field name="product_id" attrs="{'readonly':[('parent.state','not in',['draft'])]}" options="{'no_quick_create':True,'no_create':True}" domain="[('sale_truck', '=', True),('reg_in_customer_stock_card', '=', False)]"/>
+                                                <field name="product_uom_qty" attrs="{'readonly':[('qty_editable','=',False)]}"/>
+                                                <field name="uom_id" options="{'no_quick_create':True,'no_create':True}" force_save="1"/>
+                                                <field name="delivered_qty" attrs="{'readonly':[('parent.state','!=','confirmed')]}"  />
+                                                <field name="rejected_qty" attrs="{'readonly':[('parent.state','!=','confirmed')]}" />
+                                                <field name="different_qty" readonly="1" force_save="1"/>
+                                                <field name="product_tracking" invisible="1" />
+                                                <field name="note"/>
+                                            </group>
+                                            <group>
+                                                <field name="price_unit" widget="monetary" groups="sales_truck.group_sale_truck_sales,base.group_system"/>
+                                                <field name="discount_fixed_line" widget="monetary" groups="sales_truck.group_sale_truck_sales,base.group_system" optional="show" attrs="{'readonly':[('parent.state','not in',['draft'])]}"/>
+                                                <field name="tax_ids" widget="many2many_tags" groups="sales_truck.group_sale_truck_sales,base.group_system" attrs="{'readonly':[('parent.state','not in',['draft'])]}"/>
+                                                <field name="currency_id" invisible="1" groups="sales_truck.group_sale_truck_sales,base.group_system" attrs="{'readonly':[('parent.state','not in',['draft'])]}"/>
+                                                <field name="price_subtotal" widget="monetary" options="{'currency_field': 'currency_id'}" groups="sales_truck.group_sale_truck_sales,base.group_system"/>
+                                                <field name="price_total" optional="hide" widget="monetary" options="{'currency_field': 'currency_id'}" groups="sales_truck.group_sale_truck_sales,base.group_system"/>
+                                            </group>
+                                        </group>
+                                        <notebook attrs="{'invisible':[('product_tracking','=','none')]}">
+                                            <page string="Lots" attrs="{'invisible':['|',('product_tracking','not in',['lot','serial']),('parent.state','not in',['submited','confirmed','done'])]}" name="page_material_lots">
+                                                <field name="lot_ids" context="{'default_product_id':product_id}">
+                                                    <tree editable="bottom" string="Lots">
+                                                        <field name="available_lot_in_location"/>
+                                                        <field name="company_id" groups="base.group_system" options="{'no_quick_create':True,'no_create':True}"/>
+                                                        <field name="product_id" options="{'no_quick_create':True,'no_create':True}" />
+                                                        <field name="product_tracking" groups="base.group_system" />
+                                                        <field name="lot_id" domain="[('id','in',available_lot_in_location)]" options="{'no_quick_create':True,'no_create':True}" />
+                                                        <field name="free_qty" force_save="1" readonly="1"/>
+                                                        <field name="product_uom_qty" />
+                                                        <field name="delivered_qty" />
+                                                        <field name="rejected_qty" />
+                                                        <!-- <field name="return_qty" /> -->
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                        </notebook>
+                                    </sheet>
+                                </form>
+                            </field>
+                            <group name="note_group" col="6">
+                                <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total" groups="sales_truck.group_sale_truck_sales,base.group_system">
+                                    <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="amount_total"/>
+                                    </div>
+                                    <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                </group>
+                                <div class="oe_clear"/>
+                            </group>
+                        </page>
+                        
+                        <page name="dispenser" string="Dispenser" invisible="1">
+                            <field name="truck_dispanser_ids" context="{'default_sale_truck_id':id,'default_plant_id':plant_id, 'default_warehouse_id':warehouse_id}">
+                                <tree editable="bottom">
+                                    <field name="plant_id" invisible="0" context="{'all_companies':1}" />
+                                    
+
+                                    <field name="state" invisible="1"/>
+                                    <field name="serializable" invisible="1"/>
+                                    
+                                    <field name="product_id" required="1" attrs="{'readonly':[('parent.state','not in',['draft'])]}" force_save="1" options="{'no_create':1}"/>
+                                    <field name="available_lot_ids" widget="many2many_tags" invisible="1" context="{'all_companies':True,'force_company':plant_id}" />
+                                    
+                                    <field name="lot_id" attrs="{'invisible':[('serializable','=',False)]}" domain="[('id','in',available_lot_ids)]" context="{'all_companies':True,'force_company':plant_id, 'allowed_company_ids':[plant_id]}" options="{'no_create':1}" />
+                                    <field name="qty" required="1" attrs="{'readonly':['|',('parent.state','not in',['draft']),('serializable','=',True)]}" force_save="1"/>
+                                    <field name="uom_id" attrs="{'readonly':[('parent.state','not in',['draft'])]}" force_save="1" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="sent_qty" readonly="1" force_save="1"/>
+                                    <field name="return_qty" attrs="{'readonly':[('parent.state','not in',['confirmed'])]}" force_save="1"/>
+                                    <button name="action_show_details" string="Register customer" type="object" icon="fa-list" width="0.1"
+                                            options='{"warn": true}' attrs="{'invisible':[('parent.state','not in',['confirmed'])]}"/>
+                                </tree>
+                                <!-- <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="product_id" required="1" />
+                                            <field name="qty" required="1" />
+                                            <field name="uom_id"/>
+                                            <field name="sent_qty" force_save="1"/>
+                                            <field name="return_qty" force_save="1"/>
+                                        </group>
+                                    </sheet>
+                                </form> -->
+                            </field>
+                        </page>
+
+                        <page name="material" string="Materials">
+                            <field name="sale_truck_material_ids" force_save="0" context="{'default_sale_truck_id':id,'default_receive_material':receive_material}">
+                                <tree decoration-danger="non_sanqua==True">
+                                    <field name="receive_material" invisible="1"/>
+                                    <field name="partner_id" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="product_id" options="{'no_create':1}" domain="[('sale_truck', '=', True)]" required="1" attrs="{'readonly':[('receive_material','=',False),('parent.state','in',['draft'])]}"/>
+                                    <field name="product_uom_qty" required="1" attrs="{'readonly':[('parent.state','in',['draft'])]}" />
+                                    <field name="product_tracking" invisible="1" />
+
+                                    <field name="uom_id" options="{'no_quick_create':True,'no_create':True}" readonly="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="delivered_qty" attrs="{'readonly':['|', ('non_sanqua','=',True), ('parent.state','!=','confirmed')]}" force_save="1"/>
+                                    <field name="rejected_qty" attrs="{'readonly':['|', ('non_sanqua','=',True), ('parent.state','!=','confirmed')]}" force_save="1"/>
+                                    <field name="return_qty" attrs="{'required':[('non_sanqua','=',True)],'readonly':[('parent.state','!=','confirmed')]}" force_save="1"/>
+                                    <field name="different_qty" readonly="1" force_save="1"/>
+                                    <field name="non_sanqua" optional="hide"/>
+                                    <button attrs="{'invisible':['|', ('state','not in',['confirmed']), ('non_sanqua','=',False)]}" icon='fa-remove' type="object" name="btn_delete_non_sanqua" confirm="Delete ?" groups="sales_truck.group_sale_truck_inventory_user" />
+                                </tree>
+                                <form>
+                                    <header>
+                                        <field name="state" widget="statusbar"/>
+                                    </header>
+                                    <sheet>
+                                        
+                                        <group>
+                                            <group>
+                                                <field name="receive_material"/>
+                                                <field name="sale_truck_id" invisible="1" required="0" readonly="1" force_save="1"/>
+                                                <field name="sale_truck_line_id" invisible="1" readonly="1"/>
+                                                <!-- only confirm would editable -->
+                                                <field name="non_sanqua" attrs="{'invisible':['|', ('sale_truck_line_id','!=', False), ('state','not in',['confirmed','done'])],'readonly':[('state','not in',['confirmed'])]}"/>
+
+                                                <field name="partner_id" 
+                                                    options="{'no_quick_create':True,'no_create':True}" 
+                                                    required="1" 
+                                                    attrs="{'readonly':[('receive_material','=',False) , '|', ('non_sanqua','=',False), ('state','not in',['confirmed'])]}" 
+                                                    force_save="1" domain="[('customer','=',True),('state','=','approved')]"/>
+                                                <field 
+                                                    name="product_id" 
+                                                    domain="[('sale_truck','=',True)]" 
+                                                    options="{'no_quick_create':True,'no_create':True}" 
+                                                    attrs="{'readonly':[('receive_material','=',False), '|',('non_sanqua','=',False), ('state','not in',['confirmed'])]}" 
+                                                    force_save="1"/>
+                                                <field name="product_uom_qty" 
+                                                    options="{'no_quick_create':True,'no_create':True}" 
+                                                    attrs="{'readonly':['|', ('state','not in',['draft']), ('receive_material','=',False), '|',('non_sanqua','=',False), ('state','not in',['confirmed'])], 'invisible':[('non_sanqua','=',True)]}"/>
+                                                <field name="product_tracking"/>
+                                                <field name="uom_id" options="{'no_quick_create':True,'no_create':True}" readonly="1"/>
+                                                
+                                            </group>
+                                            <group>
+                                                <field name="delivered_qty" attrs="{'invisible':[('receive_material','=',True)], 'readonly':['|', ('non_sanqua','=',True), ('parent.state','!=','confirmed')]}" force_save="1"/>
+                                                <field name="rejected_qty" attrs="{'invisible':[('receive_material','=',True)], 'readonly':['|', ('non_sanqua','=',True), ('parent.state','!=','confirmed')]}" force_save="1"/>
+                                                <field name="return_qty" attrs="{'invisible':[('receive_material','=',True)], 'required':[('non_sanqua','=',True)], 'invisible':[('sale_truck_line_id','!=',False)],'readonly':['|', ('sale_truck_line_id','!=',False), ('parent.state','!=','confirmed')]}" force_save="1"/>
+                                                <field name="different_qty" readonly="1" force_save="1"/>
+                                            </group>
+                                        </group>
+                                        <notebook attrs="{'invisible':[('product_tracking','=','none')]}">
+                                            <page string="Lots" attrs="{'invisible':[('product_tracking','not in',['lot','serial'])]}" name="page_material_lots">
+                                                <field name="lot_ids" context="{'default_non_sanqua':non_sanqua, 'default_product_id':product_id}">
+                                                    <tree editable="bottom" string="Lots">
+                                                        <field name="non_sanqua" invisible="1"/>
+                                                        <!-- <field name="available_lot_in_location" /> -->
+                                                        <field name="company_id" groups="base.group_system" options="{'no_quick_create':True,'no_create':True}"/>
+                                                        <field name="product_id" options="{'no_quick_create':True,'no_create':True}" />
+                                                        <field name="product_tracking" groups="base.group_system" />
+                                                        <field name="lot_id" options="{'no_quick_create':True,'no_create':True}" />
+                                                        <field name="product_uom_qty" attrs="{'readonly':[('non_sanqua','=',True)], 'invisible':[('non_sanqua','!=',False)]}"/>
+                                                        <field name="delivered_qty" attrs="{'readonly':[('non_sanqua','=',True)], 'invisible':[('non_sanqua','!=',False)]}" />
+                                                        <field name="rejected_qty" attrs="{'readonly':[('non_sanqua','=',True)], 'invisible':[('non_sanqua','!=',False)]}" />
+                                                        <field name="return_qty" attrs="{'readonly':[('non_sanqua','!=',True)], 'invisible':[('non_sanqua','=',False)]}" />
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                        </notebook>
+
+                                        <!-- <footer>
+                                            <button invisible="context.get('show_footer')" special="save" class="oe_highlight oe_edit_only" string="Save"/>
+                                        </footer> -->
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page id="page_picking" string="Picking Information">
+                            <group>
+                                <group>
+                                    <field name="plant_sale_id"/>
+                                    <!-- <field name="purchase_id" attrs="{'invisible':[('purchase_id','=',False)]}" readonly="1"/> -->
+                                    
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Truck Picking" name="group_truck_picking">
+                                    <field name="load_truck_picking_id" readonly="1"/>
+                                </group>
+                                <group string="Post Picking" name="group_post_picking">
+                                    <field name="transit_out_picking_id" readonly="1"/>
+                                    <field name="transit_in_picking_id" readonly="1"/>
+                                    
+                                    <field name="rejecting_picking_id" readonly="1"/>
+                                    <field name="return_material_picking" readonly="0"/>
+                                </group>
+                                
+                            </group>
+                        </page>
+                        <page id="page_approval" string="Approvals">
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                            <button string="Approve Matrix" type="object" name="test_approve_matrix" class="oe_highlight" attrs="{'invisible':[('user_can_approve','=',False)]}" groups="base.group_system" />
+                            <field name="user_can_approve" invisible="0" />
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved" readonly="1"/></group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+				    <field name="message_follower_ids" widget="mail_followers"/>
+				    <field name="activity_ids" widget="mail_activity"/>
+				    <field name="message_ids" widget="mail_thread"/>
+				</div>
+            </form>
+        </field>
+    </record>
+
+    <record id="sale_order_truck_inventory_view_form" model="ir.ui.view">
+        <field name="name">sale.order.truck.inventory.view.form</field>
+        <field name="model">sale.order.truck</field>
+        <field name="arch" type="xml">
+            <form string="Sale Order Truck">
+                <header>
+                    <button name="btn_submit" states="draft" type="object" string="Submit" class="btn-primary" groups="sales_truck.group_sale_truck_sales"/>
+                    
+                    <button name="btn_approve" type="object" string="Approve" class="btn-primary" attrs="{'invisible':['|', ('user_can_approve','=',False), ('state','not in',['waiting_approval'])]}" confirm="Approve?"/>
+                    <button name="btn_reject" type="object" string="Reject"  attrs="{'invisible':['|',('user_can_approve','=',False), ('state','!=','waiting_approval')]}" class="oe_highlight" confirm="Sure to reject?"/>
+                    <button name="btn_refuse" attrs="{'invisible':[('state','not in',['submited'])]}" type="object" string="Refuse" class="btn-primary" groups="sales_truck.group_sale_truck_inventory_user"/>
+                    <button name="btn_confirm" attrs="{'invisible':[('state','not in',['submited'])]}" type="object" string="Confirm" class="btn-primary" groups="sales_truck.group_sale_truck_inventory_user"/>
+                    <button name="btn_take_confirm" states="refuse" type="object" string="Take Order" class="btn-primary"/>
+                    <button name="btn_post" type="object" string="Post" class="btn-primary" groups="sales_truck.group_sale_truck_inventory_user" attrs="{'invisible':[('state','not in',['confirmed'])]}"/>
+                    <button name="btn_cancel" type="object" string="Cancel" groups="sales_truck.group_sale_truck_inventory_user" attrs="{'invisible':[('state','not in',['confirmed'])]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,waiting_approval,submited,confirmed,done" />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        
+                        <button type="object" class="oe_stat_button" name="open_sale_ids" icon="fa-list-alt"
+                            attrs="{'invisible': [('sale_count','=',0)]}">
+                            <field name="sale_count" widget="statinfo" string="Sale Order(s)"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="receive_material" attrs="{'readonly':[('state','not in',['draft'])]}" domain="[('state', '=', 'done')]"/>
+                            <field name="team_id" options="{'no_create':1}" attrs="{'readonly':[('state','not in',['draft'])]}" domain="[('state', '=', 'done')]"/>
+                            <!-- <field name="sales_id" options="{'no_create':1}" attrs="{'readonly':[('state','not in',['draft'])]}"/> -->
+                            
+                            <field name="plant_id" options="{'no_create':1}" context="{'all_companies':1}" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                            <field name="status_so" string="Status"/>
+                            <!-- <field name="plant_id" options="{'no_create':True, 'no_quick_create': True, 'no_open':True}" /> -->
+                        </group>
+                        <group>
+                            <field name="company_id" options="{'no_create':1}" attrs="{'readonly':[('state','not in',['draft'])], 'invisible':[('state','=','draft')]}"/>
+                            <field name="start_date" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                            <field name="end_date" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                            <field name="vehicle_model_id" 
+                                options="{'no_create':1}" 
+                                attrs="{'readonly':[('state','not in',['draft','submited'])]}" 
+                                force_save="1" context="{'force_company':plant_id}"/>
+                            <field 
+                                name="vehicle_id" 
+                                options="{'no_create':1}" 
+                                attrs="{'invisible':[('plant_id','=',False)], 'readonly':[('state','not in',['submited','refuse'])]}" 
+                                force_save="1" 
+                                context="{'force_company':plant_id}" domain="[('model_id','=',vehicle_model_id)]"/>
+                            <field name="vehicle_driver_id" 
+                                options="{'no_create':1}" 
+                                attrs="{'invisible':[('plant_id','=',False)], 'readonly':[('state','not in',['submited','refuse'])]}" 
+                                force_save="1" context="{'force_company':plant_id}" 
+                                domain="[('company_id','=',plant_id)]"/>
+                            <field name="warehouse_id" 
+                                options="{'no_create':1}" 
+                                attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="order_pickup_method_id" options="{'no_create':1}" attrs="{'readonly':[('state','not in',['draft'])]}"/>
+                        </group> 
+                    </group>
+                    <notebook>
+                        <page name="orderlines" string="Aggrement Lines" attrs="{'invisible':[('receive_material','=',True)]}">
+                            <field name="order_line_ids">
+                                <tree>
+                                    <field name="partner_id" attrs="{'readonly':[('parent.state','not in',['draft'])]}" options="{'no_quick_create':True,'no_create':True}" domain="[('customer', '=', True)]"/>
+                                    <field name="product_id" domain="[('sale_truck', '=', True),('reg_in_customer_stock_card', '=', False)]" attrs="{'readonly':[('parent.state','not in',['draft'])]}" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="product_uom_qty" attrs="{'readonly':[('parent.state','not in',['draft','submited'])]}" sum="Total"/>
+                                    <field name="uom_id" options="{'no_quick_create':True,'no_create':True}"/>
+                                    
+                                    <field name="delivered_qty" attrs="{'readonly':[('parent.state','!=','confirmed')]}" force_save="1"/>
+                                    <field name="rejected_qty" attrs="{'readonly':[('parent.state','!=','confirmed')]}" force_save="1"/>
+                                    
+                                    <field name="state" optional="hide"/>
+                                    <field name="note" optional="hide"/>
+                                </tree>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <group>
+                                                <field name="partner_id" attrs="{'readonly':[('parent.state','not in',['draft'])]}" options="{'no_quick_create':True,'no_create':True}" domain="[('customer', '=', True)]"/>
+                                                <field name="qty_editable" invisible="1"/>
+                                                <field name="product_id" attrs="{'readonly':[('parent.state','not in',['draft'])]}" options="{'no_quick_create':True,'no_create':True}" domain="[('sale_truck', '=', True),('reg_in_customer_stock_card', '=', False)]"/>
+                                                <field name="product_uom_qty" attrs="{'readonly':[('qty_editable','=',False)]}"/>
+                                                <field name="uom_id" options="{'no_quick_create':True,'no_create':True}" force_save="1"/>
+                                                <field name="delivered_qty" attrs="{'readonly':[('parent.state','!=','confirmed')]}"  />
+                                                <field name="rejected_qty" attrs="{'readonly':[('parent.state','!=','confirmed')]}" />
+                                                <field name="different_qty" readonly="1" force_save="1"/>
+                                                <field name="product_tracking" invisible="1" />
+                                                <field name="note"/>
+                                            </group>
+                                        </group>
+                                        <notebook attrs="{'invisible':[('product_tracking','=','none')]}">
+                                            <page string="Lots" attrs="{'invisible':['|',('product_tracking','not in',['lot','serial']),('parent.state','not in',['submited','confirmed','done'])]}" name="page_material_lots">
+                                                <field name="lot_ids" context="{'default_product_id':product_id}">
+                                                    <tree editable="bottom" string="Lots">
+                                                        <field name="available_lot_in_location" />
+                                                        <field name="company_id" groups="base.group_system" options="{'no_quick_create':True,'no_create':True}"/>
+                                                        <field name="product_id" options="{'no_quick_create':True,'no_create':True}" />
+                                                        <field name="product_tracking" groups="base.group_system" />
+                                                        <field name="lot_id" domain="[('id','in',available_lot_in_location)]" options="{'no_quick_create':True,'no_create':True}" />
+                                                        <field name="product_uom_qty" />
+                                                        <field name="delivered_qty" />
+                                                        <field name="rejected_qty" />
+                                                        <!-- <field name="return_qty" /> -->
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                        </notebook>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        
+                        <page name="dispenser" string="Dispenser" invisible="1">
+                            <field name="truck_dispanser_ids" context="{'default_sale_truck_id':id,'default_plant_id':plant_id, 'default_warehouse_id':warehouse_id}">
+                                <tree editable="bottom">
+                                    <field name="plant_id" invisible="0" context="{'all_companies':1}" />
+                                    
+
+                                    <field name="state" invisible="1"/>
+                                    <field name="serializable" invisible="1"/>
+                                    
+                                    <field name="product_id" required="1" attrs="{'readonly':[('parent.state','not in',['draft'])]}" force_save="1" options="{'no_create':1}"/>
+                                    <field name="available_lot_ids" widget="many2many_tags" invisible="1" context="{'all_companies':True,'force_company':plant_id}" />
+                                    
+                                    <field name="lot_id" attrs="{'invisible':[('serializable','=',False)]}" domain="[('id','in',available_lot_ids)]" context="{'all_companies':True,'force_company':plant_id, 'allowed_company_ids':[plant_id]}" options="{'no_create':1}" />
+                                    <field name="qty" required="1" attrs="{'readonly':['|',('parent.state','not in',['draft']),('serializable','=',True)]}" force_save="1"/>
+                                    <field name="uom_id" attrs="{'readonly':[('parent.state','not in',['draft'])]}" force_save="1" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="sent_qty" readonly="1" force_save="1"/>
+                                    <field name="return_qty" attrs="{'readonly':[('parent.state','not in',['confirmed'])]}" force_save="1"/>
+                                    <button name="action_show_details" string="Register customer" type="object" icon="fa-list" width="0.1"
+                                            options='{"warn": true}' attrs="{'invisible':[('parent.state','not in',['confirmed'])]}"/>
+                                </tree>
+                                <!-- <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="product_id" required="1" />
+                                            <field name="qty" required="1" />
+                                            <field name="uom_id"/>
+                                            <field name="sent_qty" force_save="1"/>
+                                            <field name="return_qty" force_save="1"/>
+                                        </group>
+                                    </sheet>
+                                </form> -->
+                            </field>
+                        </page>
+
+                        <page name="material" string="Materials">
+                            <field name="sale_truck_material_ids" force_save="0" context="{'default_sale_truck_id':id,'default_receive_material':receive_material}">
+                                <tree decoration-danger="non_sanqua==True">
+                                    <field name="receive_material" invisible="1"/>
+                                    <field name="partner_id" options="{'no_quick_create':True,'no_create':True}"/>
+                                    <field name="product_id" options="{'no_create':1}" domain="[('sale_truck', '=', True)]" required="1" attrs="{'readonly':[('receive_material','=',False),('parent.state','in',['draft'])]}"/>
+                                    <field name="product_uom_qty" required="1" attrs="{'readonly':[('parent.state','in',['draft'])]}" />
+                                    <field name="product_tracking" invisible="1" />
+
+                                    <field name="uom_id" options="{'no_quick_create':True,'no_create':True}" readonly="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="delivered_qty" attrs="{'readonly':['|', ('non_sanqua','=',True), ('parent.state','!=','confirmed')]}" force_save="1"/>
+                                    <field name="rejected_qty" attrs="{'readonly':['|', ('non_sanqua','=',True), ('parent.state','!=','confirmed')]}" force_save="1"/>
+                                    <field name="return_qty" attrs="{'required':[('non_sanqua','=',True)],'readonly':[('parent.state','!=','confirmed')]}" force_save="1"/>
+                                    <field name="different_qty" readonly="1" force_save="1"/>
+                                    <field name="non_sanqua" optional="hide"/>
+                                    <button attrs="{'invisible':['|', ('state','not in',['confirmed']), ('non_sanqua','=',False)]}" icon='fa-remove' type="object" name="btn_delete_non_sanqua" confirm="Delete ?" groups="sales_truck.group_sale_truck_inventory_user" />
+                                </tree>
+                                <form>
+                                    <header>
+                                        <field name="state" widget="statusbar"/>
+                                    </header>
+                                    <sheet>
+                                        
+                                        <group>
+                                            <group>
+                                                <field name="receive_material"/>
+                                                <field name="sale_truck_id" invisible="1" required="0" readonly="1" force_save="1"/>
+                                                <field name="sale_truck_line_id" invisible="1" readonly="1"/>
+                                                <!-- only confirm would editable -->
+                                                <field name="non_sanqua" attrs="{'invisible':['|', ('sale_truck_line_id','!=', False), ('state','not in',['confirmed','done'])],'readonly':[('state','not in',['confirmed'])]}"/>
+
+                                                <field name="partner_id" 
+                                                    options="{'no_quick_create':True,'no_create':True}" 
+                                                    required="1" 
+                                                    attrs="{'readonly':[('receive_material','=',False) , '|', ('non_sanqua','=',False), ('state','not in',['confirmed'])]}" 
+                                                    force_save="1" domain="[('customer','=',True),('state','=','approved')]"/>
+                                                <field 
+                                                    name="product_id" 
+                                                    domain="[('sale_truck','=',True)]" 
+                                                    options="{'no_quick_create':True,'no_create':True}" 
+                                                    attrs="{'readonly':[('receive_material','=',False), '|',('non_sanqua','=',False), ('state','not in',['confirmed'])]}" 
+                                                    force_save="1"/>
+                                                <field name="product_uom_qty" 
+                                                    options="{'no_quick_create':True,'no_create':True}" 
+                                                    attrs="{'readonly':['|', ('state','not in',['draft']), ('receive_material','=',False), '|',('non_sanqua','=',False), ('state','not in',['confirmed'])], 'invisible':[('non_sanqua','=',True)]}"/>
+                                                <field name="product_tracking"/>
+                                                <field name="uom_id" options="{'no_quick_create':True,'no_create':True}" readonly="1"/>
+                                                
+                                            </group>
+                                            <group>
+                                                <field name="delivered_qty" attrs="{'invisible':[('receive_material','=',True)], 'readonly':['|', ('non_sanqua','=',True), ('parent.state','!=','confirmed')]}" force_save="1"/>
+                                                <field name="rejected_qty" attrs="{'invisible':[('receive_material','=',True)], 'readonly':['|', ('non_sanqua','=',True), ('parent.state','!=','confirmed')]}" force_save="1"/>
+                                                <field name="return_qty" attrs="{'invisible':[('receive_material','=',True)], 'required':[('non_sanqua','=',True)], 'invisible':[('sale_truck_line_id','!=',False)],'readonly':['|', ('sale_truck_line_id','!=',False), ('parent.state','!=','confirmed')]}" force_save="1"/>
+                                                <field name="different_qty" readonly="1" force_save="1"/>
+                                            </group>
+                                        </group>
+                                        <notebook attrs="{'invisible':[('product_tracking','=','none')]}">
+                                            <page string="Lots" attrs="{'invisible':[('product_tracking','not in',['lot','serial'])]}" name="page_material_lots">
+                                                <field name="lot_ids" context="{'default_non_sanqua':non_sanqua, 'default_product_id':product_id}">
+                                                    <tree editable="bottom" string="Lots">
+                                                        <field name="non_sanqua" invisible="1"/>
+                                                        <field name="company_id" groups="base.group_system" options="{'no_quick_create':True,'no_create':True}"/>
+                                                        <field name="product_id" options="{'no_quick_create':True,'no_create':True}" />
+                                                        <field name="product_tracking" groups="base.group_system" />
+                                                        <field name="lot_id" domain="[('product_id','=',product_id), ('company_id','=',company_id)]" options="{'no_quick_create':True,'no_create':True}" />
+                                                        <field name="product_uom_qty" attrs="{'readonly':[('non_sanqua','=',True)], 'invisible':[('non_sanqua','!=',False)]}"/>
+                                                        <field name="delivered_qty" attrs="{'readonly':[('non_sanqua','=',True)], 'invisible':[('non_sanqua','!=',False)]}" />
+                                                        <field name="rejected_qty" attrs="{'readonly':[('non_sanqua','=',True)], 'invisible':[('non_sanqua','!=',False)]}" />
+                                                        <field name="return_qty" attrs="{'readonly':[('non_sanqua','!=',True)], 'invisible':[('non_sanqua','=',False)]}" />
+                                                    </tree>
+                                                </field>
+                                            </page>
+                                        </notebook>
+
+                                        <!-- <footer>
+                                            <button invisible="context.get('show_footer')" special="save" class="oe_highlight oe_edit_only" string="Save"/>
+                                        </footer> -->
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+                        <page id="page_picking" string="Picking Information">
+                            <group>
+                                <group>
+                                    <field name="plant_sale_id"/>
+                                    <!-- <field name="purchase_id" attrs="{'invisible':[('purchase_id','=',False)]}" readonly="1"/> -->
+                                    
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Truck Picking" name="group_truck_picking">
+                                    <field name="load_truck_picking_id" readonly="1"/>
+                                </group>
+                                <group string="Post Picking" name="group_post_picking">
+                                    <field name="transit_out_picking_id" readonly="1"/>
+                                    <field name="transit_in_picking_id" readonly="1"/>
+                                    
+                                    <field name="rejecting_picking_id" readonly="1"/>
+                                    <field name="return_material_picking" readonly="0"/>
+                                </group>
+                                
+                            </group>
+                        </page>
+                        <page id="page_approval" string="Approvals">
+                            <button string="Fetch Matrix" type="object" name="checking_approval_matrix" class="oe_highlight" groups="base.group_system" />
+                            <button string="Approve Matrix" type="object" name="test_approve_matrix" class="oe_highlight" attrs="{'invisible':[('user_can_approve','=',False)]}" groups="base.group_system" />
+                            <field name="user_can_approve" invisible="0" />
+                            <field name="approval_ids" readonly="1"/>
+                            <group><field name="approved" readonly="1"/></group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+				    <field name="message_follower_ids" widget="mail_followers"/>
+				    <field name="activity_ids" widget="mail_activity"/>
+				    <field name="message_ids" widget="mail_thread"/>
+				</div>
+            </form>
+        </field>
+    </record>
+
+    <record id="sale_order_truck_view_tree" model="ir.ui.view">
+        <field name="name">sale.order.truck.view.tree</field>
+        <field name="model">sale.order.truck</field>
+        <field name="arch" type="xml">
+            <tree string="Sale Order Truck" 
+            decoration-muted="state in ['draft']" 
+            decoration-primary="state=='submited'" 
+            decoration-info="state=='confirmed'"
+            decoration-success="state=='done'"
+            decoration-danger="state in ['waiting_approval']">
+                <field name="name"/>
+                <!-- <field name="sales_id"/> -->
+                <field name="plant_id"/>
+                <field name="vehicle_id"/>
+                <field name="warehouse_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="sale_order_truck_search" model="ir.ui.view">
+        <field name="name">Sale Order Truck Search</field>
+        <field name="model">sale.order.truck</field>
+        <field name="priority">11</field>
+        <field name="arch" type="xml">
+            <search string="Sale Order Truck">
+                <field name="name" />
+                <!-- <field name="sales_id" /> -->
+                <field name="company_id" />
+                <field name="plant_id" />
+                <!-- BELOW IS FILTER -->
+                <filter name="filter_draft" domain="[('state','=','draft')]" string="Draft" />
+                <filter name="filter_waiting_approval" domain="[('state','=','waiting_approval')]" string="Waiting Approval" />
+                <filter name="filter_submited" domain="[('state','=','submited')]" string="Approved" />
+                <filter name="filter_confirmed" domain="[('state','=','confirmed')]" string="Confirmed" />
+                <filter name="filter_refuse" domain="[('state','=','refuse')]" string="Refuse" />
+                <filter name="filter_done" domain="[('state','=','done')]" string="Done" />
+                <separator/>
+                <!-- GROUP BY -->
+                <filter name="group_by_state" context="{'group_by':'state'}" string="State" domain="[]"/>
+                <filter name="group_by_company_id" context="{'group_by':'company_id'}" string="Company" domain="[]"/>
+                <!-- <filter name="group_by_sales_id" context="{'group_by':'sales_id'}" string="Sales" domain="[]"/> -->
+            </search>
+        </field>
+    </record>
+
+    <record id="sale_order_truck_action" model="ir.actions.act_window">
+        <field name="name">Sale Order Truck</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.truck</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('sales_truck.sale_order_truck_view_tree'), 'sequence':1}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('sales_truck.sale_order_truck_view_form'), 'sequence':2})
+                ]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new Sale Order Truck.
+            </p>
+        </field>
+    </record>
+    
+
+    <record id="sale_order_truck_inventory_action" model="ir.actions.act_window">
+        <field name="name">Sale Order Truck</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.order.truck</field>
+        <field name="view_mode">form,tree</field>
+        <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('sales_truck.sale_order_truck_view_tree'), 'sequence':1}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('sales_truck.sale_order_truck_inventory_view_form'), 'sequence':2})
+                ]"/>
+        <field name="domain">[('state','not in',['draft','waiting_approval','waiting_approval'])]</field>
+        <field name="context">{'search_default_group_by_state':1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="menu_sale_order_truck"
+        name="Sale Order Truck"
+        action="sale_order_truck_action"
+        parent="sale.sale_order_menu"
+        groups="group_sale_truck_sales"
+        sequence="2"/>
+
+    <menuitem
+        id="menu_sale_order_truck_inventory"
+        name="Sale Order Truck"
+        action="sale_order_truck_inventory_action"
+        parent="stock.menu_stock_warehouse_mgmt"
+        groups="group_sale_truck_inventory_user"
+        sequence="140" />
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_inheriet_journal_payment_user,inheriet.journal.payment,model_inheriet_journal_payment,base.group_user,1,1,1,1
+access_inheriet_journal_payment__child_user,Base User,model_inheriet_journal_payment_child,base.group_user,1,1,1,1
+access_memorial_journal_user,Base User,model_memorial_journal,base.group_user,1,1,1,1
+access_inheriet_journal_payment_sheet_user,Base User,model_inheriet_journal_payment_sheet,base.group_user,1,1,1,1

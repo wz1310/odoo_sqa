@@ -1,0 +1,17 @@
+<odoo>
+    
+    <record id="group_amount_change_galon_report" model="res.groups">
+        <field name="name">Amount Change Galon Report</field>
+    </record>
+
+    <!-- <record model="ir.rule" id="rule_report_amount_change_galon_global_user">
+        <field name="name">Rule Amount Change Galon Global User</field>
+        <field name="model_id" ref="model_report_amount_change_galon" />
+        <field name="perm_read" eval="True" />
+        <field name="perm_create" eval="False" />
+        <field name="perm_write" eval="False" />
+        <field name="perm_unlink" eval="False" />
+        <field name="domain_force">['|', ('company_id','=',False),('company_id','in',company_ids)]</field>
+    </record> -->
+</odoo>
+

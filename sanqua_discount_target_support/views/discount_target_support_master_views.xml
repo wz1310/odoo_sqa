@@ -1,0 +1,74 @@
+<odoo>
+    <record id="discount_target_support_master_view_form" model="ir.ui.view">
+        <field name="name">discount.target.support.master.view.form</field>
+        <field name="model">discount.target.support.master</field>
+        <field name="arch" type="xml">
+            <form string="Master Customer Diskon">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="team_id" options="{'no_quick_create':True,'no_create':True}" domain="[('state', '=', 'done')]"/>
+                            <field name="salesman_id" options="{'no_quick_create':True,'no_create':True}"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="company_id" options="{'no_quick_create':True,'no_create':True}"/>
+                            <field name="disc_type"/>
+                            <field name="target_type"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        
+                        <page string="Customer List">
+                            <field name="partner_ids" options="{'no_quick_create':True,'no_create':True}" domain="[('id','=',allowed_partner_ids)]"/>
+                        </page>
+                        <page groups="base.group_system" string="Allowed Partners">
+                            <field name="allowed_partner_ids" widget="many2many_tags"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="discount_target_support_master_view_tree" model="ir.ui.view">
+        <field name="name">discount.target.support.master.view.tree</field>
+        <field name="model">discount.target.support.master</field>
+        <field name="arch" type="xml">
+            <tree string="Master Customer Diskon">
+                <field name="name"/>
+                <field name="team_id"/>
+                <field name="company_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="partner_ids" widget="many2many_tags"/>
+                <field name="disc_type"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="discount_target_support_master_action" model="ir.actions.act_window">
+        <field name="name">Customer Discount Master</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">discount.target.support.master</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+            Create a new Customer Discount Master
+            </p>
+        </field>
+    </record>
+    
+    <menuitem
+        id="discount_target_support_master_menu"
+        name="Customer Discount Master"
+        parent="sale.menu_sale_config"
+        action="discount_target_support_master_action"
+        sequence="2"/>
+</odoo>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+        <record id="product_template_view_form_inherit" model="ir.ui.view">
+            <field name="name">product.template.view.form.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <field name="categ_id" position="after">
+                    <field name="sale_truck"/>
+                    <field name="reg_in_customer_stock_card" attrs="{'invisible':[('sale_truck', '=', False)]}"/>
+                    <field name="sale_truck_material_ids" widget="many2many_tags" attrs="{'invisible':[('sale_truck','=',False)]}"/>
+                </field>
+            </field>
+        </record>
+	</data>
+</odoo>

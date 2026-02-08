@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="m4_report_tree" model="ir.ui.view">
+        <field name="name">report.m4.tree</field>
+        <field name="model">report.m4</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="code"/>
+                <field name="partner_name"/>
+                <field name="partner_id" optional="hide"/>
+                <field name="team_id" optional="hide"/>
+                <field name="customer_group"/>
+                <field name="user_id"/>
+                <field name="region_master_id"/>
+                <field name="credit_limit"/>
+                <field name="target_qty"/>
+                <field name="omzet_qty"/>
+                <field name="omzet_amount"/>
+                <field name="pencapaian"/>
+                <field name="payment"/>
+                <field name="payment_term_id"/>
+                <field name="remaining_limit"/>
+                <field name="overlimit_status"/>
+                <field name="category_id" widget="many2many_tags"/>
+                <field name="company_id" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- <record id="m4_report_pivot" model="ir.ui.view">
+         <field name="name">report.m4.pivot</field>
+         <field name="model">report.m4</field>
+         <field name="arch" type="xml">
+             <pivot string="M4 Report" disable_linking="True">
+                <field name="partner_id" type="row"/>
+                <field name="team_id" type="col"/>
+                <field name="user_id" type="col"/>
+                <field name="credit_limit" type="measure"/>
+             </pivot>
+         </field>
+    </record> -->
+
+    <record id="m4_report_search" model="ir.ui.view">
+        <field name="name">report.m4.view</field>
+        <field name="model">report.m4</field>
+        <field name="arch" type="xml">
+            <search string="M4 Report">
+                <field name="partner_id"/>
+                <field name="team_id"/>
+                <field name="user_id"/>
+                <field name="company_id"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_m4_report" model="ir.actions.act_window">
+        <field name="name">M4 Report</field>
+        <field name="res_model">report.m4</field>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <menuitem id="menu_galon_report"
+            name="Galon Reporting"
+            parent="sale.sale_menu_root"
+            sequence="5"/>
+            
+    <menuitem id="menu_m4_report"
+            name="M4 Report"
+            action="action_m4_report"
+            parent="menu_galon_report"
+            sequence="1"/>
+
+</odoo>

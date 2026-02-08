@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="view_export_bupot" model="ir.ui.view">
+            <field name="name">view.export.bupot</field>
+            <field name="model">export.bupot</field>
+            <field name="arch" type="xml">
+                <form string="Bukti Potong" version="1">
+                    <sheet>
+                    <field name="name" invisible="1"/>
+                    <field name="data_file" invisible="1"/>
+                    <group>
+                    <label for="ex_type" string="Choose Export type :" style="font-weight: bold;"/>
+                    <div class="col-sm" style="width:20%%">
+                        <field name="ex_type"/>
+                    </div>
+                    </group>
+                	<!-- <field invisible="1" name="state_x"/>
+                	Choose Delimiter:
+                	<field name="delimiter"/>
+                    <newline/>
+                    <group col="4" fill="0" attrs="{'invisible':[('state_x','!=','get')]}">
+                        <separator colspan="4" string="Generate to Excel done. Download by click link below" attrs="{'invisible':[('state_x','=','choose')]}"/>
+                        <field name="name" invisible="1" width="100" attrs="{'invisible':[('state_x','=','choose')]}"/>
+                        <field name="data_x" nolabel="1" readonly="0" width="100" filename="name" attrs="{'invisible':[('state_x','=','choose')]}"/>
+                    </group>
+                    <group>
+                    	<field name="npwp_o" string="SET NPWP 000000000000000"/>
+                    </group> -->
+                </sheet>
+                    <footer>
+                        <button icon="fa-print" string='Export' attrs="{'invisible': ['|',('ex_type', 'in', ('csv')),('ex_type','=',False)]}" name="btn_confirm" type="object"/>
+                        <button icon="fa-print" attrs="{'invisible': ['|',('ex_type', 'in', ('xlsx')),('ex_type','=',False)]}" string='Export' name="export_csv_bupot" type="object"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+               </form>
+            </field>
+        </record>
+        
+        <!-- <act_window
+            name="Export bupot"
+            id="action_export_efaktur_etax_invoice"
+            res_model="reexport.efaktur"
+            binding_model="etax.invoice"
+            binding_views="list"
+            view_mode="form"
+            target="new"/> -->
+
+        <act_window
+            name="Export Bukti Potong"
+            id="action_export_bupot"
+            res_model="export.bupot"
+            binding_model="account.move"
+            binding_views="list"
+            view_mode="form"
+            target="new"/>
+
+	</data>
+</odoo>

@@ -1,0 +1,1 @@
+from . import wizard_sale_margin_analysis_report

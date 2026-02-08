@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_budget_post_user,account.budget.post,om_account_budget.model_account_budget_post,expenses_request_manager,1,0,0,0
+access_account_res_partner_user,res.partner,base.model_res_partner,expenses_request_user,1,0,0,0

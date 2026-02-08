@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pr_sanqua_user,pr_sanqua,model_pr_sanqua,base.group_user,1,1,1,1
+access_pr_sanqua_line_user,pr_sanqua_line,model_pr_sanqua_line,base.group_user,1,1,1,1
