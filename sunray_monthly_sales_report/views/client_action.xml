@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_sunray_monthly_sales_client_report" model="ir.actions.client">
+        <field name="name">Monthly Sales Report</field>
+        <field name="tag">sunray_monthly_sales_report.client_action</field>
+        <!-- Default context, though typically passed by wizard -->
+        <field name="context">{'month': '1', 'year': '2026'}</field>
+    </record>
+</odoo>

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_sales">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <style>
+                            .title-area {
+                                position: relative;
+                                margin-bottom: 40px;
+                            }
+                            .report-title-main {
+                                color: #213759; /* Dark Blue */
+                                font-family: 'Helvetica', sans-serif;
+                                font-weight: bold;
+                                font-size: 26px;
+                                margin: 0;
+                            }
+                            .report-subtitle {
+                                color: #17a2b8; /* Cyan/Teal accent matching image */
+                                font-size: 14px;
+                                margin-top: 5px;
+                                font-weight: 500;
+                            }
+                            
+                            /* Info Grid */
+                            .info-grid {
+                                margin-bottom: 30px;
+                            }
+                            .info-label {
+                                font-size: 12px;
+                                font-weight: bold;
+                                color: #495057;
+                                text-transform: uppercase;
+                            }
+                            .info-value {
+                                font-size: 14px;
+                                color: #212529;
+                                margin-bottom: 20px;
+                            }
+                            
+                            /* Table Styling */
+                            .table-ledger {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-top: 10px;
+                            }
+                            .table-ledger th {
+                                background-color: #f0f8ff; /* AliceBlue or similar light blue */
+                                color: #213759;
+                                font-weight: bold;
+                                font-size: 12px;
+                                padding: 8px 10px;
+                                text-align: left;
+                                border-bottom: 2px solid #dee2e6;
+                                border-top: 1px solid #dee2e6;
+                            }
+                            .table-ledger td {
+                                padding: 8px 10px;
+                                font-size: 13px;
+                                color: #333;
+                                border-bottom: 1px solid #f2f2f2;
+                                vertical-align: top;
+                            }
+                            
+                            /* Section Header - Salesperson */
+                            .section-header {
+                                background-color: #f8f9fa; /* Very light gray */
+                                color: #213759;
+                                font-weight: bold;
+                                font-size: 14px;
+                            }
+                            .section-header td {
+                                padding-top: 15px;
+                                padding-bottom: 10px;
+                                border-bottom: 1px solid #dee2e6;
+                            }
+                            .section-header-text {
+                                display: inline-block;
+                                border-left: 4px solid #17a2b8; /* Cyan accent bar */
+                                padding-left: 10px;
+                            }
+                            
+                            /* Stats */
+                            .stat-row td {
+                                font-weight: bold;
+                                font-size: 13px;
+                                background-color: #fdfefe;
+                            }
+                        </style>
+
+                        <!-- Header Section mimicking image -->
+                        <div class="row mb-4">
+                             <!-- Right Side Title (Odoo standard often puts title on left but image has header logic)
+                                  Existing web.external_layout handles company header.
+                                  We will just put title below standard header.
+                             -->
+                            <div class="col-8">
+                                <h2 class="report-title-main">Monthly Sales Analysis</h2>
+                                <p class="report-subtitle">
+                                    <span t-esc="month_name"/> <span t-esc="year"/>
+                                </p>
+                            </div>
+                            <div class="col-4 text-end">
+                                <!-- Summary Box logic if needed, or leave empty -->
+                            </div>
+                        </div>
+
+                        <t t-if="not sales_by_user">
+                            <div class="alert alert-warning mt-4">
+                                No sales data found for this period.
+                            </div>
+                        </t>
+
+                        <!-- Ledger Table Structure -->
+                        <table class="table-ledger">
+                            <thead>
+                                <tr>
+                                    <th style="width: 15%">Date</th>
+                                    <th style="width: 25%">Order Ref</th>
+                                    <th style="width: 30%">Customer</th>
+                                    <th style="width: 15%">Status</th>
+                                    <th style="width: 15%; text-align: right;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="sales_by_user" t-as="user">
+                                    <!-- Group Header -->
+                                    <tr class="section-header">
+                                        <td colspan="5">
+                                            <span class="section-header-text"><t t-esc="user.name"/></span>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Data Rows -->
+                                    <tr t-foreach="sales_by_user[user]['orders']" t-as="order">
+                                        <td><span t-field="order.date_order" t-options='{"widget": "date"}'/></td>
+                                        <td><span t-field="order.name"/></td>
+                                        <td><span t-esc="order.partner_id.name" style="color: #17a2b8; font-weight:500;"/></td> <!-- Cyan color for link-like effect -->
+                                        <td>
+                                            <t t-if="order.state == 'sale'">Sales Order</t>
+                                            <t t-elif="order.state == 'done'">Locked</t>
+                                            <t t-else=""><span t-field="order.state"/></t>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <span t-field="order.amount_total" t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Subtotal -->
+                                    <tr class="stat-row">
+                                        <td colspan="4" style="text-align: right; color: #213759;">Total for <t t-esc="user.name"/>:</td>
+                                        <td style="text-align: right;">
+                                            <span t-esc="sales_by_user[user]['total_amount']" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <!-- Spacer -->
+                                    <tr><td colspan="5" style="border:none; height:15px;"></td></tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        
+                        <div class="row mt-4" style="border-top: 2px solid #213759; padding-top: 10px;">
+                            <div class="col-12 text-end">
+                                <strong>Grand Total: </strong>
+                                <t t-set="grand_total" t-value="sum(sales_by_user[u]['total_amount'] for u in sales_by_user)"/>
+                                <span t-esc="grand_total" t-options='{"widget": "monetary", "display_currency": company.currency_id}' style="font-size: 16px; font-weight: bold; margin-left:10px;"/>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

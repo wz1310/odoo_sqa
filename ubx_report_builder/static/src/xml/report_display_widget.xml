@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Report Display Widget Template -->
+    <t t-name="ubx_report_builder.ReportDisplayWidget" owl="1">
+        <div class="report-display-container">
+            <!-- Header with Report Title and Actions -->
+            <div class="report-header">
+                <div class="report-title-section">
+                    <h2 class="report-title">
+                        <i class="fa fa-file-text-o me-2"/> 
+                        <t t-esc="state.reportConfig.name || 'Report'"/>
+                    </h2>
+                    <div class="report-description text-muted" t-if="state.reportConfig.description">
+                        <t t-esc="state.reportConfig.description"/>
+                    </div>
+                </div>
+                <div class="report-actions">
+                    <button class="rb-btn rb-btn-info" t-on-click="() => this.openReportSettings()">
+                        <i class="fa fa-cog"/> Settings
+                    </button>
+                    <button class="rb-btn btn-danger" t-on-click="() => this.exportToPDF()">
+                        <i class="fa fa-file-pdf-o"/> PDF
+                    </button>
+                    <button class="rb-btn rb-btn-success" t-on-click="() => this.exportToExcel()">
+                        <i class="fa fa-file-excel-o"/> Xlxs
+                    </button>
+                    <button class="rb-btn rb-btn-secondary" t-on-click="() => this.goBack()">
+                        <i class="fa fa-arrow-left"/> Back
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="report-filters-section">
+                <div class="filters-header">
+                    <h4><i class="fa fa-filter"/> Filters</h4>
+                    <div class="global-options">
+                        <label class="rb-checkbox-label">
+                            <input type="checkbox" t-model="state.showZeroValues" 
+                                   t-on-change="(ev) => this.onShowZeroValuesChange(ev)"/>
+                            Show Zero Values
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="filters-grid">
+                    <!-- Group By Section -->
+                    <div class="filter-group">
+                        <label class="filter-label">Group By:</label>
+                        <select class="rb-form-control" t-model="state.groupBy" 
+                                t-on-change="(ev) => this.onGroupByChange(ev)">
+                            <option value="">-- No Grouping --</option>
+                            <option t-foreach="state.availableGroupByFields" t-as="field" 
+                                    t-key="field.field_path || field.field_name" t-att-value="field.field_path || field.field_name">
+                                <t t-esc="field.field_label || field.field_description"/>
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <!-- Dynamic Field Filters - Only Selection and Date Fields -->
+                    <div t-foreach="state.filterableFields" t-as="field" t-key="field.field_name" 
+                         class="filter-group">
+                        <label class="filter-label" t-esc="field.field_label || field.field_description"/>
+                        
+                        <!-- Selection Field Filter -->
+                        <input t-if="field.field_type === 'selection'"
+                               type="text" class="rb-form-control" 
+                               t-att-placeholder="'Filter by ' + (field.field_label || field.field_description)"
+                               t-att-value="state.filters[field.field_path || field.field_name]"
+                               t-on-input="(ev) => this.onFilterChange(field.field_path || field.field_name, ev)"/>
+                        
+                        <!-- Date/Datetime Field Filter with Range -->
+                        <div t-if="['date', 'datetime'].includes(field.field_type)" class="date-range-filter">
+                            <div class="date-range-group">
+                                <label class="date-range-label">From:</label>
+                                <input type="date" class="rb-form-control form-control-sm"
+                                       t-att-value="state.filters[(field.field_path || field.field_name) + '_from']"
+                                       t-on-change="(ev) => this.onDateRangeChange(field.field_path || field.field_name, 'from', ev)"/>
+                            </div>
+                            <div class="date-range-group">
+                                <label class="date-range-label">To:</label>
+                                <input type="date" class="rb-form-control form-control-sm"
+                                       t-att-value="state.filters[(field.field_path || field.field_name) + '_to']"
+                                       t-on-change="(ev) => this.onDateRangeChange(field.field_path || field.field_name, 'to', ev)"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Section -->
+            <div class="report-data-section">
+                <!-- Loading State -->
+                <div t-if="state.loading" class="loading-section">
+                    <div class="text-center p-4">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading report data...</p>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div t-elif="state.filteredData.length > 0" class="data-table-section">
+                    <!-- Data Summary -->
+                    <div class="data-summary">
+                        <span class="summary-info">
+                            Showing <strong t-esc="this.getPaginatedData().length"/> of 
+                            <strong t-esc="state.filteredData.length"/> records
+                            <span t-if="state.filteredData.length !== state.totalRecords">
+                                (filtered from <strong t-esc="state.totalRecords"/> total)
+                            </span>
+                        </span>
+                    </div>
+
+                    <!-- Grouped Data Display -->
+                    <div t-if="state.groupBy" class="grouped-data">
+                        <div t-foreach="Object.keys(state.groupedData)" t-as="groupKey" t-key="groupKey" 
+                             class="group-section">
+                            <div class="group-header">
+                                <h5><i class="fa fa-folder-open"/> <t t-esc="groupKey"/> 
+                                    (<t t-esc="state.groupedData[groupKey].length"/> records)</h5>
+                            </div>
+                            <div class="group-table">
+                                <table class="rb-table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th t-foreach="state.reportFields" t-as="field" t-key="field.field_path || field.field_name"
+                                                t-esc="field.field_label || field.field_description"/>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="state.groupedData[groupKey].slice(0, 10)" t-as="record" t-key="record_index">
+                                            <td t-foreach="state.reportFields" t-as="field" t-key="field.field_path || field.field_name">
+                                                <t t-esc="this.getRecordValue(record, field)"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Regular Table Display -->
+                    <div t-else="" class="regular-table">
+                        <table class="rb-table table-striped table-hover">
+                            <thead class="table-header">
+                                <tr>
+                                    <th class="text-center" style="width: 20px;">SN</th>
+                                    <th t-foreach="state.reportFields" t-as="field" t-key="field.field_path || field.field_name"
+                                        t-att-class="'text-' + (field.alignment || 'left')"
+                                        t-att-style="'width: ' + (field.width || 'auto') + 'px'">
+                                        <t t-esc="field.field_label || field.field_description"/>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="this.getPaginatedData()" t-as="record" t-key="record_index">
+                                    <td class="text-center">
+                                        <t t-esc="((state.currentPage - 1) * state.pageSize) + record_index + 1"/>
+                                    </td>
+                                    <td t-foreach="state.reportFields" t-as="field" t-key="field.field_path || field.field_name"
+                                        t-att-class="'text-' + (field.alignment || 'left')">
+                                        <t t-esc="this.getRecordValue(record, field)"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <!-- Summation Row -->
+                            <tfoot t-if="this.hasSummation()" class="table-footer">
+                                <tr class="summation-row">
+                                    <td class="text-center" style="font-weight: bold;">Total</td>
+                                    <td t-foreach="state.reportFields" t-as="field" t-key="field.field_path || field.field_name"
+                                        t-att-class="'text-' + (field.alignment || 'left')"
+                                        style="font-weight: bold; background-color: #f8f9fa;">
+                                        <t t-if="field.show_summation" t-esc="this.calculateSummations()[field.field_path || field.field_name] || ''"/>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-section" t-if="this.getTotalPages() > 1">
+                        <div class="d-flex justify-content-between align-items-center mt-3 px-3">
+                            <!-- Page Navigation -->
+                            <nav aria-label="Report pagination" class="mx-auto">
+                                <ul class="rb-pagination mb-0">
+                                    <li class="page-item" t-att-class="{disabled: state.currentPage &lt;= 1}">
+                                        <button class="page-link" t-on-click="() => this.previousPage()" 
+                                                t-att-disabled="state.currentPage &lt;= 1">
+                                            <i class="fa fa-chevron-left"/>
+                                        </button>
+                                    </li>
+                                    <li class="page-item active">
+                                        <span class="page-link">
+                                            Page <t t-esc="state.currentPage"/> of <t t-esc="this.getTotalPages()"/>
+                                        </span>
+                                    </li>
+                                    <li class="page-item" t-att-class="{disabled: state.currentPage &gt;= this.getTotalPages()}">
+                                        <button class="page-link" t-on-click="() => this.nextPage()" 
+                                                t-att-disabled="state.currentPage &gt;= this.getTotalPages()">
+                                            <i class="fa fa-chevron-right"/>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </nav>
+
+                            <!-- Total Records Info -->
+                            <div class="total-records text-muted">
+                                Showing <strong><t t-esc="((state.currentPage - 1) * state.pageSize) + 1"/></strong> 
+                                to <strong><t t-esc="Math.min(state.currentPage * state.pageSize, (state.groupBy ? Object.values(state.groupedData).flat().length : state.filteredData.length))"/></strong> 
+                                of <strong><t t-esc="state.groupBy ? Object.values(state.groupedData).flat().length : state.filteredData.length"/></strong> records
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- No Data State -->
+                <div t-else="" class="no-data-section">
+                    <div class="text-center p-5">
+                        <i class="fa fa-table fa-3x text-muted mb-3"/>
+                        <h4 class="text-muted">No Data Available</h4>
+                        <p class="text-muted">
+                            <span t-if="Object.values(state.filters).some(f => f)">
+                                Try adjusting your filters or 
+                                <button class="rb-btn btn-link p-0" t-on-click="() => { this.state.filters = {}; this.applyFilters(); }">
+                                    clear all filters
+                                </button>
+                            </span>
+                            <span t-else="">No records found for this report</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

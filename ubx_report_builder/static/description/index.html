@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Builder - Dynamic Report Generation for Odoo 18</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .header .tagline {
+            font-size: 1.4em;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+        
+        .version-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+        
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 0;
+        }
+        
+        .tab-button {
+            background: #f8f9fa;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .tab-button:hover {
+            background: #e9ecef;
+            color: #333;
+        }
+        
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .section {
+            background: white;
+            padding: 40px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .section h3 {
+            color: #764ba2;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        .feature-card h4 {
+            color: #333;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .screenshot {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        
+        .benefits-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .benefits-list li {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+        }
+        
+        .benefits-list li:before {
+            content: "✓";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .tech-badge {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+        
+        .cta-section h2 {
+            color: white;
+            border: none;
+            margin-bottom: 20px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .pricing {
+            text-align: center;
+            font-size: 1.2em;
+            color: #666;
+            margin: 20px 0;
+        }
+        
+        .support-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .support-info h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .changelog {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .changelog h4 {
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+        
+        .changelog ul {
+            list-style-position: inside;
+            color: #666;
+        }
+        
+        .changelog ul li {
+            padding: 5px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .header .tagline {
+                font-size: 1.1em;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-button {
+                min-width: 100%;
+            }
+            
+            .tab-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Report Builder</h1>
+            <p class="tagline">Professional Dynamic Report Generation for Odoo 18</p>
+            <div class="version-badge">Version 18.0.1.0.3</div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'overview')">📊 Overview</button>
+            <button class="tab-button" onclick="openTab(event, 'features')">✨ Features</button>
+            <button class="tab-button" onclick="openTab(event, 'howto')">📖 How to Use</button>
+            <button class="tab-button" onclick="openTab(event, 'technical')">🔧 Technical</button>
+            <button class="tab-button" onclick="openTab(event, 'support')">🤝 Support</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="overview" class="tab-content active">
+            <h2>📊 Overview</h2>
+            <p style="font-size: 1.1em; line-height: 1.8; color: #555; margin-bottom: 30px;">
+                Transform the way you create reports in Odoo! Report Builder is a powerful, user-friendly module that empowers 
+                users to design custom reports without any programming knowledge. With an intuitive drag-and-drop interface, 
+                advanced filtering capabilities, and professional export options, you can generate exactly the reports your 
+                business needs in minutes.
+            </p>
+            
+            <h2 style="color: #667eea; margin-top: 40px; margin-bottom: 20px;">🎯 Perfect For</h2>
+            <ul class="benefits-list">
+                <li><strong>Business Analysts</strong> - Create custom reports without IT department assistance</li>
+                <li><strong>Finance Teams</strong> - Generate financial reports with summations and aggregations</li>
+                <li><strong>Sales Managers</strong> - Track sales performance with grouped and filtered data</li>
+                <li><strong>Operations Teams</strong> - Monitor inventory, orders, and logistics efficiently</li>
+                <li><strong>HR Departments</strong> - Create employee and payroll reports on-demand</li>
+                <li><strong>Management</strong> - Get custom dashboards and KPI reports instantly</li>
+            </ul>
+            
+            <h2 style="color: #667eea; margin-top: 40px; margin-bottom: 20px;">💡 Key Benefits</h2>
+            <ul class="benefits-list">
+                <li><strong>Save Time</strong> - Create reports in minutes instead of hours</li>
+                <li><strong>No Programming Required</strong> - User-friendly interface for non-technical users</li>
+                <li><strong>Flexibility</strong> - Adapt reports to changing business needs instantly</li>
+                <li><strong>Cost Effective</strong> - No need for custom development</li>
+                <li><strong>Professional Output</strong> - Generate presentation-ready reports</li>
+                <li><strong>Data Accuracy</strong> - Real-time data directly from your Odoo database</li>
+            </ul>
+            
+            <div class="cta-section" style="margin-top: 40px;">
+                <h2>Ready to Transform Your Reporting?</h2>
+                <p style="font-size: 1.2em; margin: 20px 0;">
+                    Join hundreds of businesses already using Report Builder to streamline their reporting processes.
+                </p>
+                <a href="#" class="cta-button">Install Now</a>
+            </div>
+        </div>
+
+        <div id="features" class="tab-content">
+            <h2>✨ Key Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon">🎯</div>
+                    <h4>Dynamic Model Selection</h4>
+                    <p>Choose any Odoo model and instantly access all available fields. Navigate through related models seamlessly.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">🔗</div>
+                    <h4>Related Fields Support</h4>
+                    <p>Expand relational fields (Many2one, One2many, Many2many) to include data from connected models in your reports.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">🎨</div>
+                    <h4>Drag & Drop Interface</h4>
+                    <p>Intuitive field selection with drag-and-drop functionality. Reorder columns effortlessly to match your needs.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">🔍</div>
+                    <h4>Advanced Filtering</h4>
+                    <p>Filter by selection fields and date ranges. Apply multiple filters simultaneously for precise data extraction.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h4>Group By Functionality</h4>
+                    <p>Group your data by any field to create organized, categorized reports with automatic subtotals.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">🧮</div>
+                    <h4>Field Aggregation</h4>
+                    <p>Calculate Sum, Average, Count, Min, and Max values. Perfect for financial reports and data analysis.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">💰</div>
+                    <h4>Summation Rows</h4>
+                    <p>Add automatic summation rows at the bottom of your reports for numeric fields like amounts and quantities.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">📄</div>
+                    <h4>PDF Export</h4>
+                    <p>Generate professional PDF reports with proper formatting, headers, and your filtered data preserved.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">📈</div>
+                    <h4>Excel Export</h4>
+                    <p>Export to Excel with formatting, column widths, and styling intact. Perfect for further analysis.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">⚡</div>
+                    <h4>Real-time Preview</h4>
+                    <p>See your data instantly as you build your report. No waiting - preview updates in real-time.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">📱</div>
+                    <h4>Responsive Design</h4>
+                    <p>Modern, mobile-friendly interface that works perfectly on desktops, tablets, and smartphones.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon">🎛️</div>
+                    <h4>Column Customization</h4>
+                    <p>Set custom column widths, alignment (left/center/right), and labels for perfect report formatting.</p>
+                </div>
+            </div>
+            
+            <h2 style="color: #667eea; margin-top: 50px; margin-bottom: 20px;">💼 Use Cases</h2>
+            
+            <h3>Sales Reports</h3>
+            <p>Track sales performance by salesperson, region, or product category. Include customer details, order dates, and payment status. Calculate total revenue, average order value, and more.</p>
+            
+            <h3>Financial Reports</h3>
+            <p>Generate accounts receivable aging reports, vendor payment summaries, and profit/loss statements with automatic calculations and summation rows.</p>
+            
+            <h3>Inventory Reports</h3>
+            <p>Monitor stock levels across warehouses, track product movements, and identify slow-moving items. Export to Excel for advanced inventory analysis.</p>
+            
+            <h3>HR & Payroll</h3>
+            <p>Create employee lists with department grouping, attendance reports with date filtering, and payroll summaries with automatic totals.</p>
+            
+            <h3>Custom Analytics</h3>
+            <p>Build any report you can imagine by combining fields from multiple related models. Perfect for unique business requirements.</p>
+            
+            <h2 style="color: #667eea; margin-top: 50px; margin-bottom: 20px;">🆕 Recent Updates</h2>
+            <div class="changelog">
+                <h4>Version 18.0.1.0.3 - Latest Release</h4>
+                <ul>
+                    <li>✨ Added summation row feature for numeric fields</li>
+                    <li>🔍 Enhanced filter persistence in PDF/Excel exports</li>
+                    <li>🎨 Improved CSS isolation to prevent conflicts</li>
+                    <li>🐛 Fixed access rights for ir.model records</li>
+                    <li>⚡ Performance optimizations for large datasets</li>
+                    <li>📱 Enhanced mobile responsiveness</li>
+                    <li>🔧 Better error handling and user feedback</li>
+                    <li>🎯 Improved field icon display</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="howto" class="tab-content">
+            <h2>📖 How It Works</h2>
+            <div class="tech-stack">
+                <span class="tech-badge">Odoo 18.0</span>
+                <span class="tech-badge">OWL Framework</span>
+                <span class="tech-badge">Python 3.10+</span>
+                <span class="tech-badge">JavaScript ES6+</span>
+                <span class="tech-badge">ReportLab PDF</span>
+                <span class="tech-badge">XlsxWriter Excel</span>
+                <span class="tech-badge">PostgreSQL</span>
+                <span class="tech-badge">Responsive CSS</span>
+            </div>
+            
+            <h3>Requirements</h3>
+            <ul class="benefits-list">
+                <li>Odoo 18.0 Community or Enterprise Edition</li>
+                <li>Python 3.10 or higher</li>
+                <li>ReportLab library (for PDF generation)</li>
+                <li>Modern web browser (Chrome, Firefox, Safari, Edge)</li>
+            </ul>
+            
+            <h3>Dependencies</h3>
+            <ul style="list-style-position: inside; margin: 20px 0; color: #666;">
+                <li>base (Odoo Core)</li>
+                <li>web (Odoo Web Framework)</li>
+                <li>base_setup (Odoo Setup)</li>
+                <li>reportlab (Python library - auto-installed)</li>
+            </ul>
+            
+            <h2 style="color: #667eea; margin-top: 50px; margin-bottom: 20px;">🛡️ Security & Access Control</h2>
+            <ul class="benefits-list">
+                <li>Built-in security groups (Manager, User) for controlled access</li>
+                <li>Respects Odoo's standard access rights and record rules</li>
+                <li>Secure field access validation prevents unauthorized data viewing</li>
+                <li>Multi-company support with proper data isolation</li>
+                <li>Activity logging for compliance and audit trails</li>
+            </ul>
+            
+            <h2 style="color: #667eea; margin-top: 50px; margin-bottom: 20px;">📜 License</h2>
+            <p style="font-size: 1.1em; color: #555;">
+                Licensed under LGPL-3 (Lesser General Public License v3.0). This allows you to use, modify, and distribute 
+                the module freely while maintaining compatibility with Odoo's licensing.
+            </p>
+        </div>
+
+        <div id="support" class="tab-content">
+            <h2>🤝 Support & Documentation</h2>
+            
+            <h3>Step 1: Select Your Model</h3>
+            <p>Choose the main Odoo model you want to report on - Sales Orders, Invoices, Customers, Products, or any other model in your system.</p>
+            
+            <h3>Step 2: Add Fields</h3>
+            <p>Browse available fields and double-click or click the + button to add them to your report. For relational fields, click the expand button to access related model fields.</p>
+            
+            <h3>Step 3: Configure Columns</h3>
+            <p>Set custom labels, column widths, alignment, and aggregation options for each field. Enable summation for numeric fields if needed.</p>
+            
+            <h3>Step 4: Preview Data</h3>
+            <p>Click Preview to see your data in real-time. The preview updates instantly as you modify your report structure.</p>
+            
+            <h3>Step 5: Apply Filters</h3>
+            <p>In the display view, filter by selection fields and date ranges. Group your data by any field for organized reporting.</p>
+            
+            <h3>Step 6: Export</h3>
+            <p>Export your report to PDF for professional presentation or Excel for further analysis. All filters and formatting are preserved.</p>
+            
+            <h2 style="color: #667eea; margin-top: 50px; margin-bottom: 20px;">🎨 User Interface Highlights</h2>
+            <ul class="benefits-list">
+                <li>Modern, clean interface with intuitive navigation</li>
+                <li>Three-panel layout: Models → Available Fields → Selected Fields</li>
+                <li>Real-time search and filtering of fields</li>
+                <li>Visual icons for different field types</li>
+                <li>Color-coded relational fields with expand/collapse</li>
+                <li>Responsive design works on all screen sizes</li>
+                <li>Dark mode compatible</li>
+                <li>Accessibility features for screen readers</li>
+            </ul>
+        </div>
+
+        <div id="technical" class="tab-content">
+            <h2>� Technical Specifications</h2>
+            <h4>Comprehensive Support</h4>
+            <p>We provide excellent support to ensure your success:</p>
+            <ul class="benefits-list">
+                <li>Detailed user documentation included</li>
+                <li>Video tutorials and guides</li>
+                <li>Email support: info@urbexlabs.com</li>
+                <li>Regular updates and bug fixes</li>
+                <li>Community forum access</li>
+                <li>Custom development available</li>
+            </ul>
+            
+            <h4 style="margin-top: 20px;">Installation Support</h4>
+            <p>Need help installing or configuring? We offer installation assistance and training sessions for your team.</p>
+            
+            <h2 style="color: #667eea; margin-top: 50px; margin-bottom: 20px;">🏢 About the Developer</h2>
+            <p style="font-size: 1.1em; line-height: 1.8; color: #555;">
+                Developed by <strong>Developers at Urbex Labs</strong>, an experienced Odoo development team with a passion for creating
+                powerful yet user-friendly business applications. Based on years of real-world experience understanding 
+                business needs and technical challenges.
+            </p>
+            <div style="margin-top: 20px;">
+                <p><strong>Website:</strong> <a href="https://urbexlabs.com" style="color: #667eea;">urbexlabs.com</a></p>
+                <p><strong>Email:</strong> <a href="mailto:athumanishabani18@gmail.com" style="color: #667eea;">athumanishabani18@gmail.com</a></p>
+            </div>
+            
+            <div class="cta-section" style="margin-top: 40px;">
+                <h2>Need Help?</h2>
+                <p style="font-size: 1.2em; margin: 20px 0;">
+                    We're here to support your success with Report Builder!
+                </p>
+                <a href="mailto:athumanishabani18@gmail.com" class="cta-button">Contact Support</a>
+                <p style="margin-top: 30px; font-size: 0.9em; opacity: 0.9;">
+                    ⭐ Available for custom development and training
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            // Hide all tab contents
+            var tabContents = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+            
+            // Remove active class from all buttons
+            var tabButtons = document.getElementsByClassName("tab-button");
+            for (var i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+            
+            // Show current tab and mark button as active
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+    </script>
+</body>
+</html>

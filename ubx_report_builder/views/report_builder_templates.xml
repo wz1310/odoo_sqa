@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Assets are now handled in __manifest__.py assets section -->
+    
+    <!-- Web Template for fullscreen builder -->
+    <template id="report_builder_fullscreen" name="Report Builder Fullscreen">
+        <t t-call="web.layout">
+            <t t-set="head_website">
+                <link rel="stylesheet" href="/ubx_report_builder/static/src/css/report_builder.css"/>
+            </t>
+            <div id="wrapwrap" class="report-builder-fullscreen">
+                <div class="container-fluid p-0">
+                    <div id="report_builder_container" class="report-builder-widget"/>
+                </div>
+            </div>
+            <script type="text/javascript">
+                odoo.define('report_builder.init', function (require) {
+                    'use strict';
+                    var ReportBuilderWidget = require('report_builder.widget');
+                    var widget = new ReportBuilderWidget();
+                    widget.appendTo($('#report_builder_container'));
+                });
+            </script>
+        </t>
+    </template>
+    
+</odoo>

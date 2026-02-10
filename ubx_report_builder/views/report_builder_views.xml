@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Report Builder Tree View -->
+    <record id="view_report_builder_tree" model="ir.ui.view">
+        <field name="name">report.builder.tree</field>
+        <field name="model">report.builder</field>
+        <field name="arch" type="xml">
+            <list string="Report Builder" sample="1" multi_edit="1">
+                <field name="name" string="Report Name"/>
+                <field name="model_id" string="Model"/>
+                <field name="field_count" string="Fields"/>
+                <field name="record_count" string="Records"/>
+                <field name="state" string="Status" 
+                       decoration-success="state == 'active'"
+                       decoration-muted="state == 'archived'"
+                       widget="badge"/>
+                <field name="user_id" string="Created By"/>
+                <field name="create_date" string="Created"/>
+                <field name="last_generated" string="Last Export"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    
+    <!-- Report Builder Form View -->
+    <record id="view_report_builder_form" model="ir.ui.view">
+        <field name="name">report.builder.form</field>
+        <field name="model">report.builder</field>
+        <field name="arch" type="xml">
+            <form string="Report Builder">
+                <header>
+                    <button name="action_activate" string="Activate" type="object" 
+                            class="btn-primary" invisible="state == 'active'"/>
+                    <button name="action_draft" string="Set to Draft" type="object" 
+                            invisible="state != 'active'"/>
+                    <!-- <button name="action_archive" string="Archive" type="object" 
+                            invisible="state == 'archived'" confirm="Are you sure you want to archive this report?"/> -->
+                    <button name="action_view_report" string="View Report" type="object" 
+                            class="btn-success" icon="fa-table" invisible="field_count == 0"/>
+                    <button name="action_open_builder" string="Open Builder" type="object" 
+                            class="btn-secondary" icon="fa-magic"/>
+                    <button name="action_export_excel" string="Export Excel" type="object" 
+                            class="btn-success" icon="fa-download" invisible="field_count == 0"/>
+                    <!-- <button name="action_duplicate" string="Duplicate" type="object" 
+                            class="btn-secondary" icon="fa-copy"/> -->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,archived"/>
+                </header>
+                
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-table">
+                            <field name="field_count" widget="statinfo" string="Fields"/>
+                        </button>
+                        <button class="oe_stat_button" icon="fa-database">
+                            <field name="record_count" widget="statinfo" string="Records"/>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="Report Name"/></h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="model_id" options="{'no_create': True, 'no_edit': True}"/>
+                            <field name="model_name" invisible="1"/>
+                            <field name="description" placeholder="Brief description of the report purpose"/>
+                            <field name="max_records"/>
+                        </group>
+                        <group>
+                            <field name="user_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" 
+                                   options="{'no_create': True}"/>
+                            <field name="pdf_orientation" widget="radio"/>
+                            <field name="auto_refresh"/>
+                            <field name="last_generated" readonly="1"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Report Fields" name="fields">
+                            <div class="alert alert-info" role="alert" invisible="field_count > 0">
+                                <strong>No fields configured yet.</strong><br/>
+                                Click "Open Builder" to start building your report with drag and drop interface.
+                            </div>
+                            
+                            <field name="field_ids" invisible="field_count == 0">
+                                <list string="Report Fields" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="field_id" domain="[('model_id', '=', parent.model_id)]" 
+                                           options="{'no_create': True}"/>
+                                    <field name="field_label"/>
+                                    <field name="field_type" readonly="1"/>
+                                    <field name="visible"/>
+                                    <field name="width"/>
+                                    <field name="alignment"/>
+                                    <field name="aggregation"/>
+                                    <field name="sortable"/>
+                                    <field name="filterable"/>
+                                    <button name="action_move_up" type="object" icon="fa-arrow-up" 
+                                            title="Move Up"/>
+                                    <button name="action_move_down" type="object" icon="fa-arrow-down" 
+                                            title="Move Down"/>
+                                </list>
+                            </field>
+                        </page>
+                        
+                        <page string="Filters &amp; Settings" name="filters">
+                            <group>
+                                <group string="Filtering">
+                                    <field name="filter_domain" widget="domain" 
+                                           options="{'model': 'model_name', 'in_dialog': True}"/>
+                                    <field name="group_by_field" domain="[('model_id', '=', model_id)]" 
+                                           options="{'no_create': True}"/>
+                                </group>
+                                <group string="Performance">
+                                    <field name="max_records"/>
+                                    <field name="auto_refresh"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Advanced" name="advanced">
+                            <group>
+                                <group string="System Info">
+                                    <field name="create_date" readonly="1"/>
+                                    <field name="write_date" readonly="1"/>
+                                    <field name="last_generated" readonly="1"/>
+                                </group>
+                                <group string="Statistics">
+                                    <field name="field_count" readonly="1"/>
+                                    <field name="record_count" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Report Builder Search View -->
+    <record id="view_report_builder_search" model="ir.ui.view">
+        <field name="name">report.builder.search</field>
+        <field name="model">report.builder</field>
+        <field name="arch" type="xml">
+            <search string="Search Reports">
+                <field name="name" string="Report Name" filter_domain="[('name', 'ilike', self)]"/>
+                <field name="model_id" string="Model"/>
+                <field name="user_id" string="Created By"/>
+                <field name="description" string="Description"/>
+                
+                <filter string="My Reports" name="my_reports" domain="[('user_id', '=', uid)]"/>
+                <filter string="Active" name="active" domain="[('state', '=', 'active')]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Archived" name="archived" domain="[('state', '=', 'archived')]"/>
+                
+                <separator/>
+                <filter string="Recently Created" name="recent" 
+                        domain="[('create_date', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Recently Used" name="recent_used" 
+                        domain="[('last_generated', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Model" name="group_model" context="{'group_by': 'model_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Created By" name="group_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}" 
+                            groups="base.group_multi_company"/>
+                    <filter string="Creation Date" name="group_date" context="{'group_by': 'create_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <!-- Report Builder Kanban View -->
+    <record id="view_report_builder_kanban" model="ir.ui.view">
+        <field name="name">report.builder.kanban</field>
+        <field name="model">report.builder</field>
+        <field name="arch" type="xml">
+            <kanban string="Report Builder" quick_create="false" create="true" sample="1">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="state"/>
+                <field name="field_count"/>
+                <field name="record_count"/>
+                <field name="user_id"/>
+                <field name="create_date"/>
+                <field name="last_generated"/>
+                
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_card">
+                                <div class="oe_kanban_content">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong><field name="name"/></strong>
+                                        </div>
+                                        <div class="col-6 text-right">
+                                            <span class="badge badge-pill" 
+                                                  t-att-class="record.state.raw_value === 'active' ? 'badge-success' : 
+                                                              record.state.raw_value === 'draft' ? 'badge-warning' : 'badge-secondary'">
+                                                <field name="state"/>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-muted">
+                                        <i class="fa fa-database"/> <field name="model_id"/>
+                                    </div>
+                                    
+                                    <div class="mt-2">
+                                        <span class="badge badge-info">
+                                            <i class="fa fa-columns"/> <field name="field_count"/> fields
+                                        </span>
+                                        <span class="badge badge-secondary ml-1">
+                                            <i class="fa fa-list"/> <field name="record_count"/> records
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="mt-2 text-muted small">
+                                        <div>By: <field name="user_id"/></div>
+                                        <div>Created: <field name="create_date"/></div>
+                                        <div t-if="record.last_generated.raw_value">
+                                            Last Export: <field name="last_generated"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="oe_kanban_footer">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button name="action_view_report" type="object" 
+                                                    class="btn btn-success btn-sm"
+                                                    t-if="record.field_count.raw_value > 0">
+                                                <i class="fa fa-table"/> View
+                                            </button>
+                                        </div>
+                                        <div class="col-4">
+                                            <button name="action_open_builder" type="object" 
+                                                    class="btn btn-primary btn-sm">
+                                                <i class="fa fa-magic"/> Builder
+                                            </button>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <div class="btn-group">
+                                                <button name="action_preview_report" type="object" 
+                                                        class="btn btn-secondary btn-sm" 
+                                                        t-if="record.field_count.raw_value > 0">
+                                                    <i class="fa fa-eye"/>
+                                                </button>
+                                                <button name="action_export_excel" type="object" 
+                                                        class="btn btn-info btn-sm"
+                                                        t-if="record.field_count.raw_value > 0">
+                                                    <i class="fa fa-download"/>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    
+    <!-- Report Builder Action -->
+    <record id="action_report_builder" model="ir.actions.act_window">
+        <field name="name">Report Builder</field>
+        <field name="res_model">report.builder</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_report_builder_search"/>
+        <field name="context">{
+            'search_default_my_reports': 1,
+            'search_default_active': 1
+        }</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first custom report!
+            </p>
+            <p>
+                Use the Report Builder to create dynamic reports by selecting models, 
+                choosing fields, and configuring filters. You can export reports to Excel 
+                and share them with your team.
+            </p>
+        </field>
+    </record>
+    
+</odoo>

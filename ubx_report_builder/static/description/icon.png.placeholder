@@ -1,0 +1,8 @@
+# Report Builder Icon Placeholder
+
+This file serves as a placeholder for the module icon. 
+In a production environment, you would replace this with an actual PNG icon file (64x64 pixels recommended).
+
+The icon should be named 'icon.png' and placed in the static/description/ directory.
+
+For now, the module will use the default Odoo application icon.

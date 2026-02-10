@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Report Preview Component Template -->
+    <t t-name="ubx_report_builder.ReportPreview" owl="1">
+        <div class="report-preview-content">
+            <div t-if="state.loading" class="text-center p-4">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p class="mt-2">Loading preview data...</p>
+            </div>
+            <div t-elif="state.data.length === 0" class="text-center p-4">
+                <i class="fa fa-info-circle fa-2x text-muted mb-2"/>
+                <p class="text-muted">No data available for preview</p>
+            </div>
+            <div t-else="" class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th t-foreach="state.fields" t-as="field" t-key="field"
+                                t-on-click="() => this.sortBy(field)"
+                                class="cursor-pointer">
+                                <t t-esc="this.getFieldLabel(field)"/>
+                                <i t-att-class="'fa ml-1 ' + this.getSortIcon(field)"/>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="state.data" t-as="record" t-key="record_index">
+                            <td t-foreach="state.fields" t-as="field" t-key="field.id">
+                                <t t-esc="record[field.field_name or field.name] and record[field.field_name or field.name]['formatted'] or ''"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="preview-footer mt-2 text-muted small">
+                    Showing <strong t-esc="state.previewCount"/> of <strong t-esc="state.totalRecords"/> records
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- Report Preview Widget Template (for popup/modal) -->
+    <t t-name="ubx_report_builder.ReportPreviewWidget" owl="1">
+        <div class="report-preview-container">
+            <div class="preview-header d-flex justify-content-between align-items-center mb-3">
+                <h3><i class="fa fa-eye"/> Report Preview</h3>
+                <button class="btn btn-secondary btn-sm" t-on-click="() => this.closePreview()">
+                    <i class="fa fa-times"/> Close
+                </button>
+            </div>
+            <div class="preview-content">
+                <div t-if="state.loading" class="text-center p-4">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading preview data...</p>
+                </div>
+                <div t-elif="state.data.length === 0" class="text-center p-4">
+                    <i class="fa fa-info-circle fa-2x text-muted mb-2"/>
+                    <p class="text-muted">No data available for preview</p>
+                </div>
+                <div t-else="" class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th t-foreach="state.fields" t-as="field" t-key="field.id"
+                                    t-esc="field.label || field.field_description"/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="state.data" t-as="record" t-key="record_index">
+                                <td t-foreach="state.fields" t-as="field" t-key="field.id">
+                                    <t t-esc="record[field.field_name or field.name] and record[field.field_name or field.name]['formatted'] or ''"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

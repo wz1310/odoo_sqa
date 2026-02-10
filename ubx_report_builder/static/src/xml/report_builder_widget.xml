@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Main Report Builder Widget Template -->
+    <t t-name="ubx_report_builder.ReportBuilderWidget" owl="1">
+        <div class="report-builder-fullscreen">
+            <!-- Header Toolbar -->
+            <div class="report-builder-toolbar">
+                <div class="toolbar-left">
+                    <h2 class="report-title">
+                        <i class="fa fa-chart-bar"/> Report Builder
+                        <span t-if="state.reportConfig.name !== 'New Report'" 
+                              class="report-name">- <t t-esc="state.reportConfig.name"/></span>
+                    </h2>
+                </div>
+                <div class="toolbar-center">
+                    <div class="model-info" t-if="state.selectedModel">
+                        <i class="fa fa-database"/> 
+                        <strong t-esc="state.selectedModel.name"/>
+                        <span class="text-muted">(<t t-esc="state.availableFields.length"/> fields)</span>
+                    </div>
+                </div>
+                <div class="toolbar-right">
+                    <button class="rb-btn rb-btn-secondary rb-btn-sm" t-on-click="() => this.loadPreviewData()" 
+                            t-att-disabled="state.selectedFields.length === 0 || state.loading">
+                        <i class="fa fa-refresh"/> Refresh
+                    </button>
+                    <button class="rb-btn rb-btn-info rb-btn-sm" t-on-click="() => this.loadPreviewData()" 
+                            t-att-disabled="state.selectedFields.length === 0">
+                        <i class="fa fa-eye"/> Preview
+                    </button>
+                    <button class="rb-btn rb-btn-success rb-btn-sm" t-on-click="() => this.saveReport()" 
+                            t-att-disabled="state.selectedFields.length === 0">
+                        <i class="fa fa-save"/> Save
+                    </button>
+                    <button class="rb-btn rb-btn-primary rb-btn-sm" t-on-click="() => this.exportToExcel()" 
+                            t-att-disabled="state.selectedFields.length === 0">
+                        <i class="fa fa-download"/> Export
+                    </button>
+                    <button class="rb-btn rb-btn-secondary rb-btn-sm" t-on-click="() => this.closeBuilder()">
+                        <i class="fa fa-times"/> Close
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="report-builder-body">
+                <!-- Loading State -->
+                <div t-if="state.loading" class="loading-overlay">
+                    <div class="loading-spinner">
+                        <div class="spinner"/>
+                        <div class="loading-text">Loading...</div>
+                    </div>
+                </div>
+
+                <!-- Main Layout -->
+                <div class="report-builder-layout" t-att-class="{loading: state.loading}">
+                    <!-- Left Panel: Models and Configuration -->
+                    <div class="left-panel">
+                        <!-- Model Selection -->
+                        <div class="panel-section">
+                            <div class="section-header">
+                                <h3><i class="fa fa-database"/> Select Model</h3>
+                            </div>
+                            <div class="section-content">
+                                <div class="model-selector">
+                                    <input type="text" placeholder="Search models..." 
+                                           class="rb-form-control mb-2" 
+                                           t-model="state.modelSearch"
+                                           t-on-input="() => this.filterModels()"/>
+                                    <div class="model-list">
+                                        <div t-foreach="filteredModels" t-as="model" t-key="model.id"
+                                             class="model-item"
+                                             t-att-class="{selected: state.selectedModel?.id === model.id}"
+                                             t-on-click="() => this.selectModel(model)">
+                                            <div class="model-icon">
+                                                <i class="fa fa-table"/>
+                                            </div>
+                                            <div class="model-details">
+                                                <div class="model-name" t-esc="model.name"/>
+                                                <div class="model-tech-name text-muted" t-esc="model.model"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Report Configuration -->
+                        <div class="panel-section" t-if="state.selectedModel">
+                            <div class="section-header">
+                                <h3><i class="fa fa-cog"/> Report Settings</h3>
+                            </div>
+                            <div class="section-content">
+                                <div class="rb-form-group">
+                                    <label>Report Name</label>
+                                    <input type="text" t-model="state.reportConfig.name" 
+                                           class="rb-form-control form-control-sm"
+                                           t-on-input="() => this.markAsChanged()"/>
+                                </div>
+                                <div class="rb-form-group">
+                                    <label>Description</label>
+                                    <textarea t-model="state.reportConfig.description" 
+                                              class="rb-form-control form-control-sm" rows="3"
+                                              t-on-input="() => this.markAsChanged()"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Center Panel: Available Fields -->
+                    <div class="center-panel" t-if="state.selectedModel">
+                        <div class="panel-section">
+                            <div class="section-header">
+                                <h3><i class="fa fa-list"/> Available Fields</h3>
+                                <div class="field-search">
+                                    <input type="text" placeholder="Search fields..." 
+                                           class="rb-form-control form-control-sm"
+                                           t-model="state.fieldSearch"
+                                           t-on-input="() => this.filterFields()"/>
+                                </div>
+                            </div>
+                            <div class="section-content">
+                                <div class="field-list">
+                                    <t t-foreach="filteredFields" t-as="field" t-key="field.id">
+                                        <div class="field-item"
+                                             t-att-class="{selected: state.selectedFields.find(f => f.id === field.id), relational: this.isRelationalField(field)}"
+                                             t-att-draggable="true"
+                                             t-on-dragstart="(ev) => this.onFieldDragStart(ev, field)"
+                                             t-on-dblclick="() => this.addFieldToReport(field)">
+                                            <div class="field-icon">
+                                                <i t-att-class="this.getFieldIcon(field.ttype)"/>
+                                            </div>
+                                            <div class="field-details">
+                                                <div class="field-name">
+                                                    <t t-esc="field.field_description"/>
+                                                    <button t-if="this.isRelationalField(field)" 
+                                                            class="btn-expand"
+                                                            t-on-click.stop="() => this.toggleRelatedFields(field)">
+                                                        <i t-att-class="field.isExpanded ? 'fa fa-chevron-down' : 'fa fa-chevron-right'"/>
+                                                    </button>
+                                                </div>
+                                                <div class="field-tech-info">
+                                                    <span class="field-tech-name" t-esc="field.name"/>
+                                                    <span class="field-type-badge" t-esc="field.ttype"/>
+                                                </div>
+                                            </div>
+                                            <div class="field-actions">
+                                                <button class="btn-add" t-if="!state.selectedFields.find(f => f.id === field.id)"
+                                                        t-on-click.stop="() => this.addFieldToReport(field)">
+                                                    <i class="fa fa-plus"/>
+                                                </button>
+                                                <button class="btn-remove" t-if="state.selectedFields.find(f => f.id === field.id)"
+                                                        t-on-click.stop="() => this.removeFieldFromReport(field)">
+                                                    <i class="fa fa-minus"/>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Related Fields (nested) -->
+                                        <div t-if="field.isExpanded &amp;&amp; field.relatedFields" class="related-fields-container">
+                                            <div t-if="field.isLoadingRelated" class="loading-related">
+                                                <i class="fa fa-spinner fa-spin"/> Loading related fields...
+                                            </div>
+                                            <div t-else="" class="related-fields">
+                                                <div t-foreach="field.relatedFields" t-as="relatedField" t-key="relatedField.id"
+                                                     class="field-item related-field-item"
+                                                     t-att-class="{selected: state.selectedFields.find(f => f.id === relatedField.id)}"
+                                                     t-att-draggable="true"
+                                                     t-on-dragstart="(ev) => this.onFieldDragStart(ev, relatedField)"
+                                                     t-on-dblclick="() => this.addFieldToReport(relatedField)">
+                                                    <div class="field-icon">
+                                                        <i t-att-class="this.getFieldIcon(relatedField.ttype)"/>
+                                                    </div>
+                                                    <div class="field-details">
+                                                        <div class="field-name">
+                                                            <t t-esc="field.name"/>.<t t-esc="relatedField.field_description"/>
+                                                        </div>
+                                                        <div class="field-tech-info">
+                                                            <span class="field-tech-name" t-esc="field.name + '.' + relatedField.name"/>
+                                                            <span class="field-type-badge" t-esc="relatedField.ttype"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="field-actions">
+                                                        <button class="btn-add" t-if="!state.selectedFields.find(f => f.id === relatedField.id)"
+                                                                t-on-click.stop="() => this.addFieldToReport(relatedField)">
+                                                            <i class="fa fa-plus"/>
+                                                        </button>
+                                                        <button class="btn-remove" t-if="state.selectedFields.find(f => f.id === relatedField.id)"
+                                                                t-on-click.stop="() => this.removeFieldFromReport(relatedField)">
+                                                            <i class="fa fa-minus"/>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Selected Fields -->
+                    <div class="right-panel" t-if="state.selectedModel">
+                        <div class="panel-section">
+                            <div class="section-header">
+                                <h3><i class="fa fa-check-square"/> Selected Fields</h3>
+                                <span class="field-count">
+                                    <t t-esc="state.selectedFields.length"/> fields
+                                </span>
+                            </div>
+                            <div class="section-content">
+                                <div t-if="state.selectedFields.length === 0" class="empty-state">
+                                    <i class="fa fa-hand-pointer-o fa-3x mb-3"/>
+                                    <p>Drag and drop fields here or click the + button</p>
+                                </div>
+                                <div t-else="" class="selected-field-list"
+                                     t-on-dragover.prevent=""
+                                     t-on-drop="(ev) => this.onFieldDrop(ev)">
+                                    <div t-foreach="state.selectedFields" t-as="field" t-key="field.id"
+                                         class="selected-field-item"
+                                         t-att-draggable="true"
+                                         t-on-dragstart="(ev) => this.onSelectedFieldDragStart(ev, field)">
+                                        <div class="field-handle">
+                                            <i class="fa fa-bars"/>
+                                        </div>
+                                        <div class="field-info">
+                                            <div class="field-label">
+                                                <input type="text" 
+                                                       t-att-value="field.label || field.field_description"
+                                                       t-on-input="(ev) => this.updateFieldLabel(field, ev)"
+                                                       class="rb-form-control form-control-sm"
+                                                       placeholder="Field label"/>
+                                            </div>
+                                            <div class="field-meta">
+                                                <span t-esc="field.name"/> • <span t-esc="field.ttype"/>
+                                            </div>
+                                            
+                                            <!-- Field Configuration Options -->
+                                            <div class="field-config" style="margin-top: 8px;">
+                                                <div class="config-row" style="display: flex; gap: 8px; margin-bottom: 4px;">
+                                                    <div class="config-item" style="flex: 1;">
+                                                        <label style="font-size: 10px; color: #6c757d; display: block; margin-bottom: 2px;">Width (px)</label>
+                                                        <input type="number" 
+                                                               t-model="field.width"
+                                                               class="rb-form-control form-control-sm"
+                                                               min="50" max="500"
+                                                               t-on-input="() => this.markChanged()"
+                                                               style="font-size: 12px;"/>
+                                                    </div>
+                                                    <div class="config-item" style="flex: 1;">
+                                                        <label style="font-size: 10px; color: #6c757d; display: block; margin-bottom: 2px;">Align</label>
+                                                        <select t-model="field.alignment"
+                                                                class="rb-form-control form-control-sm"
+                                                                t-on-change="() => this.markChanged()"
+                                                                style="font-size: 12px;">
+                                                            <option value="left">Left</option>
+                                                            <option value="center">Center</option>
+                                                            <option value="right">Right</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="config-row" style="display: flex; gap: 8px;">
+                                                    <div class="config-item" style="flex: 1;">
+                                                        <label style="font-size: 10px; color: #6c757d; display: block; margin-bottom: 2px;">Aggregation</label>
+                                                        <select t-model="field.aggregation"
+                                                                class="rb-form-control form-control-sm"
+                                                                t-on-change="() => this.markChanged()"
+                                                                style="font-size: 12px;">
+                                                            <option value="none">None</option>
+                                                            <option value="sum" t-if="['integer', 'float', 'monetary'].includes(field.ttype)">Sum</option>
+                                                            <option value="avg" t-if="['integer', 'float', 'monetary'].includes(field.ttype)">Average</option>
+                                                            <option value="count">Count</option>
+                                                            <option value="min">Min</option>
+                                                            <option value="max">Max</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="field-options" t-if="['integer', 'float', 'monetary'].includes(field.ttype)">
+                                                <label class="d-flex align-items-center" style="font-size: 11px; margin-top: 4px; cursor: pointer;">
+                                                    <input type="checkbox" 
+                                                           t-att-checked="field.show_summation"
+                                                           t-on-change="(ev) => this.toggleFieldSummation(field, ev)"
+                                                           style="margin-right: 5px;"/>
+                                                    <span>Show Summation</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="field-controls">
+                                            <button class="btn-remove" 
+                                                    t-on-click="() => this.removeFieldFromReport(field)"
+                                                    title="Remove field">
+                                                <i class="fa fa-times"/>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="preview-section" t-if="state.previewData.length > 0">
+                    <div class="preview-header">
+                        <h3><i class="fa fa-table"/> Data Preview</h3>
+                        <div class="preview-actions">
+                            <span class="record-count">
+                                <t t-esc="state.previewData.length"/> records
+                            </span>
+                            <button class="rb-btn rb-btn-secondary rb-btn-sm" t-on-click="() => this.clearPreview()">
+                                <i class="fa fa-times"/> Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="preview-table-container">
+                        <table class="preview-table">
+                            <thead>
+                                <tr>
+                                    <th t-foreach="state.selectedFields" t-as="field" t-key="field.id">
+                                        <t t-esc="field.label || field.field_description"/>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="state.previewData.slice(0, 10)" t-as="row" t-key="row_index">
+                                    <td t-foreach="state.selectedFields" t-as="field" t-key="field.id">
+                                        <t t-esc="row[field.name] || ''"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div t-if="state.previewData.length > 10" class="preview-note">
+                            Showing first 10 of <t t-esc="state.previewData.length"/> records
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

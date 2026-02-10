@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_html_screen">
+        <html>
+            <head>
+                <title>Monthly Sales Report</title>
+                <link rel="stylesheet" href="/web/static/lib/bootstrap/css/bootstrap.css"/>
+                <link rel="stylesheet" href="/web/static/lib/fontawesome/css/font-awesome.css"/>
+                <style>
+                    body {
+                        font-family: 'Roboto', 'Inter', system-ui, sans-serif;
+                        background-color: #f8f9fa;
+                        padding: 0;
+                        margin: 0;
+                    }
+                    
+                    /* --- Header Section --- */
+                    .report-header {
+                        background-color: #E9D8FD; /* Solid Pastel Purple */
+                        color: #2d3748;
+                        padding: 24px 32px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); /* Softer shadow */
+                    }
+                    .report-title {
+                        font-size: 24px;
+                        font-weight: 700;
+                        margin: 0;
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                        color: #553C9A; /* Deep purple */
+                    }
+                    .report-badge {
+                        background: rgba(255, 255, 255, 0.6);
+                        color: #553C9A;
+                        padding: 4px 12px;
+                        border-radius: 12px;
+                        font-size: 13px;
+                        font-weight: 600;
+                    }
+                    
+                    .header-actions {
+                        display: flex;
+                        gap: 10px;
+                    }
+                    .btn-header {
+                        background: white;
+                        border: 1px solid rgba(255,255,255,0.5);
+                        box-shadow: 0 2px 4px rgba(100, 100, 200, 0.1);
+                        color: #553C9A;
+                        font-weight: 600;
+                        padding: 8px 20px;
+                        border-radius: 6px;
+                        font-size: 14px;
+                        text-decoration: none;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 8px;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                    }
+                    .btn-header:hover {
+                        background: #f7fafc;
+                        transform: translateY(-1px);
+                    }
+                    
+                    .pagination-info {
+                        color: #4a5568;
+                        font-size: 15px;
+                        margin-right: 20px;
+                        font-weight: 600;
+                        align-self: center;
+                    }
+
+                    /* --- Filter Bar --- */
+                    .filter-container {
+                        background: white;
+                        margin: 20px 32px;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                        display: flex;
+                        align-items: flex-end;
+                        gap: 16px;
+                        flex-wrap: wrap;
+                        z-index: 50;
+                        position: relative;
+                    }
+                    
+                    .filter-group {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 8px;
+                        min-width: 150px;
+                        position: relative;
+                    }
+                    .filter-label {
+                        font-size: 11px;
+                        text-transform: uppercase;
+                        color: #6B7280;
+                        font-weight: 700;
+                        letter-spacing: 0.5px;
+                    }
+                    .form-select, .form-control {
+                        border: 1px solid #D1D5DB;
+                        border-radius: 6px;
+                        padding: 8px 12px;
+                        font-size: 14px;
+                        color: #374151;
+                        background-color: #F9FAFB;
+                        height: 42px;
+                    }
+                    .form-select:focus, .form-control:focus {
+                        border-color: #7c3aed;
+                        box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+                        outline: none;
+                    }
+                    
+                    .btn-apply {
+                        background-color: #5b21b6;
+                        color: white;
+                        font-weight: 600;
+                        padding: 0 24px;
+                        height: 42px;
+                        border-radius: 6px;
+                        border: none;
+                        font-size: 14px;
+                        text-transform: uppercase;
+                        letter-spacing: 0.5px;
+                        cursor: pointer;
+                        transition: background 0.2s;
+                    }
+                    .btn-apply:hover {
+                        background-color: #4c1d95;
+                    }
+
+                    /* --- Searchable Multi-Select Styling --- */
+                    .searchable-select {
+                        position: relative;
+                        width: 100%;
+                        min-width: 300px;
+                    }
+                    
+                    .select-trigger {
+                        border: 1px solid #D1D5DB;
+                        border-radius: 6px;
+                        background-color: #FFFFFF; /* White background like image */
+                        min-height: 42px;
+                        padding: 4px 8px;
+                        display: flex;
+                        flex-wrap: wrap;
+                        align-items: center;
+                        gap: 5px;
+                        cursor: text;
+                        transition: border-color 0.2s, box-shadow 0.2s;
+                    }
+                    
+                    .select-trigger:focus-within {
+                        border-color: #7c3aed;
+                        box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+                    }
+                    
+                    .tag-chip {
+                        background-color: #e5e7eb;
+                        color: #1f2937;
+                        border-radius: 12px;
+                        padding: 2px 10px;
+                        font-size: 13px;
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        margin: 2px 0;
+                    }
+                    
+                    .tag-remove {
+                        cursor: pointer;
+                        color: #6b7280;
+                        font-weight: bold;
+                        font-size: 14px;
+                        line-height: 1;
+                    }
+                    .tag-remove:hover { color: #dc2626; }
+                    
+                    .select-input {
+                        border: none;
+                        outline: none;
+                        background: transparent;
+                        flex-grow: 1;
+                        min-width: 150px;
+                        font-size: 14px;
+                        color: #374151;
+                        padding: 4px 0;
+                    }
+                    .select-input::placeholder { color: #9CA3AF; }
+                    
+                    .select-dropdown {
+                        display: none;
+                        position: absolute;
+                        top: 100%;
+                        left: 0;
+                        right: 0;
+                        background: white;
+                        border: 1px solid #E5E7EB;
+                        border-radius: 6px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                        margin-top: 4px;
+                        max-height: 250px;
+                        overflow-y: auto;
+                        z-index: 100;
+                    }
+                    
+                    .select-dropdown.show { display: block; }
+                    
+                    .dropdown-item {
+                        padding: 10px 16px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        color: #374151;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    .dropdown-item:hover { background-color: #F3F4F6; }
+                    .dropdown-item.selected { background-color: #f3e8ff; color: #6d28d9; font-weight: 500; }
+                    .dropdown-item .check { display: none; }
+                    .dropdown-item.selected .check { display: block; color: #7c3aed; }
+                    
+                    /* --- Data Content --- */
+                    .data-container {
+                        margin: 0 32px 40px 32px;
+                        background: white;
+                        border-radius: 8px;
+                        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                        overflow: hidden;
+                    }
+                    
+                    .table-header-row {
+                        background-color: #F9FAFB;
+                        border-bottom: 1px solid #E5E7EB;
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+                        padding: 12px 20px;
+                    }
+                    .col-header {
+                        font-size: 11px;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        color: #9CA3AF;
+                        letter-spacing: 0.5px;
+                    }
+                    .col-header.align-right { text-align: right; }
+                    
+                    /* Rows */
+                    .user-group {
+                        border-bottom: 1px solid #E5E7EB;
+                    }
+                    .user-group-header {
+                        padding: 12px 20px;
+                        background-color: #fff;
+                        color: #805ad5; /* Soft pastel purple */
+                        font-weight: 600;
+                        font-size: 14px;
+                        border-bottom: 1px dashed #E5E7EB;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    }
+                    
+                    .data-row {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+                        padding: 12px 20px;
+                        border-bottom: 1px solid #F3F4F6;
+                        align-items: center;
+                        color: #4B5563;
+                        font-size: 13px;
+                    }
+                    .data-row:last-child { border-bottom: none; }
+                    .data-row:hover { background-color: #F9FAFB; }
+                    
+                    .col-data.align-right { text-align: right; font-family: 'Roboto Mono', monospace; }
+                    
+                    .empty-state {
+                        padding: 40px;
+                        text-align: center;
+                        color: #6B7280;
+                        font-style: italic;
+                    }
+                    
+                    .total-summary {
+                         padding: 12px 20px;
+                         background-color: #F8FAFC;
+                         display: flex;
+                         justify-content: flex-end;
+                         gap: 20px;
+                         color: #1E293B;
+                         font-weight: 700;
+                         font-size: 13px;
+                    }
+                    
+                    /* Utility */
+                    .d-none { display: none; }
+                </style>
+                <script>
+                    function prepareExport(type) {
+                         const form = document.getElementById('filterForm');
+                         if(type === 'xlsx') {
+                             form.action = '/sunray_monthly_sales/report_xlsx';
+                             form.target = '_blank';
+                             form.submit();
+                             form.action = '/sunray_monthly_sales/report_html';
+                             form.target = '_self';
+                         } else if (type === 'print') {
+                             // Direct PDF Download
+                             form.action = '/sunray_monthly_sales/report_pdf';
+                             form.target = '_blank';
+                             form.submit();
+                             form.action = '/sunray_monthly_sales/report_html';
+                             form.target = '_self';
+                         } else {
+                             window.print();
+                         }
+                    }
+
+                    /* --- Searchable Multi-Select Logic --- */
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const trigger = document.getElementById('selectTrigger');
+                        const input = document.getElementById('selectInput');
+                        const dropdown = document.getElementById('selectDropdown');
+                        const hiddenSelect = document.getElementById('hiddenSelect');
+                        const items = document.querySelectorAll('.dropdown-item');
+                        
+                        function updateTags() {
+                            // Remove existing tags (except input)
+                            const existingTags = trigger.querySelectorAll('.tag-chip');
+                            existingTags.forEach(t => t.remove());
+                            
+                            // Rebuild tags from hidden select
+                            const selectedOptions = Array.from(hiddenSelect.options).filter(opt => opt.selected);
+                            selectedOptions.forEach(opt => {
+                                const chip = document.createElement('div');
+                                chip.className = 'tag-chip';
+                                chip.innerHTML = `
+                                    <span>${opt.text}</span>
+                                    <span class="tag-remove" data-val="${opt.value}">&#215;</span>
+                                `;
+                                trigger.insertBefore(chip, input);
+                                
+                                // Mark dropdown item as selected
+                                items.forEach(item => {
+                                    if(item.dataset.value === opt.value) item.classList.add('selected');
+                                });
+                            });
+                            
+                            if(selectedOptions.length === 0) {
+                                input.placeholder = "Search and select salesperson...";
+                            } else {
+                                input.placeholder = "";
+                            }
+                        }
+                        
+                        // Initial Load
+                        updateTags();
+                        
+                        // Toggle Dropdown
+                        trigger.addEventListener('click', function(e) {
+                             if(e.target.classList.contains('tag-remove')) return; // ignore delete clicks
+                             dropdown.classList.add('show');
+                             input.focus();
+                        });
+                        
+                        // Search Filter
+                        input.addEventListener('keyup', function() {
+                            const filter = input.value.toLowerCase();
+                            items.forEach(item => {
+                                const text = item.textContent.toLowerCase();
+                                if(text.includes(filter)) {
+                                    item.style.display = 'flex';
+                                } else {
+                                    item.style.display = 'none';
+                                }
+                            });
+                            dropdown.classList.add('show');
+                        });
+                        
+                        // Item Selection
+                        items.forEach(item => {
+                            item.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                const val = this.dataset.value;
+                                const option = Array.from(hiddenSelect.options).find(opt => opt.value === val);
+                                
+                                if(option.selected) {
+                                    option.selected = false;
+                                    this.classList.remove('selected');
+                                } else {
+                                    option.selected = true;
+                                    this.classList.add('selected');
+                                }
+                                updateTags();
+                                input.value = '';
+                                // Keep dropdown open for multiple selection
+                                input.focus();
+                                
+                                // Reset filter
+                                items.forEach(i => i.style.display = 'flex');
+                            });
+                        });
+                        
+                        // Tag Removal
+                        trigger.addEventListener('click', function(e) {
+                            if(e.target.classList.contains('tag-remove')) {
+                                e.stopPropagation();
+                                const val = e.target.dataset.val;
+                                const option = Array.from(hiddenSelect.options).find(opt => opt.value === val);
+                                option.selected = false;
+                                
+                                const item = document.querySelector(`.dropdown-item[data-value="${val}"]`);
+                                if(item) item.classList.remove('selected');
+                                
+                                updateTags();
+                            }
+                        });
+                        
+                        // Close on click outside
+                        document.addEventListener('click', function(e) {
+                            if(!trigger.contains(e.target) &amp;&amp; !dropdown.contains(e.target)) {
+                                dropdown.classList.remove('show');
+                            }
+                        });
+                    });
+                </script>
+            </head>
+            <body>
+                 <form id="filterForm" action="/sunray_monthly_sales/report_html" method="get">
+                    <!-- Header -->
+                    <div class="report-header">
+                        <h1 class="report-title">
+                            Monthly Sales Report 
+                            <span class="report-badge">Salesperson Analysis</span>
+                        </h1>
+                        <div class="header-actions">
+                            <span class="pagination-info">
+                                <t t-esc="month_name"/> <t t-esc="year"/>
+                            </span>
+                            <button type="button" class="btn-header" onclick="prepareExport('print')">
+                                <i class="fa fa-print"></i> PDF
+                            </button>
+                            <button type="button" class="btn-header" onclick="prepareExport('xlsx')">
+                                <i class="fa fa-file-excel-o"></i> XLSX
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="filter-container">
+                        <div class="filter-group">
+                            <label class="filter-label">From Date</label>
+                            <input type="date" name="date_start" class="form-control" t-att-value="date_start" style="min-width: 140px;"/>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">To Date</label>
+                            <input type="date" name="date_end" class="form-control" t-att-value="date_end" style="min-width: 140px;"/>
+                        </div>
+                        <div class="filter-group" style="flex-grow: 1;">
+                            <label class="filter-label">Salespersons (Multiple Selection)</label>
+                            
+                            <!-- Searchable Multi-Select -->
+                            <div class="searchable-select">
+                                <div class="select-trigger" id="selectTrigger">
+                                    <input type="text" class="select-input" id="selectInput" placeholder="Search and select salesperson..." autocomplete="off"/>
+                                </div>
+                                <div class="select-dropdown" id="selectDropdown">
+                                    <t t-foreach="all_users" t-as="u">
+                                        <div class="dropdown-item" t-att-data-value="u.id">
+                                            <span><t t-esc="u.name"/></span>
+                                            <i class="fa fa-check check"></i>
+                                        </div>
+                                    </t>
+                                </div>
+                                <!-- Hidden Select for Form Submission -->
+                                <select name="user_ids" id="hiddenSelect" multiple="multiple" style="display:none;">
+                                    <t t-foreach="all_users" t-as="u">
+                                        <option t-att-value="u.id" t-att-selected="u.id in selected_user_ids"><t t-esc="u.name"/></option>
+                                    </t>
+                                </select>
+                            </div>
+
+                        </div>
+                        <button type="submit" class="btn-apply">Apply Filters</button>
+                    </div>
+                </form>
+
+                <!-- Data Table -->
+                <div class="data-container">
+                    <div class="table-header-row">
+                        <div class="col-header">Date</div>
+                        <div class="col-header">Order Ref</div>
+                        <div class="col-header">Customer</div>
+                        <div class="col-header">Status</div>
+                        <div class="col-header align-right">Amount</div>
+                    </div>
+
+                    <t t-if="not sales_by_user">
+                        <div class="empty-state">
+                            No data found for the selected filters.
+                        </div>
+                    </t>
+
+                    <t t-foreach="sales_by_user" t-as="user">
+                        <div class="user-group">
+                            <div class="user-group-header">
+                                <i class="fa fa-user-circle"></i> <t t-esc="user.name"/>
+                            </div>
+                            <t t-foreach="sales_by_user[user]['orders']" t-as="order">
+                                <div class="data-row">
+                                    <div class="col-data"><span t-field="order.date_order" t-options='{"widget": "date"}'/></div>
+                                    <div class="col-data">
+                                        <a t-attf-href="/web#id={{order.id}}&amp;model=sale.order&amp;view_type=form" target="_top" style="color: #6D28D9; text-decoration: none; font-weight: 600;">
+                                            <t t-esc="order.name"/>
+                                        </a>
+                                    </div>
+                                    <div class="col-data"><t t-esc="order.partner_id.name"/></div>
+                                    <div class="col-data">
+                                        <t t-if="order.state == 'sale'"><span class="badge badge-success" style="background:#def7ec; color:#03543f;">Sales Order</span></t>
+                                        <t t-if="order.state == 'done'"><span class="badge badge-info" style="background:#e1effe; color:#1e429f;">Locked</span></t>
+                                    </div>
+                                    <div class="col-data align-right">
+                                        <span t-esc="order.amount_total" t-options='{"widget": "monetary", "display_currency": currency}'/>
+                                    </div>
+                                </div>
+                            </t>
+                            <div class="total-summary">
+                                <span>Total for <t t-esc="user.name"/>:</span>
+                                <span t-esc="sales_by_user[user]['total_amount']" t-options='{"widget": "monetary", "display_currency": currency}'/>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+            </body>
+        </html>
+    </template>
+</odoo>

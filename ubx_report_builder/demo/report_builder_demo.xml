@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Sample Report Builder Reports -->
+        <record id="demo_report_partners" model="report.builder">
+            <field name="name">Customer Report</field>
+            <field name="description">Basic customer information report</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="filter_domain">[('is_company', '=', True), ('customer_rank', '>', 0)]</field>
+            <field name="max_records">500</field>
+            <field name="state">active</field>
+        </record>
+        
+        <record id="demo_field_partner_name" model="report.builder.field">
+            <field name="report_id" ref="demo_report_partners"/>
+            <field name="field_id" ref="base.field_res_partner__name"/>
+            <field name="field_label">Customer Name</field>
+            <field name="sequence">1</field>
+            <field name="width">200</field>
+            <field name="alignment">left</field>
+        </record>
+        
+        <record id="demo_field_partner_email" model="report.builder.field">
+            <field name="report_id" ref="demo_report_partners"/>
+            <field name="field_id" ref="base.field_res_partner__email"/>
+            <field name="field_label">Email</field>
+            <field name="sequence">2</field>
+            <field name="width">200</field>
+            <field name="alignment">left</field>
+        </record>
+        
+        <record id="demo_field_partner_phone" model="report.builder.field">
+            <field name="report_id" ref="demo_report_partners"/>
+            <field name="field_id" ref="base.field_res_partner__phone"/>
+            <field name="field_label">Phone</field>
+            <field name="sequence">3</field>
+            <field name="width">150</field>
+            <field name="alignment">left</field>
+        </record>
+        
+        <record id="demo_field_partner_country" model="report.builder.field">
+            <field name="report_id" ref="demo_report_partners"/>
+            <field name="field_id" ref="base.field_res_partner__country_id"/>
+            <field name="field_label">Country</field>
+            <field name="sequence">4</field>
+            <field name="width">150</field>
+            <field name="alignment">left</field>
+        </record>
+        
+        <record id="demo_field_partner_create_date" model="report.builder.field">
+            <field name="report_id" ref="demo_report_partners"/>
+            <field name="field_id" ref="base.field_res_partner__create_date"/>
+            <field name="field_label">Created Date</field>
+            <field name="sequence">5</field>
+            <field name="width">150</field>
+            <field name="alignment">center</field>
+        </record>
+        
+        <!-- Sample Users Report -->
+        <record id="demo_report_users" model="report.builder">
+            <field name="name">System Users Report</field>
+            <field name="description">Report of all system users and their access</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="filter_domain">[('active', '=', True)]</field>
+            <field name="max_records">100</field>
+            <field name="state">draft</field>
+        </record>
+        
+        <record id="demo_field_user_name" model="report.builder.field">
+            <field name="report_id" ref="demo_report_users"/>
+            <field name="field_id" ref="base.field_res_users__name"/>
+            <field name="field_label">User Name</field>
+            <field name="sequence">1</field>
+            <field name="width">200</field>
+        </record>
+        
+        <record id="demo_field_user_login" model="report.builder.field">
+            <field name="report_id" ref="demo_report_users"/>
+            <field name="field_id" ref="base.field_res_users__login"/>
+            <field name="field_label">Login</field>
+            <field name="sequence">2</field>
+            <field name="width">200</field>
+        </record>
+        
+        <record id="demo_field_user_active" model="report.builder.field">
+            <field name="report_id" ref="demo_report_users"/>
+            <field name="field_id" ref="base.field_res_users__active"/>
+            <field name="field_label">Active</field>
+            <field name="sequence">3</field>
+            <field name="width">100</field>
+            <field name="alignment">center</field>
+        </record>
+        
+        <record id="demo_field_user_login_date" model="report.builder.field">
+            <field name="report_id" ref="demo_report_users"/>
+            <field name="field_id" ref="base.field_res_users__login_date"/>
+            <field name="field_label">Last Login</field>
+            <field name="sequence">4</field>
+            <field name="width">150</field>
+            <field name="alignment">center</field>
+        </record>
+        
+    </data>
+</odoo>

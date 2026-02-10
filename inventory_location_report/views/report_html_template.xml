@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_html_screen">
+        <html>
+            <head>
+                <title>Inventory Report by Location</title>
+                <link rel="stylesheet" href="/web/static/lib/bootstrap/css/bootstrap.css"/>
+                <link rel="stylesheet" href="/web/static/lib/fontawesome/css/font-awesome.css"/>
+
+                <style>
+                    body {
+                        font-family: 'Roboto', 'Inter', system-ui, sans-serif;
+                        background-color: #f8f9fa;
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    /* ===== STICKY FILTER BAR ===== */
+                    .filter-bar {
+                        background: linear-gradient(180deg, #ffffff, #fafafa);
+                        padding: 18px 32px;
+                        border-bottom: 1px solid #E9D8FD;
+                        position: sticky;
+                        top: 0;
+                        z-index: 1000;
+                        box-shadow: 0 4px 20px rgba(85, 60, 154, 0.08);
+                    }
+
+                    .filter-bar form {
+                        font-size: 11px;
+                        font-weight: 700;
+                        color: #6B7280;
+                        text-transform: uppercase;
+                        letter-spacing: 0.04em;
+                        margin-bottom: 6px;
+                    }
+
+                    .filter-bar .form-select:focus {
+                        border-color: #805AD5;
+                        box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.2);
+                    }
+
+                    .filter-bar .btn-primary {
+                        background: linear-gradient(135deg, #6B46C1, #805AD5);
+                        border: none;
+                        border-radius: 12px;
+                        font-weight: 700;
+                        font-size: 13px;
+                        padding: 8px 22px;
+                        margin-top: 10px;
+                        transition: all 0.25s ease;
+                        box-shadow: 0 6px 14px rgba(128, 90, 213, 0.35);
+                    }
+
+                    .filter-bar .btn-primary:hover {
+                        transform: translateY(-1px);
+                        box-shadow: 0 10px 22px rgba(128, 90, 213, 0.45);
+                    }
+
+
+                    .filter-bar .btn-primary i {
+                        margin-right: 6px;
+                    }
+
+                    .filter-bar .inputan {
+                        margin-top: 6px;
+                    }
+
+                        
+                    /* ===== HEADER ===== */
+                    .report-header {
+                        background-color: #E9D8FD;
+                        color: #2d3748;
+                        padding: 24px 32px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+
+                    .report-title {
+                        font-size: 24px;
+                        font-weight: 700;
+                        color: #553C9A;
+                        margin: 0;
+                    }
+
+                    .report-subtitle {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #4a5568;
+                    }
+
+                    /* ===== CONTAINER ===== */
+                    .data-container {
+                        margin: 24px 32px 40px;
+                        background: white;
+                        border-radius: 8px;
+                        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+                        overflow: hidden;
+                    }
+
+                    /* ===== TABLE STRUCTURE ===== */
+                    .table-header-row {
+                        background-color: #F9FAFB;
+                        border-bottom: 1px solid #E5E7EB;
+                        display: grid;
+                        grid-template-columns: 1fr 1.5fr 2fr 1.5fr 1fr;
+                        padding: 12px 20px;
+                    }
+
+                    .col-header {
+                        font-size: 11px;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        color: #9CA3AF;
+                        letter-spacing: 0.5px;
+                    }
+
+                    .user-group-header {
+                        padding: 12px 20px;
+                        background-color: #fff;
+                        color: #805ad5;
+                        font-weight: 700;
+                        font-size: 14px;
+                        border-bottom: 1px dashed #E5E7EB;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    }
+
+                    .data-row {
+                        display: grid;
+                        grid-template-columns: 1fr 1.5fr 2fr 1.5fr 1fr;
+                        padding: 12px 20px;
+                        border-bottom: 1px solid #F3F4F6;
+                        align-items: center;
+                        font-size: 13px;
+                        color: #4B5563;
+                    }
+
+                    .data-row:hover { background-color: #F9FAFB; }
+                    .align-right { text-align: right; }
+                    .ref-link { color: #553C9A; font-weight: 600; text-decoration: none; }
+                    .ref-link:hover { text-decoration: underline; }
+
+                    .total-summary {
+                        padding: 12px 20px;
+                        background-color: #F8FAFC;
+                        display: flex;
+                        justify-content: flex-end;
+                        gap: 12px;
+                        font-weight: 700;
+                        font-size: 13px;
+                    }
+
+                    .empty-state { padding: 40px; text-align: center; color: #6B7280; font-style: italic; }
+                </style>
+            </head>
+
+            <body>
+                <div class="filter-bar">
+                    <form action="/inventory_location/report_html" method="get" class="row g-3 align-items-center">
+                        <div class="col-auto inputan">
+                            <label class="small fw-bold text-muted d-block">Bulan</label>
+                            <select name="month" class="form-select form-select-sm">
+                                <t t-foreach="[('1', 'Januari'), ('2', 'Februari'), ('3', 'Maret'), ('4', 'April'), ('5', 'Mei'), ('6', 'Juni'), ('7', 'Juli'), ('8', 'Agustus'), ('9', 'September'), ('10', 'Oktober'), ('11', 'November'), ('12', 'Desember')]" t-as="m">
+                                    <option t-att-value="m[0]" t-att-selected="m[0] == current_month">
+                                        <t t-esc="m[1]"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-auto inputan">
+                            <label class="small fw-bold text-muted d-block">Tahun</label>
+                            <select name="year" class="form-select form-select-sm">
+                                <t t-foreach="range(2023, 2031)" t-as="y">
+                                    <option t-att-value="y" t-att-selected="str(y) == current_year">
+                                        <t t-esc="y"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-auto inputan" style="min-width: 200px;">
+                            <label class="small fw-bold text-muted d-block">Lokasi</label>
+                            <select name="location_ids" class="form-select form-select-sm">
+                                <option value="">Semua Lokasi Internal</option>
+                                <t t-foreach="all_locations" t-as="loc">
+                                    <option t-att-value="loc.id">
+                                        <t t-esc="loc.display_name"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="col-auto align-self-end">
+                            <button type="submit" class="btn btn-primary btn-sm px-4">
+                                <i class="fa fa-refresh mr-1"/> Update View
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="report-header">
+                    <div>
+                        <h1 class="report-title">Inventory Move Analysis</h1>
+                        <div class="report-subtitle">
+                            <i class="fa fa-calendar-o mr-1"/> Period: 
+                            <t t-esc="date_start" t-options='{"widget": "date"}'/> – 
+                            <t t-esc="date_end" t-options='{"widget": "date"}'/>
+                        </div>
+                    </div>
+                </div>
+
+                <t t-if="not report_data">
+                    <div class="empty-state">
+                        <i class="fa fa-info-circle fa-2x d-block mb-2"/>
+                        Tidak ada pergerakan stok ditemukan untuk kriteria ini.
+                    </div>
+                </t>
+
+                <t t-foreach="report_data" t-as="loc_name">
+                    <div class="data-container">
+                        <div class="user-group-header">
+                            <i class="fa fa-map-marker"/>
+                            <t t-esc="loc_name"/>
+                        </div>
+
+                        <div class="table-header-row">
+                            <div class="col-header">Date</div>
+                            <div class="col-header">Reference</div>
+                            <div class="col-header">Product</div>
+                            <div class="col-header">Destination</div>
+                            <div class="col-header align-right">Quantity</div>
+                        </div>
+
+                        <t t-foreach="report_data[loc_name]['lines']" t-as="line">
+                            <div class="data-row">
+                                <div class="col-data">
+                                    <t t-esc="line['date']" t-options='{"widget": "date"}'/>
+                                </div>
+                                <div class="col-data">
+                                    <a class="ref-link" t-attf-href="{{base_url}}/web#id={{line['id']}}&amp;model=stock.picking&amp;view_type=form" target="_blank">
+                                        <t t-esc="line['name']"/>
+                                    </a>
+                                </div>
+                                <div class="col-data"><t t-esc="line['product']"/></div>
+                                <div class="col-data"><t t-esc="line['dest']"/></div>
+                                <div class="col-data align-right font-weight-bold">
+                                    <t t-esc="line['qty']"/> <t t-esc="line['uom']"/>
+                                </div>
+                            </div>
+                        </t>
+
+                        <div class="total-summary">
+                            <span>Total Location Qty:</span>
+                            <span style="color:#553C9A">
+                                <t t-esc="report_data[loc_name]['total_qty']"/>
+                            </span>
+                        </div>
+                    </div>
+                </t>
+            </body>
+        </html>
+    </template>
+</odoo>

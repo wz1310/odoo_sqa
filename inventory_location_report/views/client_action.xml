@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_inventory_location_report_client" model="ir.actions.client">
+        <field name="name">Inventory Move by Location</field>
+        <field name="tag">inventory_location_report.client_action</field>
+        <field name="context">{'month': '', 'year': ''}</field>
+    </record>
+
+    <menuitem id="menu_inventory_location_report_main"
+              name="Inventory Move by Location"
+              parent="stock.menu_warehouse_report"
+              action="action_inventory_location_report_client"
+              sequence="50"/>
+</odoo>

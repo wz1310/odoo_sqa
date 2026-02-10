@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- System Parameters for Report Builder Configuration -->
+        <record id="report_builder_max_records" model="ir.config_parameter">
+            <field name="key">ubx_report_builder.max_records_limit</field>
+            <field name="value">10000</field>
+        </record>
+        
+        <record id="report_builder_auto_refresh" model="ir.config_parameter">
+            <field name="key">ubx_report_builder.auto_refresh_interval</field>
+            <field name="value">300</field>
+        </record>
+        
+        <record id="report_builder_enable_cache" model="ir.config_parameter">
+            <field name="key">ubx_report_builder.enable_data_cache</field>
+            <field name="value">True</field>
+        </record>
+        
+        <record id="report_builder_default_export_format" model="ir.config_parameter">
+            <field name="key">ubx_report_builder.default_export_format</field>
+            <field name="value">xlsx</field>
+        </record>
+        
+        <record id="report_builder_enable_drag_drop" model="ir.config_parameter">
+            <field name="key">ubx_report_builder.enable_drag_drop</field>
+            <field name="value">True</field>
+        </record>
+        
+        <!-- Automated Actions -->
+        <record id="report_builder_cleanup_cron" model="ir.cron">
+            <field name="name">Report Builder: Cleanup Temporary Reports</field>
+            <field name="model_id" ref="model_report_builder"/>
+            <field name="state">code</field>
+            <field name="code">
+# Clean up temporary reports older than 1 day using available methods
+model = env['report.builder']
+# Use SQL to avoid import restrictions
+env.cr.execute("""
+    DELETE FROM report_builder 
+    WHERE name LIKE 'Temp_%%' 
+    AND create_date &lt; (NOW() - INTERVAL '1 day')
+""")
+            </field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+        
+    </data>
+</odoo>

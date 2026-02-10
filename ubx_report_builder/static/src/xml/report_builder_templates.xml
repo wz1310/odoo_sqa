@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Main Report Builder Widget Template -->
+    <t t-name="ubx_report_builder.ReportBuilderWidget" owl="1">
+        <div class="report-builder-fullscreen">
+            <!-- Header Toolbar -->
+            <div class="report-builder-toolbar">
+                <div class="toolbar-left">
+                    <h2 class="report-title">
+                        <i class="fa fa-chart-bar"/> Report Builder
+                        <span t-if="state.reportConfig.name !== 'New Report'" 
+                              class="report-name">- <t t-esc="state.reportConfig.name"/></span>
+                    </h2>
+                </div>
+                <div class="toolbar-center">
+                    <div class="model-info" t-if="state.selectedModel">
+                        <i class="fa fa-database"/> 
+                        <strong t-esc="state.selectedModel.name"/>
+                        <span class="text-muted">(<t t-esc="state.availableFields.length"/> fields)</span>
+                    </div>
+                </div>
+                <div class="toolbar-right">
+                    <button class="btn btn-secondary btn-sm" t-on-click="() => this.loadPreviewData()" 
+                            t-att-disabled="state.selectedFields.length === 0 || state.loading">
+                        <i class="fa fa-refresh"/> Refresh
+                    </button>
+                    <button class="btn btn-info btn-sm" t-on-click="() => this.loadPreviewData()" 
+                            t-att-disabled="state.selectedFields.length === 0">
+                        <i class="fa fa-eye"/> Preview
+                    </button>
+                    <button class="btn btn-success btn-sm" t-on-click="() => this.saveReport()" 
+                            t-att-disabled="state.selectedFields.length === 0">
+                        <i class="fa fa-save"/> Save
+                    </button>
+                    <button class="btn btn-primary btn-sm" t-on-click="() => this.exportToExcel()" 
+                            t-att-disabled="state.selectedFields.length === 0">
+                        <i class="fa fa-download"/> Export
+                    </button>
+                    <button class="btn btn-secondary btn-sm" t-on-click="() => this.closeBuilder()">
+                        <i class="fa fa-times"/> Close
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="report-builder-body">
+                <!-- Loading State -->
+                <div t-if="state.loading" class="loading-overlay">
+                    <div class="loading-spinner">
+                        <div class="spinner"/>
+                        <div class="loading-text">Loading...</div>
+                    </div>
+                </div>
+
+                <!-- Main Layout -->
+                <div class="report-builder-layout" t-att-class="{loading: state.loading}">
+                    <!-- Left Panel: Models and Configuration -->
+                    <div class="left-panel">
+                        <!-- Model Selection -->
+                        <div class="panel-section">
+                            <div class="section-header">
+                                <h3><i class="fa fa-database"/> Select Model</h3>
+                            </div>
+                            <div class="section-content">
+                                <div class="model-selector">
+                                    <input type="text" placeholder="Search models..." 
+                                           class="form-control mb-2" 
+                                           t-model="state.modelSearch"
+                                           t-on-input="() => this.filterModels()"/>
+                                    <div class="model-list">
+                                        <div t-foreach="filteredModels" t-as="model" t-key="model.id"
+                                             class="model-item"
+                                             t-att-class="{selected: state.selectedModel?.id === model.id}"
+                                             t-on-click="() => this.selectModel(model)">
+                                            <div class="model-icon">
+                                                <i class="fa fa-table"/>
+                                            </div>
+                                            <div class="model-details">
+                                                <div class="model-name" t-esc="model.name"/>
+                                                <div class="model-tech-name text-muted" t-esc="model.model"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Report Configuration -->
+                        <div class="panel-section" t-if="state.selectedModel">
+                            <div class="section-header">
+                                <h3><i class="fa fa-cog"/> Report Settings</h3>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label>Report Name</label>
+                                    <input type="text" t-model="state.reportConfig.name" 
+                                           class="form-control form-control-sm"
+                                           t-on-input="() => this.markAsChanged()"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea t-model="state.reportConfig.description" 
+                                              class="form-control form-control-sm" rows="2"
+                                              t-on-input="() => this.markAsChanged()"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Max Records</label>
+                                    <input type="number" t-model="state.reportConfig.max_records" 
+                                           class="form-control form-control-sm" min="1" max="10000"
+                                           t-on-input="() => this.markAsChanged()"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Center Panel: Available Fields -->
+                    <div class="center-panel" t-if="state.selectedModel">
+                        <div class="panel-section">
+                            <div class="section-header">
+                                <h3><i class="fa fa-list"/> Available Fields</h3>
+                                <div class="field-filters">
+                                    <input type="text" placeholder="Search fields..." 
+                                           class="form-control form-control-sm" t-model="state.fieldSearch"/>
+                                    <select class="form-control form-control-sm ml-2" t-model="state.fieldTypeFilter">
+                                        <option value="">All Types</option>
+                                        <option value="char">Text</option>
+                                        <option value="integer">Numbers</option>
+                                        <option value="boolean">Boolean</option>
+                                        <option value="date">Dates</option>
+                                        <option value="many2one">Relations</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="section-content">
+                                <div class="available-fields">
+                                    <div t-foreach="filteredFields" t-as="field" t-key="field.id"
+                                         class="field-group">
+                                        <!-- Main Field -->
+                                        <div class="field-item"
+                                             t-att-class="{relational: this.isRelationalField(field)}"
+                                             t-on-dblclick="() => this.addFieldToReport(field)">
+                                            <div class="field-icon">
+                                                <i t-attf-class="fa {{this.getFieldIcon(field.ttype)}}"/>
+                                            </div>
+                                            <div class="field-info">
+                                                <div class="field-name" t-esc="field.field_description"/>
+                                                <div class="field-details">
+                                                    <span class="field-type" t-esc="field.ttype"/>
+                                                    <span class="field-tech-name text-muted" t-esc="field.name"/>
+                                                </div>
+                                            </div>
+                                            <div class="field-actions">
+                                                <button t-if="this.isRelationalField(field)" 
+                                                        class="btn btn-sm btn-secondary mr-1" 
+                                                        t-on-click="() => this.toggleRelatedFields(field)"
+                                                        t-att-title="field.isExpanded ? 'Hide Related Fields' : 'Show Related Fields'">
+                                                    <i t-if="field.isLoadingRelated" class="fa fa-spinner fa-spin"/>
+                                                    <i t-elif="field.isExpanded" class="fa fa-chevron-down"/>
+                                                    <i t-else="" class="fa fa-chevron-right"/>
+                                                </button>
+                                                <button class="btn btn-sm btn-primary" 
+                                                        t-on-click="() => this.addFieldToReport(field)"
+                                                        title="Add to Report">
+                                                    <i class="fa fa-plus"/>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Related Fields (shown when expanded) -->
+                                        <div t-if="field.isExpanded and field.relatedFields.length > 0" 
+                                             class="related-fields ml-3">
+                                            <div t-foreach="field.relatedFields" t-as="relatedField" t-key="relatedField.id"
+                                                 class="field-item related-field-item"
+                                                 t-on-dblclick="() => this.addFieldToReport(relatedField)">
+                                                <div class="field-icon">
+                                                    <i class="fa fa-angle-right text-muted mr-1"/>
+                                                    <i t-attf-class="fa {{this.getFieldIcon(relatedField.ttype)}}"/>
+                                                </div>
+                                                <div class="field-info">
+                                                    <div class="field-name" t-esc="relatedField.field_description"/>
+                                                    <div class="field-details">
+                                                        <span class="field-type" t-esc="relatedField.ttype"/>
+                                                        <span class="field-tech-name text-muted" t-esc="relatedField.field_path"/>
+                                                    </div>
+                                                </div>
+                                                <div class="field-actions">
+                                                    <button class="btn btn-sm btn-primary" 
+                                                            t-on-click="() => this.addFieldToReport(relatedField)"
+                                                            title="Add Related Field to Report">
+                                                        <i class="fa fa-plus"/>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Panel: Selected Fields -->
+                    <div class="right-panel">
+                        <div class="panel-section">
+                            <div class="section-header">
+                                <h3><i class="fa fa-columns"/> Report Columns 
+                                    (<t t-esc="state.selectedFields.length"/>)</h3>
+                            </div>
+                            <div class="section-content">
+                                <div class="selected-fields">
+                                    <div t-if="state.selectedFields.length === 0" 
+                                         class="empty-fields text-center">
+                                        <i class="fa fa-arrow-left fa-2x mb-2 text-muted"/>
+                                        <p class="text-muted">Double-click fields to add them here</p>
+                                    </div>
+                                    
+                                    <div t-foreach="state.selectedFields" t-as="field" t-key="field.id"
+                                         class="selected-field-item">
+                                        <div class="field-header">
+                                            <div class="field-icon">
+                                                <i t-att-class="'fa ' + this.getFieldIcon(field.ttype)"/>
+                                            </div>
+                                            <div class="field-info">
+                                                <input type="text" t-model="field.label" 
+                                                       class="form-control form-control-sm field-label"
+                                                       placeholder="Column Label"
+                                                       t-on-input="() => this.markAsChanged()"/>
+                                                <div class="field-type text-muted" t-esc="field.ttype"/>
+                                            </div>
+                                            <div class="field-actions">
+                                                <button class="btn btn-sm btn-secondary" 
+                                                        t-on-click="() => this.moveFieldUp(field)"
+                                                        title="Move Up">
+                                                    <i class="fa fa-arrow-up"/>
+                                                </button>
+                                                <button class="btn btn-sm btn-secondary" 
+                                                        t-on-click="() => this.moveFieldDown(field)"
+                                                        title="Move Down">
+                                                    <i class="fa fa-arrow-down"/>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger" 
+                                                        t-on-click="() => this.removeFieldFromReport(field)"
+                                                        title="Remove">
+                                                    <i class="fa fa-times"/>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="field-config">
+                                            <div class="config-row">
+                                                <div class="config-item">
+                                                    <label>Width</label>
+                                                    <input type="number" t-model="field.width" 
+                                                           class="form-control form-control-sm" 
+                                                           min="50" max="500"
+                                                           t-on-input="() => this.markAsChanged()"/>
+                                                </div>
+                                                <div class="config-item">
+                                                    <label>Align</label>
+                                                    <select t-model="field.alignment" 
+                                                            class="form-control form-control-sm"
+                                                            t-on-change="() => this.markAsChanged()">
+                                                        <option value="left">Left</option>
+                                                        <option value="center">Center</option>
+                                                        <option value="right">Right</option>
+                                                    </select>
+                                                </div>
+                                                <div class="config-item">
+                                                    <label>Aggregation</label>
+                                                    <select t-model="field.aggregation" 
+                                                            class="form-control form-control-sm"
+                                                            t-on-change="() => this.markAsChanged()">
+                                                        <option value="none">None</option>
+                                                        <option value="sum" t-if="['integer', 'float', 'monetary'].includes(field.ttype)">Sum</option>
+                                                        <option value="avg" t-if="['integer', 'float', 'monetary'].includes(field.ttype)">Average</option>
+                                                        <option value="count">Count</option>
+                                                        <option value="min">Min</option>
+                                                        <option value="max">Max</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Panel: Preview -->
+                <div class="bottom-panel" t-if="state.previewData.length > 0">
+                    <div class="panel-section">
+                        <div class="section-header">
+                            <h3><i class="fa fa-eye"/> Data Preview</h3>
+                            <div class="preview-info">
+                                Showing <strong t-esc="state.previewData.length"/> records
+                                <small class="text-muted ml-2">
+                                    (Fields: <t t-esc="state.selectedFields.length"/>)
+                                </small>
+                            </div>
+                        </div>
+                        <div class="section-content">
+                            <!-- Debug info -->
+                            <div class="alert alert-info mb-2" t-if="state.previewData.length > 0">
+                                <small>
+                                    Debug: <t t-esc="state.previewData.length"/> records, 
+                                    <t t-esc="state.selectedFields.length"/> fields selected
+                                    <br/>
+                                    First record keys: <t t-esc="Object.keys(state.previewData[0] || {}).join(', ')"/>
+                                    <br/>
+                                    Selected field names: <t t-esc="state.selectedFields.map(f => f.name || f.field_name).join(', ')"/>
+                                </small>
+                            </div>
+                            
+                            <div class="preview-table-container">
+                                <table class="table table-sm table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th t-foreach="state.selectedFields" t-as="field" t-key="field.id"
+                                                t-esc="field.label || field.field_description"/>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="state.previewData" t-as="record" t-key="record_index">
+                                            <td t-foreach="state.selectedFields" t-as="field" t-key="field.id">
+                                                <t t-esc="this.getRecordValue(record, field)"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- Report Preview Component Template -->
+    <t t-name="ubx_report_builder.ReportPreview" owl="1">
+        <div class="report-preview-content">
+            <div t-if="state.loading" class="text-center p-4">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p class="mt-2">Loading preview data...</p>
+            </div>
+            <div t-elif="state.data.length === 0" class="text-center p-4">
+                <i class="fa fa-info-circle fa-2x text-muted mb-2"/>
+                <p class="text-muted">No data available for preview</p>
+            </div>
+            <div t-else="" class="table-responsive">
+                <table class="table table-sm table-striped">
+                    <thead>
+                        <tr>
+                            <th t-foreach="state.fields" t-as="field" t-key="field"
+                                t-on-click="() => this.sortBy(field)"
+                                class="cursor-pointer">
+                                <t t-esc="this.getFieldLabel(field)"/>
+                                <i t-att-class="'fa ml-1 ' + this.getSortIcon(field)"/>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="state.data" t-as="record" t-key="record_index">
+                            <td t-foreach="state.fields" t-as="field" t-key="field.id">
+                                <t t-esc="record[field.field_name or field.name] and record[field.field_name or field.name]['formatted'] or ''"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="preview-footer mt-2 text-muted small">
+                    Showing <strong t-esc="state.previewCount"/> of <strong t-esc="state.totalRecords"/> records
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- Report Preview Widget Template (for popup/modal) -->
+    <t t-name="ubx_report_builder.ReportPreviewWidget" owl="1">
+        <div class="report-preview-container">
+            <div class="preview-header d-flex justify-content-between align-items-center mb-3">
+                <h3><i class="fa fa-eye"/> Report Preview</h3>
+                <button class="btn btn-secondary btn-sm" t-on-click="() => this.closePreview()">
+                    <i class="fa fa-times"/> Close
+                </button>
+            </div>
+            <div class="preview-content">
+                <div t-if="state.loading" class="text-center p-4">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading preview data...</p>
+                </div>
+                <div t-elif="state.data.length === 0" class="text-center p-4">
+                    <i class="fa fa-info-circle fa-2x text-muted mb-2"/>
+                    <p class="text-muted">No data available for preview</p>
+                </div>
+                <div t-else="" class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th t-foreach="state.fields" t-as="field" t-key="field.id"
+                                    t-esc="field.label || field.field_description"/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="state.data" t-as="record" t-key="record_index">
+                                <td t-foreach="state.fields" t-as="field" t-key="field.id">
+                                    <t t-esc="record[field.field_name or field.name] and record[field.field_name or field.name]['formatted'] or ''"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- Report Display Widget Template -->
+    <t t-name="ubx_report_builder.ReportDisplayWidget" owl="1">
+        <div class="report-display-container">
+            <!-- Header with Report Title and Actions -->
+            <div class="report-header">
+                <div class="report-title-section">
+                    <h2 class="report-title">
+                        <i class="fa fa-file-text-o me-2"/> 
+                        <t t-esc="state.reportConfig.name || 'Report'"/>
+                    </h2>
+                    <div class="report-description text-muted" t-if="state.reportConfig.description">
+                        <t t-esc="state.reportConfig.description"/>
+                    </div>
+                </div>
+                <div class="report-actions">
+                    <button class="btn btn-secondary" t-on-click="() => this.refreshData()" 
+                            t-att-disabled="state.loading">
+                        <i class="fa fa-refresh"/> Refresh
+                    </button>
+                    <button class="btn btn-info" t-on-click="() => this.openReportSettings()">
+                        <i class="fa fa-cog"/> Report Settings
+                    </button>
+                    <button class="btn btn-danger" t-on-click="() => this.exportToPDF()">
+                        <i class="fa fa-file-pdf-o"/> Export PDF
+                    </button>
+                    <button class="btn btn-success" t-on-click="() => this.exportToExcel()">
+                        <i class="fa fa-download"/> Export Excel
+                    </button>
+                    <button class="btn btn-secondary" t-on-click="() => this.goBack()">
+                        <i class="fa fa-arrow-left"/> Back
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="report-filters-section">
+                <div class="filters-header">
+                    <h4><i class="fa fa-filter"/> Filters</h4>
+                    <div class="global-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" t-model="state.showZeroValues" 
+                                   t-on-change="(ev) => this.onShowZeroValuesChange(ev)"/>
+                            Show Zero Values
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="filters-grid">
+                    <!-- Group By Section -->
+                    <div class="filter-group">
+                        <label class="filter-label">Group By:</label>
+                        <select class="form-control" t-model="state.groupBy" 
+                                t-on-change="(ev) => this.onGroupByChange(ev)">
+                            <option value="">-- No Grouping --</option>
+                            <option t-foreach="state.availableGroupByFields" t-as="field" 
+                                    t-key="field.field_path || field.field_name" t-att-value="field.field_path || field.field_name">
+                                <t t-esc="field.field_label || field.field_description"/>
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <!-- Dynamic Field Filters - Only Selection and Date Fields -->
+                    <div t-foreach="state.filterableFields" t-as="field" t-key="field.field_name" 
+                         class="filter-group">
+                        <label class="filter-label" t-esc="field.field_label || field.field_description"/>
+                        
+                        <!-- Selection Field Filter -->
+                        <input t-if="field.field_type === 'selection'"
+                               type="text" class="form-control" 
+                               t-att-placeholder="'Filter by ' + (field.field_label || field.field_description)"
+                               t-att-value="state.filters[field.field_path || field.field_name]"
+                               t-on-input="(ev) => this.onFilterChange(field.field_path || field.field_name, ev)"/>
+                        
+                        <!-- Date/Datetime Field Filter with Range -->
+                        <div t-if="['date', 'datetime'].includes(field.field_type)" class="date-range-filter">
+                            <div class="date-range-group">
+                                <label class="date-range-label">From:</label>
+                                <input type="date" class="form-control form-control-sm"
+                                       t-att-value="state.filters[(field.field_path || field.field_name) + '_from']"
+                                       t-on-change="(ev) => this.onDateRangeChange(field.field_path || field.field_name, 'from', ev)"/>
+                            </div>
+                            <div class="date-range-group">
+                                <label class="date-range-label">To:</label>
+                                <input type="date" class="form-control form-control-sm"
+                                       t-att-value="state.filters[(field.field_path || field.field_name) + '_to']"
+                                       t-on-change="(ev) => this.onDateRangeChange(field.field_path || field.field_name, 'to', ev)"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Section -->
+            <div class="report-data-section">
+                <!-- Loading State -->
+                <div t-if="state.loading" class="loading-section">
+                    <div class="text-center p-4">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading report data...</p>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div t-elif="state.filteredData.length > 0" class="data-table-section">
+                    <!-- Data Summary -->
+                    <div class="data-summary">
+                        <span class="summary-info">
+                            Showing <strong t-esc="this.getPaginatedData().length"/> of 
+                            <strong t-esc="state.filteredData.length"/> records
+                            <span t-if="state.filteredData.length !== state.totalRecords">
+                                (filtered from <strong t-esc="state.totalRecords"/> total)
+                            </span>
+                        </span>
+                    </div>
+
+                    <!-- Grouped Data Display -->
+                    <div t-if="state.groupBy" class="grouped-data">
+                        <div t-foreach="Object.keys(state.groupedData)" t-as="groupKey" t-key="groupKey" 
+                             class="group-section">
+                            <div class="group-header">
+                                <h5><i class="fa fa-folder-open"/> <t t-esc="groupKey"/> 
+                                    (<t t-esc="state.groupedData[groupKey].length"/> records)</h5>
+                            </div>
+                            <div class="group-table">
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th t-foreach="state.reportFields" t-as="field" t-key="field.field_path || field.field_name"
+                                                t-esc="field.field_label || field.field_description"/>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="state.groupedData[groupKey].slice(0, 10)" t-as="record" t-key="record_index">
+                                            <td t-foreach="state.reportFields" t-as="field" t-key="field.field_path || field.field_name">
+                                                <t t-esc="this.getRecordValue(record, field)"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Regular Table Display -->
+                    <div t-else="" class="regular-table">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-header">
+                                <tr>
+                                    <th class="text-center" style="width: 20px;">SN</th>
+                                    <th t-foreach="state.reportFields" t-as="field" t-key="field.field_path || field.field_name"
+                                        t-att-class="'text-' + (field.alignment || 'left')"
+                                        t-att-style="'width: ' + (field.width || 'auto') + 'px'">
+                                        <t t-esc="field.field_label || field.field_description"/>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="this.getPaginatedData()" t-as="record" t-key="record_index">
+                                    <td class="text-center">
+                                        <t t-esc="((state.currentPage - 1) * state.pageSize) + record_index + 1"/>
+                                    </td>
+                                    <td t-foreach="state.reportFields" t-as="field" t-key="field.field_path || field.field_name"
+                                        t-att-class="'text-' + (field.alignment || 'left')">
+                                        <t t-esc="this.getRecordValue(record, field)"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-section" t-if="this.getTotalPages() > 1">
+                        <div class="d-flex justify-content-between align-items-center mt-3 px-3">
+                            <!-- Page Navigation -->
+                            <nav aria-label="Report pagination" class="mx-auto">
+                                <ul class="pagination mb-0">
+                                    <li class="page-item" t-att-class="{disabled: state.currentPage &lt;= 1}">
+                                        <button class="page-link" t-on-click="() => this.previousPage()" 
+                                                t-att-disabled="state.currentPage &lt;= 1">
+                                            <i class="fa fa-chevron-left"/>
+                                        </button>
+                                    </li>
+                                    <li class="page-item active">
+                                        <span class="page-link">
+                                            Page <t t-esc="state.currentPage"/> of <t t-esc="this.getTotalPages()"/>
+                                        </span>
+                                    </li>
+                                    <li class="page-item" t-att-class="{disabled: state.currentPage &gt;= this.getTotalPages()}">
+                                        <button class="page-link" t-on-click="() => this.nextPage()" 
+                                                t-att-disabled="state.currentPage &gt;= this.getTotalPages()">
+                                            <i class="fa fa-chevron-right"/>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </nav>
+
+                            <!-- Total Records Info -->
+                            <div class="total-records text-muted">
+                                Showing <strong><t t-esc="((state.currentPage - 1) * state.pageSize) + 1"/></strong> 
+                                to <strong><t t-esc="Math.min(state.currentPage * state.pageSize, (state.groupBy ? Object.values(state.groupedData).flat().length : state.filteredData.length))"/></strong> 
+                                of <strong><t t-esc="state.groupBy ? Object.values(state.groupedData).flat().length : state.filteredData.length"/></strong> records
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- No Data State -->
+                <div t-else="" class="no-data-section">
+                    <div class="text-center p-5">
+                        <i class="fa fa-table fa-3x text-muted mb-3"/>
+                        <h4 class="text-muted">No Data Available</h4>
+                        <p class="text-muted">
+                            <span t-if="Object.values(state.filters).some(f => f)">
+                                Try adjusting your filters or 
+                                <button class="btn btn-link p-0" t-on-click="() => { this.state.filters = {}; this.applyFilters(); }">
+                                    clear all filters
+                                </button>
+                            </span>
+                            <span t-else="">No records found for this report</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

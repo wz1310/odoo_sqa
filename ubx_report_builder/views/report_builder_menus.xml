@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Main Menu -->
+    <menuitem id="menu_report_builder_root" 
+              name="Report Builder" 
+              sequence="30" 
+              web_icon="ubx_report_builder,static/description/icon.png"
+              groups="ubx_report_builder.group_report_builder_user"/>
+    
+    <!-- Reports Menu -->
+    <menuitem id="menu_report_builder_reports" 
+              name="Reports" 
+              parent="menu_report_builder_root"
+              sequence="10"/>
+    
+    <menuitem id="menu_report_builder_list" 
+              name="My Reports" 
+              parent="menu_report_builder_reports"
+              action="action_report_builder"
+              sequence="10"/>
+    
+    <menuitem id="menu_report_builder_new" 
+              name="Create Report" 
+              parent="menu_report_builder_reports"
+              action="action_report_builder"
+              sequence="20"/>
+    
+    <!-- Builder Menu -->
+    <menuitem id="menu_report_builder_lab" 
+              name="Report Lab" 
+              parent="menu_report_builder_root"
+              sequence="20"/>
+    
+    <!-- Report Builder Lab Action -->
+    <record id="action_report_builder_lab" model="ir.actions.client">
+        <field name="name">Report Builder Lab</field>
+        <field name="tag">report_builder_widget</field>
+        <field name="target">fullscreen</field>
+    </record>
+
+    <!-- Report Display Action -->
+    <record id="action_report_display" model="ir.actions.client">
+        <field name="name">Report Display</field>
+        <field name="tag">report_display_widget</field>
+        <field name="target">current</field>
+    </record>
+    
+    <menuitem id="menu_report_builder_lab_open" 
+              name="Open Builder" 
+              parent="menu_report_builder_lab"
+              action="action_report_builder_lab"
+              sequence="10"/>
+    
+    <!-- Configuration Menu -->
+    <menuitem id="menu_report_builder_config" 
+              name="Configuration" 
+              parent="menu_report_builder_root"
+              sequence="90"
+              groups="ubx_report_builder.group_report_builder_manager"/>
+    
+    <!-- All Reports Action (for managers) -->
+    <record id="action_report_builder_all" model="ir.actions.act_window">
+        <field name="name">All Reports</field>
+        <field name="res_model">report.builder</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_report_builder_search"/>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+    </record>
+    
+    <menuitem id="menu_report_builder_all" 
+              name="All Reports" 
+              parent="menu_report_builder_config"
+              action="action_report_builder_all"
+              sequence="10"
+              groups="ubx_report_builder.group_report_builder_manager"/>
+    
+    <!-- System Models Action -->
+    <record id="action_ir_model_report_builder" model="ir.actions.act_window">
+        <field name="name">System Models</field>
+        <field name="res_model">ir.model</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('transient', '=', False), ('abstract', '=', False)]</field>
+        <field name="context">{'search_default_name': 1}</field>
+    </record>
+    
+    <menuitem id="menu_ir_model_report_builder" 
+              name="System Models" 
+              parent="menu_report_builder_config"
+              action="action_ir_model_report_builder"
+              sequence="20"
+              groups="ubx_report_builder.group_report_builder_manager"/>
+    
+    <!-- Dashboard Menu - Points to Reports List -->
+    <menuitem id="menu_report_builder_dashboard" 
+              name="Dashboard" 
+              parent="menu_report_builder_root"
+              action="action_report_builder"
+              sequence="5"/>
+    
+</odoo>
