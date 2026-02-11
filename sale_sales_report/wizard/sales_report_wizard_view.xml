@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_report_wizard_form" model="ir.ui.view">
+        <field name="name">sale.report.wizard.form</field>
+        <field name="model">sale.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Sales Analysis Report">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Sales Analysis Report</h1>
+                    </div>
+                    <group>
+                        <group string="Periode Laporan">
+                            <field name="month"/>
+                            <field name="year"/>
+                        </group>
+                        <group string="Filter Pelanggan">
+                            <field name="partner_ids" widget="many2many_tags" options="{'no_create': True}" placeholder="Pilih pelanggan (kosongkan untuk semua)..."/>
+                        </group>
+                    </group>
+                    <p class="text-muted">
+                        Pilih bulan, tahun, dan filter pelanggan untuk melihat ringkasan penjualan dengan fitur dropdown.
+                    </p>
+                </sheet>
+                <footer>
+                    <button name="action_view_onscreen" string="View Report" type="object" class="btn-primary" icon="fa-desktop"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_direct_sales_report" model="ir.actions.client">
+    <field name="name">Sales Analysis Report</field>
+    <field name="tag">sale_sales_report.sales_client_action</field>
+    <field name="context">{}</field> 
+</record>
+
+<menuitem id="menu_sale_report_wizard"
+          name="Sales Analysis (Direct)"
+          parent="sale.menu_sale_report"
+          action="action_direct_sales_report" 
+          sequence="10"/>
+</odoo>

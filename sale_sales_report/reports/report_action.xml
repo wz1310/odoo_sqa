@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_inventory_location" model="ir.actions.report">
+        <field name="name">Inventory Report by Location</field>
+        <field name="model">inventory.location.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">inventory_location_report.report_inventory_template</field>
+        <field name="report_file">inventory_location_report.report_inventory_template</field>
+        <field name="print_report_name">'Inventory Report - %s' % (object.date_start)</field>
+        <field name="binding_model_id" ref="model_inventory_location_report_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

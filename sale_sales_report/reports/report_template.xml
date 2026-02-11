@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_inventory_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <style>
+                        .report-title-main { color: #213759; font-weight: bold; font-size: 26px; }
+                        .report-subtitle { color: #553C9A; font-size: 14px; font-weight: 500; }
+                        .table-header { background-color: #F3E5F5; color: #553C9A; font-weight: bold; }
+                        .location-section { border-left: 4px solid #553C9A; padding-left: 10px; margin-top: 20px; color: #553C9A; }
+                    </style>
+
+                    <div class="title-area mb-4">
+                        <h2 class="report-title-main">Inventory Move Analysis</h2>
+                        <div class="report-subtitle">
+                            Period: <t t-esc="data['form']['date_start']"/> to <t t-esc="data['form']['date_end']"/>
+                        </div>
+                    </div>
+
+                    <t t-set="pickings" t-value="request.env['stock.picking'].search([
+                        ('date_done', '&gt;=', data['form']['date_start']),
+                        ('date_done', '&lt;=', data['form']['date_end']),
+                        ('location_id', 'in', data['form']['location_ids']),
+                        ('state', '=', 'done')
+                    ], order='location_id')"/>
+
+                    <t t-foreach="pickings.mapped('location_id')" t-as="loc">
+                        <div class="location-section">
+                            <h4>Location: <t t-esc="loc.display_name"/></h4>
+                        </div>
+                        
+                        <table class="table table-sm mt-2">
+                            <thead>
+                                <tr class="table-header">
+                                    <th>Date</th>
+                                    <th>Reference</th>
+                                    <th>Product</th>
+                                    <th>Destination</th>
+                                    <th class="text-end">Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="loc_total" t-value="0"/>
+                                <t t-foreach="pickings.filtered(lambda p: p.location_id == loc)" t-as="pick">
+                                    <t t-foreach="pick.move_ids" t-as="move">
+                                        <tr>
+                                            <td><span t-field="pick.date_done" t-options='{"widget": "date"}'/></td>
+                                            <td><strong><t t-esc="pick.name"/></strong></td>
+                                            <td><t t-esc="move.product_id.name"/></td>
+                                            <td><t t-esc="pick.location_dest_id.display_name"/></td>
+                                            <td class="text-end"><t t-esc="move.quantity"/> <t t-esc="move.product_uom.name"/></td>
+                                            <t t-set="loc_total" t-value="loc_total + move.quantity"/>
+                                        </tr>
+                                    </t>
+                                </t>
+                                <tr class="table-light">
+                                    <td colspan="4" class="text-end"><strong>Total for <t t-esc="loc.name"/>:</strong></td>
+                                    <td class="text-end" style="color: #553C9A;"><strong><t t-esc="loc_total"/></strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+
+                    <div class="row mt-4" style="border-top: 2px solid #213759; padding-top: 10px;">
+                        <div class="col-12 text-end">
+                            <strong>Total Movement Quantity: </strong>
+                            <t t-set="grand_total" t-value="sum(pickings.move_ids.mapped('quantity'))"/>
+                            <span t-esc="grand_total" style="font-size: 16px; font-weight: bold; margin-left:10px;"/>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

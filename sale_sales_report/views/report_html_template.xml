@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_sales_html_screen">
+        <div class="o_sales_intelligence_report d-flex flex-column h-100">
+            <style>
+                .o_sales_intelligence_report { font-family: 'Inter', sans-serif; height: 100%; background-color: #f8fafc; }
+                .header-box { 
+                    background: #1e3a8a; color: white !important; padding: 15px 25px; 
+                    position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    display: flex; justify-content: space-between; align-items: center;
+                }
+                .header-btn-group .btn {
+                    border-color: rgba(255,255,255,0.3); color: white;
+                    background: rgba(255,255,255,0.1); font-size: 11px; font-weight: 600;
+                }
+                .header-btn-group .btn.active { background: white !important; color: #1e3a8a !important; }
+                .btn-fold { margin-left: 8px; border-radius: 4px !important; border: 1px solid rgba(255,255,255,0.4) !important; }
+                
+                .table-responsive-scroll { flex: 1; overflow-y: auto !important; padding: 20px; }
+                .table-main { 
+                    width: 100%; border-collapse: separate; border-spacing: 0; 
+                    background: white; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;
+                    table-layout: fixed; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                }
+                
+                .table-main thead th { 
+                    position: sticky; top: 0; z-index: 90; background: #f1f5f9; 
+                    padding: 12px 10px; border-bottom: 2px solid #cbd5e1; 
+                    font-size: 10px; color: #475569; text-transform: uppercase; font-weight: 800;
+                }
+                
+                /* Garis Pemisah Antar Baris Grup */
+                .row-customer-group { background: #ffffff; cursor: pointer; transition: background 0.2s; }
+                .row-customer-group:hover { background: #f8fafc; }
+                .row-customer-group td { 
+                    padding: 14px 15px; border-bottom: 1px solid #e2e8f0; 
+                    font-weight: 700; color: #1e3a8a; font-size: 13px;
+                }
+                
+                /* Garis Pemisah Antar Baris Detail */
+                .row-detail td { 
+                    padding: 10px 15px; font-size: 12px; 
+                    border-bottom: 1px solid #f1f5f9; /* Garis pemisah halus */
+                    background: #ffffff; color: #334155; 
+                }
+                .row-detail:last-child td { border-bottom: 2px solid #e2e8f0; } /* Garis penutup grup */
+
+                .icon-arrow { transition: transform 0.3s; margin-right: 12px; color: #94a3b8; width: 12px; }
+                .is-expanded .icon-arrow { transform: rotate(90deg); color: #1e3a8a; }
+                
+                .badge-info-soft { background: #e0f2fe; color: #0369a1; padding: 3px 8px; border-radius: 4px; font-weight: 600; font-size: 11px; text-decoration: none !important; }
+                .text-right { text-align: right !important; }
+                .text-center { text-align: center !important; }
+                .text-amount { font-family: 'Courier New', monospace; font-weight: 700; }
+            </style>
+
+            <div class="header-box">
+                <div>
+                    <h4 style="margin:0; color:white !important; font-weight:700;">Detailed Sales Intelligence</h4>
+                    <p style="color: #bfdbfe; margin: 0; opacity: 0.8; font-size: 0.85rem;">Periode: <t t-esc="month_name"/> <t t-esc="year"/></p>
+                </div>
+                
+                <div class="header-btn-group d-flex align-items-center">
+                    <span class="small me-2 opacity-75">Group by:</span>
+                    <div class="btn-group shadow-sm">
+                        <button type="button" t-attf-class="btn btn-sm js_change_groupby #{'active' if groupby == 'customer' else ''}" data-groupby="customer">Customer</button>
+                        <button type="button" t-attf-class="btn btn-sm js_change_groupby #{'active' if groupby == 'order' else ''}" data-groupby="order">Order</button>
+                        <button type="button" t-attf-class="btn btn-sm js_change_groupby #{'active' if groupby == 'product' else ''}" data-groupby="product">Product</button>
+                    </div>
+
+                    <div class="ms-3 d-flex" style="gap: 5px;">
+                        <button type="button" class="btn btn-sm btn-fold js_fold_all" data-action="unfold">
+                            <i class="fa fa-expand me-1"></i> Unfold All
+                        </button>
+                        <button type="button" class="btn btn-sm btn-fold js_fold_all" data-action="fold">
+                            <i class="fa fa-compress me-1"></i> Fold All
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive-scroll">
+                <table class="table-main">
+                    <thead>
+                        <tr>
+                            <th style="width: 120px;">Order Ref</th>
+                            <th style="width: 250px;">Description</th>
+                            <th style="width: 150px;">Salesperson</th>
+                            <th class="text-center" style="width: 70px;">Qty</th>
+                            <th class="text-center" style="width: 70px;">Deliv</th>
+                            <th class="text-center" style="width: 70px;">Inv</th>
+                            <th class="text-center" style="width: 70px;">To Inv</th>
+                            <th class="text-right" style="width: 130px;">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-set="counter" t-value="0"/>
+                        <t t-foreach="report_data" t-as="group_key">
+                            <t t-set="counter" t-value="counter + 1"/>
+                            <tr class="row-customer-group" t-att-data-id="counter">
+                                <td colspan="7">
+                                    <i class="fa fa-chevron-right icon-arrow"></i>
+                                    <t t-esc="group_key"/>
+                                </td>
+                                <td class="text-right text-amount">
+                                    <t t-esc="'{:,.2f}'.format(report_data[group_key]['total_amount'])"/>
+                                </td>
+                            </tr>
+                            <t t-foreach="report_data[group_key]['lines']" t-as="line">
+                                <tr t-attf-class="row-detail detail-{{counter}}" style="display: none;">
+                                    <td style="border-left: 3px solid #1e3a8a;">
+                                        <a class="badge-info-soft" t-attf-href="{{base_url}}/web#id={{line['order_id']}}&amp;model=sale.order&amp;view_type=form" target="_blank">
+                                            <t t-esc="line['ref']"/>
+                                        </a>
+                                    </td>
+                                    <td style="white-space: normal;"><t t-esc="line['description']"/></td>
+                                    <td><t t-esc="line['salesperson']"/></td>
+                                    <td class="text-center"><t t-esc="int(line['qty'])"/></td>
+                                    <td class="text-center"><t t-esc="int(line['delivered'])"/></td>
+                                    <td class="text-center"><t t-esc="int(line['invoiced'])"/></td>
+                                    <td class="text-center text-danger"><t t-esc="int(line['to_invoice']) if line['to_invoice'] > 0 else '-'"/></td>
+                                    <td class="text-right text-amount text-success"><t t-esc="'{:,.2f}'.format(line['subtotal'])"/></td>
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </template>
+</odoo>
