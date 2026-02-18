@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <template id="report_delivery_document_z">
+        <t t-call="web.html_container">
+            <!-- <t t-call="web.external_layout"> -->
+                
+
+                <!-- <t t-call="web.internal_layout"> -->
+                <!-- <div class="page"> -->
+                    <!-- <t t-set="o" t-value="o.with_context(lang=o._get_report_lang())" /> -->
+                    <!-- <t t-set="partner" t-value="o.partner_id or (o.move_ids and o.move_ids[0].partner_id) or False"/> -->
+                    <!-- <h3 class="text-center">Introspection report on objects</h3> -->
+                    <table></table>
+                    <div class="text-center mb-3">
+                    <img t-att-src="'http://localhost:8069/web/image/1455'" style="max-height: 75px; max-width: 50%;"/>
+                    </div>
+                    <!-- <p><t t-esc ="o.name"></t></p> -->
+
+                <t t-set="address">
+                    <div name="div_outgoing_address">
+                        <div name="outgoing_delivery_address"
+                            t-if="o.should_print_delivery_address()">
+                            <span><strong>Delivery Address:</strong></span>
+                            <div t-out="o.move_ids[0].partner_id or o.partner_id"
+                                t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                        </div>
+                        <div name="outgoing_warehouse_address"
+                             t-elif="o.picking_type_id.code != 'internal' and o.picking_type_id.warehouse_id.partner_id">
+                            <strong>Warehouse Address</strong>
+                            <div t-field="o.picking_type_id.warehouse_id.partner_id"
+                                t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
+                        </div>
+                    </div>
+                </t>
+            <!-- </div> -->
+            <!-- </t> -->
+        </t>
+    </template>
+
+    <template id="report_deliveryslip_z">
+        <t t-foreach="docs" t-as="o">
+            <t t-call="wz_report_delivery_slip.report_delivery_document_z" t-lang="o._get_report_lang()"/>
+        </t>
+    </template>
+</odoo>
