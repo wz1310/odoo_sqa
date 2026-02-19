@@ -10,14 +10,13 @@ class ProductProduct(models.Model):
 
     @api.depends('name', 'default_code')
     def _compute_display_name(self):
-        action = self.env.context.get('params', {}).get('action')
-        print(action)
+        warehouse_id = self.env.context.get('warehouse_id_filter')
+        print("warehouse",warehouse_id)
         # if action == 'sales':
         for template in self:
-            # action = template.env.context.get('params', {}).get('action')
-            # print(action)
-            product = template.env['product.product'].search([('product_tmpl_id','in',[template.id])])
+            product = template.env['product.product'].search([('product_tmpl_id','in',[template.id])]).with_context(warehouse_id=warehouse_id)
             on_hande = sum(product.mapped('qty_available'))
+            print("qty", on_hande)
             if on_hande > 0:
                 template.display_name = False if not template.name else (
                     '{}{}'.format(

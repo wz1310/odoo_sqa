@@ -2,9 +2,9 @@
     'name': 'Sale Stock Availability Warning',
     'version': '1.0',
     'category': 'Sales',
-    'depends': ['sale_management', 'stock'],
+    'depends': ['sale_management', 'stock','sale'],
     'data': [
-        # 'views/sale_order_views.xml',
+        'views/sale_order_views.xml',
     ],
     'installable': True,
     'license': 'LGPL-3',
